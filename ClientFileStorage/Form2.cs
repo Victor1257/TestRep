@@ -74,13 +74,14 @@ namespace ClientFileStorage
 
             try
             {
+                label1.Text = "";
                 _connection = new HubConnectionBuilder()
                     .WithUrl(Link)
                     .Build();
             }
             catch (Exception ex)
             {
-                textBox1.Text = ex.Message;
+                label1.Text = ex.Message;
                 return;
             }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
