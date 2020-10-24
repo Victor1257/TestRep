@@ -4,15 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Linq;
+using MediaBrowser.Model.Serialization;
+using Newtonsoft.Json.Converters;
+using System.Web.Script.Serialization;
 
 namespace ClientFileStorage
 {
-    public partial class Form2 : Form
+    public partial class FileStorage : Form
     {
         public string Link;
         private HubConnection _connection;
         
-        public Form2(string LINK)
+        public FileStorage(string LINK)
         {
             InitializeComponent();
             this.textBox1.Text = LINK;
@@ -30,7 +34,20 @@ namespace ClientFileStorage
         public List<Movie> Movies { get; set; }
         private void OnSend(string movie1)
         {
-            webBrowser1.Navigate(movie1);
+            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+            List<Movie> movies= (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+            //listView1.Columns.Add("IdUSer");
+            //listView1.Columns.Add("Name");
+            //listView1.Columns.Add("ReleaseDate");
+            //listView1.Columns.Add("File Name ");
+            foreach (Movie mo in movies)
+            {
+                ListViewItem listView = new ListViewItem(mo.IDUser);
+                listView.SubItems.Add(mo.Title);
+                listView.SubItems.Add(mo.ReleaseDate.ToString());
+                listView.SubItems.Add(mo.Name);
+                listView1.Items.Add(listView);
+            }
 
         }
 
@@ -91,6 +108,11 @@ namespace ClientFileStorage
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

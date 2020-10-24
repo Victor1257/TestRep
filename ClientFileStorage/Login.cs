@@ -120,7 +120,7 @@ namespace ClientFileStorage
             if (message=="true")
             {
                 IDUSER = UserId;
-                Form2 newForm = new Form2(this.LINK);
+                FileStorage newForm = new FileStorage(this.LINK);
                 newForm.Show();
                 this.Hide();
  
