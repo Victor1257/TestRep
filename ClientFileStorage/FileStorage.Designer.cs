@@ -53,11 +53,11 @@
             // IDUser
             // 
             this.IDUser.Text = "IDUser";
-            this.IDUser.Width = 510;
+            this.IDUser.Width = 429;
             // 
             // Name
             // 
-            this.Name.Text = "Name";
+            this.Name.Text = "FileStorage";
             this.Name.Width = 102;
             // 
             // ReleaseDate
@@ -68,7 +68,7 @@
             // FileName
             // 
             this.FileName.Text = "FileName";
-            this.FileName.Width = 282;
+            this.FileName.Width = 512;
             // 
             // listView1
             // 
@@ -78,13 +78,14 @@
             this.ReleaseDate,
             this.FileName});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 24);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(1185, 596);
-            this.listView1.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.listView1.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView1.TabIndex = 5;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -128,13 +129,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1185, 640);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name.Text = "FileStorage";
-            this.Text = "Form2";
+            this.Name = "FileStorage";
+            this.Text = "FileStorage";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
