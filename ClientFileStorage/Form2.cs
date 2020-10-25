@@ -14,13 +14,18 @@ namespace ClientFileStorage
     public partial class FileStorage : Form
     {
         public string Link;
+        public string IdUser;
         private HubConnection _connection;
-        
-        public FileStorage(string LINK)
+        private ListViewColumnSorter lvwColumnSorter;
+
+        public FileStorage(string LINK,string IDUser)
         {
             InitializeComponent();
             this.textBox1.Text = LINK;
             Link = LINK;
+            IdUser = IDUser;
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listView1.ListViewItemSorter = lvwColumnSorter;
         }
 
         public class Movie
@@ -34,12 +39,9 @@ namespace ClientFileStorage
         public List<Movie> Movies { get; set; }
         private void OnSend(string movie1)
         {
+            listView1.Items.Clear();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
             List<Movie> movies= (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
-            //listView1.Columns.Add("IdUSer");
-            //listView1.Columns.Add("Name");
-            //listView1.Columns.Add("ReleaseDate");
-            //listView1.Columns.Add("File Name ");
             foreach (Movie mo in movies)
             {
                 ListViewItem listView = new ListViewItem(mo.IDUser);
@@ -52,36 +54,11 @@ namespace ClientFileStorage
         }
 
 
-            private void Form2_Load(object sender, EventArgs e)
+            private async void Form2_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private async void button1_ClickAsync(object sender, EventArgs e)
-        {
-            try
-            {
-                await _connection.InvokeAsync("SendMovie");
-            }
-            catch (Exception ex)
-            {
-                
-            }
-        }
-
-        private async void button2_Click(object sender, EventArgs e)
-        {
-
+            // Ensure that the view is set to show details.
+            listView1.View = View.Details;
             try
             {
                 _connection = new HubConnectionBuilder()
@@ -107,6 +84,27 @@ namespace ClientFileStorage
             }
         }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void button1_ClickAsync(object sender, EventArgs e)
+        {
+           
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+
+            
+        }
+
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
 
@@ -115,6 +113,50 @@ namespace ClientFileStorage
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private async void получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await _connection.InvokeAsync("SendMovie",IdUser);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            Login login = new Login();
+            login.Show();
+        }
+
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.listView1.Sort();
         }
     }
 }
