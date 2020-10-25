@@ -158,5 +158,9 @@ namespace ClientFileStorage
             // Perform the sort with these new sort options.
             this.listView1.Sort();
         }
+
+        private void скачатьВыбранныйФаилToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
