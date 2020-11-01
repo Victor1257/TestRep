@@ -16,7 +16,7 @@ namespace ClientFileStorage
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form2("link")); // new Login()
+            Application.Run(new Login()); // new Login()
         }
     }
 }
