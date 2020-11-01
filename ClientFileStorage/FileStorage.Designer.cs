@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.IDUser = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -41,7 +42,12 @@
             this.управлениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скачатьВыбранныйФаилToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьВыбранныйФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.скачатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.удалитьФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.списокВсехФайловToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -93,7 +99,7 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             // 
             // menuStrip1
             // 
@@ -133,7 +139,8 @@
             // 
             this.управлениеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.скачатьВыбранныйФаилToolStripMenuItem,
-            this.удалитьВыбранныйФайлToolStripMenuItem});
+            this.удалитьВыбранныйФайлToolStripMenuItem,
+            this.списокВсехФайловToolStripMenuItem});
             this.управлениеToolStripMenuItem.Name = "управлениеToolStripMenuItem";
             this.управлениеToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
             this.управлениеToolStripMenuItem.Text = "Управление";
@@ -151,6 +158,36 @@
             this.удалитьВыбранныйФайлToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.удалитьВыбранныйФайлToolStripMenuItem.Text = "Удалить выбранный файл";
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.скачатьToolStripMenuItem,
+            this.удалитьФайлToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(151, 48);
+            // 
+            // скачатьToolStripMenuItem
+            // 
+            this.скачатьToolStripMenuItem.Name = "скачатьToolStripMenuItem";
+            this.скачатьToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.скачатьToolStripMenuItem.Text = "Скачать фаил";
+            this.скачатьToolStripMenuItem.Click += new System.EventHandler(this.скачатьToolStripMenuItem_Click);
+            // 
+            // удалитьФайлToolStripMenuItem
+            // 
+            this.удалитьФайлToolStripMenuItem.Name = "удалитьФайлToolStripMenuItem";
+            this.удалитьФайлToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.удалитьФайлToolStripMenuItem.Text = "Удалить файл";
+            this.удалитьФайлToolStripMenuItem.DropDownClosed += new System.EventHandler(this.получитьИлиОбновитьСписокФайловToolStripMenuItem_Click);
+            this.удалитьФайлToolStripMenuItem.Click += new System.EventHandler(this.удалитьФайлToolStripMenuItem_Click);
+            // 
+            // списокВсехФайловToolStripMenuItem
+            // 
+            this.списокВсехФайловToolStripMenuItem.Name = "списокВсехФайловToolStripMenuItem";
+            this.списокВсехФайловToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.списокВсехФайловToolStripMenuItem.Text = "Список всех файлов";
+            this.списокВсехФайловToolStripMenuItem.Click += new System.EventHandler(this.списокВсехФайловToolStripMenuItem_Click);
+            // 
             // FileStorage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -166,6 +203,7 @@
             this.Load += new System.EventHandler(this.Form2_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,10 +218,14 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem менюToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem получитьИлиОбновитьСписокФайловToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem управлениеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem скачатьВыбранныйФаилToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem удалитьВыбранныйФайлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem получитьИлиОбновитьСписокФайловToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem скачатьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem удалитьФайлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem списокВсехФайловToolStripMenuItem;
     }
 }

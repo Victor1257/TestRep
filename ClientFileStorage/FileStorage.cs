@@ -8,6 +8,8 @@ using System.Linq;
 using MediaBrowser.Model.Serialization;
 using Newtonsoft.Json.Converters;
 using System.Web.Script.Serialization;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ClientFileStorage
 {
@@ -17,8 +19,10 @@ namespace ClientFileStorage
         public string IdUser;
         private HubConnection _connection;
         private ListViewColumnSorter lvwColumnSorter;
+        public ListViewItem listView;
+        public string price;
 
-        public FileStorage(string LINK,string IDUser)
+        public FileStorage(string LINK, string IDUser)
         {
             InitializeComponent();
             this.textBox1.Text = LINK;
@@ -41,10 +45,26 @@ namespace ClientFileStorage
         {
             listView1.Items.Clear();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-            List<Movie> movies= (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+            List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
             foreach (Movie mo in movies)
             {
-                ListViewItem listView = new ListViewItem(mo.IDUser);
+                listView = new ListViewItem(mo.IDUser);
+                listView.SubItems.Add(mo.Title);
+                listView.SubItems.Add(mo.ReleaseDate.ToString());
+                listView.SubItems.Add(mo.Name);
+                listView1.Items.Add(listView);
+            }
+
+        }
+
+        private void OnSendAll(string movie1)
+        {
+            listView1.Items.Clear();
+            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+            List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+            foreach (Movie mo in movies)
+            {
+                listView = new ListViewItem(mo.IDUser);
                 listView.SubItems.Add(mo.Title);
                 listView.SubItems.Add(mo.ReleaseDate.ToString());
                 listView.SubItems.Add(mo.Name);
@@ -54,15 +74,15 @@ namespace ClientFileStorage
         }
 
 
-            private async void Form2_Load(object sender, EventArgs e)
+        private async void Form2_Load(object sender, EventArgs e)
         {
-
             // Ensure that the view is set to show details.
             listView1.View = View.Details;
             try
             {
                 _connection = new HubConnectionBuilder()
                     .WithUrl(Link)
+                    .WithAutomaticReconnect()
                     .Build();
             }
             catch (Exception ex)
@@ -71,7 +91,9 @@ namespace ClientFileStorage
                 return;
             }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
-
+            _connection.On<string, string>("doStuff", (s1, s2) => DoStuff(s1, s2));
+            _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
+            _connection.On<string>("ReceiveAll", (s1) => OnSendAll(s1));
 
             try
             {
@@ -84,46 +106,16 @@ namespace ClientFileStorage
             }
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private async void button1_ClickAsync(object sender, EventArgs e)
-        {
-           
-        }
-
-        private async void button2_Click(object sender, EventArgs e)
-        {
-
-            
-        }
-
-        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-
-        }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private async void получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                await _connection.InvokeAsync("SendMovie",IdUser);
+                await _connection.InvokeAsync("SendMovie", IdUser);
+
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -158,9 +150,114 @@ namespace ClientFileStorage
             // Perform the sort with these new sort options.
             this.listView1.Sort();
         }
-
-        private void скачатьВыбранныйФаилToolStripMenuItem_Click(object sender, EventArgs e)
+     
+        private async void скачатьВыбранныйФаилToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+            ListView.SelectedListViewItemCollection file =
+        this.listView1.SelectedItems;
+            foreach (ListViewItem item in file)
+            {
+                price = item.SubItems[3].Text;
+            }
+            textBox1.Text = price;
+            try
+            {
+                await _connection.InvokeAsync("GetMovie", price);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private static void DoStuff(string data, string name)
+        {
+            try
+            {
+                byte[] newByte = Convert.FromBase64String(data);
+                File.WriteAllBytes("C:/Users/merli/Desktop/Client/Client/ClientFileStorage/Uploads/" + name, newByte);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private static void DeleteFile(string name)
+        {
+            MessageBox.Show("Файл " + name + " удален.");
+        }
+
+        private void listView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            ListView tmp_SenderListView = sender as ListView;
+            if (e.Button == MouseButtons.Right)
+            {
+                ListViewItem tmp_SelectedItem = tmp_SenderListView.GetItemAt(e.X, e.Y);
+                if (tmp_SelectedItem == null)
+                {
+                    contextMenuStrip1.Show(tmp_SenderListView, e.Location);
+                }
+                else
+                {
+                    tmp_SelectedItem.Selected = true;
+                    contextMenuStrip1.Show(tmp_SenderListView, e.Location);
+                }
+            }
+        }
+
+        private async void скачатьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection file =
+                    this.listView1.SelectedItems;
+            foreach (ListViewItem item in file)
+            {
+                price = item.SubItems[3].Text;
+            }
+            textBox1.Text = price;
+            try
+            {
+                await _connection.InvokeAsync("GetMovie", price);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void удалитьФайлToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection file =
+                   this.listView1.SelectedItems;
+            foreach (ListViewItem item in file)
+            {
+                price = item.SubItems[3].Text;
+            }
+            textBox1.Text = price;
+            try
+            {
+                await _connection.InvokeAsync("DeleteFile", price);
+                получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void списокВсехФайловToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await _connection.InvokeAsync("SendAllMovie", IdUser);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
+
