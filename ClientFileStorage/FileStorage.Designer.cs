@@ -42,10 +42,11 @@
             this.управлениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.скачатьВыбранныйФаилToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьВыбранныйФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.списокВсехФайловToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.скачатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.списокВсехФайловToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.задачиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -140,7 +141,8 @@
             this.управлениеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.скачатьВыбранныйФаилToolStripMenuItem,
             this.удалитьВыбранныйФайлToolStripMenuItem,
-            this.списокВсехФайловToolStripMenuItem});
+            this.списокВсехФайловToolStripMenuItem,
+            this.задачиToolStripMenuItem});
             this.управлениеToolStripMenuItem.Name = "управлениеToolStripMenuItem";
             this.управлениеToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
             this.управлениеToolStripMenuItem.Text = "Управление";
@@ -157,6 +159,13 @@
             this.удалитьВыбранныйФайлToolStripMenuItem.Name = "удалитьВыбранныйФайлToolStripMenuItem";
             this.удалитьВыбранныйФайлToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.удалитьВыбранныйФайлToolStripMenuItem.Text = "Удалить выбранный файл";
+            // 
+            // списокВсехФайловToolStripMenuItem
+            // 
+            this.списокВсехФайловToolStripMenuItem.Name = "списокВсехФайловToolStripMenuItem";
+            this.списокВсехФайловToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.списокВсехФайловToolStripMenuItem.Text = "Список всех файлов";
+            this.списокВсехФайловToolStripMenuItem.Click += new System.EventHandler(this.списокВсехФайловToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
@@ -181,12 +190,12 @@
             this.удалитьФайлToolStripMenuItem.DropDownClosed += new System.EventHandler(this.получитьИлиОбновитьСписокФайловToolStripMenuItem_Click);
             this.удалитьФайлToolStripMenuItem.Click += new System.EventHandler(this.удалитьФайлToolStripMenuItem_Click);
             // 
-            // списокВсехФайловToolStripMenuItem
+            // задачиToolStripMenuItem
             // 
-            this.списокВсехФайловToolStripMenuItem.Name = "списокВсехФайловToolStripMenuItem";
-            this.списокВсехФайловToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.списокВсехФайловToolStripMenuItem.Text = "Список всех файлов";
-            this.списокВсехФайловToolStripMenuItem.Click += new System.EventHandler(this.списокВсехФайловToolStripMenuItem_Click);
+            this.задачиToolStripMenuItem.Name = "задачиToolStripMenuItem";
+            this.задачиToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.задачиToolStripMenuItem.Text = "Задачи";
+            this.задачиToolStripMenuItem.Click += new System.EventHandler(this.задачиToolStripMenuItem_Click);
             // 
             // FileStorage
             // 
@@ -198,7 +207,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name.Text = "FileStorage";
+            //this.Name = "FileStorage";
             this.Text = "FileStorage";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -227,5 +236,6 @@
         private System.Windows.Forms.ToolStripMenuItem скачатьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem удалитьФайлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem списокВсехФайловToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem задачиToolStripMenuItem;
     }
 }
