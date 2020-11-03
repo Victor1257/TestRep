@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="ClientFileStorage.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="ClientFileStorage.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="ClientFileStorage.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="32224">
-      <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="30176">
+      <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>IU5dO9bl64pPp/5OPYJNbYbu7cy353eV9WYSw4xVhZ8=</dsig:DigestValue>
+        <dsig:DigestValue>1b8P/G5qa0nt4ue+R4b2DtcoRFFyZZ82UD2piXJ8JVU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -90,6 +90,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MessagePack.dll" size="282112">
+      <assemblyIdentity name="MessagePack" version="1.7.3.7" publicKeyToken="B4A0369545F0A1BE" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Zi+qBa/ekK+1n8A+4QJglIZ5NEsSO+WRlfTkAejAYhA=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNet.SignalR.Client.dll" size="155184">
       <assemblyIdentity name="Microsoft.AspNet.SignalR.Client" version="2.4.1.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -103,13 +115,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.Connections.Abstractions.dll" size="36216">
-      <assemblyIdentity name="Microsoft.AspNetCore.Connections.Abstractions" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Microsoft.AspNetCore.Connections.Abstractions" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qj+eA6OyuHmscC+J2/+awFPIO5yClp+hK5k10Tgsi5E=</dsig:DigestValue>
+        <dsig:DigestValue>M/TPAJHJ03HQx98ADFpjbuN8dlIjP+y3b/ExtydOphQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -138,14 +150,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.Http.Features.dll" size="30584">
-      <assemblyIdentity name="Microsoft.AspNetCore.Http.Features" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.Http.Features.dll" size="30600">
+      <assemblyIdentity name="Microsoft.AspNetCore.Http.Features" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>m+b31aYDj7xXLZRfC1/NZrBdYNwk32/n7B6Kiv216/Y=</dsig:DigestValue>
+        <dsig:DigestValue>3pQKvnD/loLs2bx20XxTq1uYg3zPCosEC2HNBW8/PK4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -174,14 +186,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.SignalR.Common.dll" size="37240">
-      <assemblyIdentity name="Microsoft.AspNetCore.SignalR.Common" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.SignalR.Common.dll" size="37248">
+      <assemblyIdentity name="Microsoft.AspNetCore.SignalR.Common" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>g4ualqJ3aAxd3Ky1DnT1kPkTovDjDF3Rl5Pk90dE+oo=</dsig:DigestValue>
+        <dsig:DigestValue>HtmjAHcpzcFiqECW5xPcUWBjtxeUg0W6xNsdC7HZxZY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -194,6 +206,18 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
         <dsig:DigestValue>ofC+KYFE6zUbVGyEL6+zVCJV4dVc4M+VWqccpvn+w88=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll" size="34176">
+      <assemblyIdentity name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>THFARXSWSywcH3mZMr8S/4pH9of3iBIYsg8KtmitpgQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -259,13 +283,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.Extensions.DependencyInjection.Abstractions.dll" size="37752">
-      <assemblyIdentity name="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>yFTwTS16q6jefUDI6nVJSEskooCjUCYQYKoLAkZ2nck=</dsig:DigestValue>
+        <dsig:DigestValue>qHdxgeB0nKE8odGQX+eGQwM+lg3dEkT2XpjVyoAB9bE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -294,26 +318,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.Extensions.Options.dll" size="50552">
-      <assemblyIdentity name="Microsoft.Extensions.Options" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.Extensions.Options.dll" size="50560">
+      <assemblyIdentity name="Microsoft.Extensions.Options" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jy2f00FanofpLVaiV0ZLVMwgeQoAAw0lk598xWLLjCw=</dsig:DigestValue>
+        <dsig:DigestValue>cKAZb7xh11kZxyizcq+t1c8646D5ZoQNvEwOg3z+DX8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.Extensions.Primitives.dll" size="38264">
-      <assemblyIdentity name="Microsoft.Extensions.Primitives" version="3.1.8.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.Extensions.Primitives.dll" size="38272">
+      <assemblyIdentity name="Microsoft.Extensions.Primitives" version="3.1.9.0" publicKeyToken="ADB9793829DDAE60" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>gVSVeQ5oYtEMI+SN4sTxxJUMIQATQ0ezbACLauNlgX8=</dsig:DigestValue>
+        <dsig:DigestValue>6eWNJmObgA9g37KbjpD+lhTy18eoW5cLdTcnDGGojBU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -354,14 +378,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.IO.Pipelines.dll" size="67960">
-      <assemblyIdentity name="System.IO.Pipelines" version="4.0.2.1" publicKeyToken="CC7B13FFCD2DDD51" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.IO.Pipelines.dll" size="67976">
+      <assemblyIdentity name="System.IO.Pipelines" version="4.0.2.2" publicKeyToken="CC7B13FFCD2DDD51" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>YiBYIme9aXR8rqsjk2BV+piDKdPoB2ce3O8dqLkCvxU=</dsig:DigestValue>
+        <dsig:DigestValue>RXRlyOx8/Eha+FMzpJzJve9NP4EG8/Hfz0yDrZHEUfA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -461,13 +485,13 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="ClientFileStorage.exe.config" size="3363">
+  <file name="ClientFileStorage.exe.config" size="4439">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>sz1FzVz1dve2VMw7deqJzdAlmvtNDGnIH8n22BxUDcE=</dsig:DigestValue>
+      <dsig:DigestValue>AtpwOYrxQz/8crPkIqbKzOeMGm3plLBIs+mubPCkWP0=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

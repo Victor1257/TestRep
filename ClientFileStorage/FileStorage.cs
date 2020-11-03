@@ -10,6 +10,7 @@ using Newtonsoft.Json.Converters;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ClientFileStorage
 {
@@ -82,8 +83,10 @@ namespace ClientFileStorage
             {
                 _connection = new HubConnectionBuilder()
                     .WithUrl(Link)
+                    .AddMessagePackProtocol()
                     .WithAutomaticReconnect()
                     .Build();
+                _connection.ServerTimeout = TimeSpan.FromMinutes(10);
             }
             catch (Exception ex)
             {
@@ -91,7 +94,7 @@ namespace ClientFileStorage
                 return;
             }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
-            _connection.On<string, string>("doStuff", (s1, s2) => DoStuff(s1, s2));
+            _connection.On<byte[], string>("doStuff", (s1, s2) => DoStuff(s1, s2));
             _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
             _connection.On<string>("ReceiveAll", (s1) => OnSendAll(s1));
 
@@ -151,32 +154,14 @@ namespace ClientFileStorage
             this.listView1.Sort();
         }
      
-        private async void скачатьВыбранныйФаилToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+       
 
-            ListView.SelectedListViewItemCollection file =
-        this.listView1.SelectedItems;
-            foreach (ListViewItem item in file)
-            {
-                price = item.SubItems[3].Text;
-            }
-            textBox1.Text = price;
-            try
-            {
-                await _connection.InvokeAsync("GetMovie", price);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private static void DoStuff(string data, string name)
+        private  void DoStuff(byte[] data, string name)
         {
             try
             {
-                byte[] newByte = Convert.FromBase64String(data);
-                File.WriteAllBytes("C:/Users/merli/Desktop/Client/Client/ClientFileStorage/Uploads/" + name, newByte);
+                File.WriteAllBytes("./Uploads/" + name, data);
+                GC.Collect();
             }
             catch (Exception ex)
             {
