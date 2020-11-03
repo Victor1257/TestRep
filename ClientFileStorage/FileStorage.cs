@@ -243,6 +243,12 @@ namespace ClientFileStorage
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void задачиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TaskForm form1 = new TaskForm();
+            form1.Show();
+        }
     }
 }
 
