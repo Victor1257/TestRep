@@ -439,13 +439,34 @@ namespace ClientFileStorage
                     var A = Convert.ToDateTime(dataGridView1[3, i].Value);
                     var B = DateTime.Now;
                     string path = (string)dataGridView1[2, i].Value;
-                    string archivePath = "./ToSend/";
+                    
                     string dirName = new DirectoryInfo(path).Name;
-                    ZipFile.CreateFromDirectory(path, archivePath + dirName+".zip");
-                    загрузитьФайлToolStripMenuItem_Click1("./ToSend/" + dirName + ".zip");
+                    string time = get_formatted_time();
+
+                    string archivePath = "./ToSend/";
+                    string archivename = dirName + time + ".zip";
+
+                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
+                    string destinationpath = archivePath + archivename;
+                    ZipFile.CreateFromDirectory(path, destinationpath);
+                    if (    System.IO.File.Exists(destinationpath)    )
+                            { MessageBox.Show("Архив успешно создан"); }
+                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
+                    загрузитьФайлToolStripMenuItem_Click1(destinationpath);
                 }
             }
         }
+
+        private string get_formatted_time()
+        {
+            return DateTime.Now.Day.ToString() + "d-"
+                + DateTime.Now.Month.ToString() + "m-"
+                + DateTime.Now.Year.ToString() + "y "
+                + DateTime.Now.Hour.ToString() + "h-"
+                + DateTime.Now.Minute.ToString() + "m-"
+                + DateTime.Now.Second.ToString() + "s";
+        }
+
         private void Zip(string directoryPath)
         {
             // путь к архиву
