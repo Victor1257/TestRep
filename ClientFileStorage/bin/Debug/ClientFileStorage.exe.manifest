@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="76768">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="78304">
       <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>v7EBpF7DgpVhazns/oSuRgXPzqTkpmXjni6SHwW/G+Y=</dsig:DigestValue>
+        <dsig:DigestValue>ovjJQls0CKt8AfPSW/AfWzmJ6sioy9ROCPn470jx/9Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -500,7 +500,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>3NlBxgYzP/A9s+h2sxaVe4GdtdPWc4x1TIBg+pBHiiQ=</dsig:DigestValue>
+      <dsig:DigestValue>x0KFTvEFPKOnW+CVuaTHwaLVaqf1kpYDs0bAOr3mkBU=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Database1_log.ldf" size="8388608" writeableType="applicationData">
@@ -509,7 +509,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>LRR9BULNHUKP/lke10mELF5egRcqlejJuFW0YAVe63g=</dsig:DigestValue>
+      <dsig:DigestValue>p0GDIIuOpaG8AmQbCF7yCwJNFAKSNeNWlHEyeWNIRho=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

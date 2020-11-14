@@ -34,28 +34,7 @@ namespace ClientFileStorage
         {
             sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+Application.StartupPath+ @"\Database1.mdf" + ";Integrated Security=True");
             await sqlConnection.OpenAsync();
-            SqlDataReader sqlReader = null;
-            SqlCommand command = new SqlCommand("SELECT * FROM [Task]", sqlConnection);
-            try
-            {
-                sqlReader = await command.ExecuteReaderAsync();
-                while (await sqlReader.ReadAsync())
-                {
-                    listBox1.Items.Add(Convert.ToString(sqlReader["Id"]) + " " + Convert.ToString(sqlReader["IdUser"]) + " " + Convert.ToString(sqlReader["FileName"]) + " " + Convert.ToString(sqlReader["Time"]));
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString(), ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (sqlReader != null)
-                {
-                    sqlReader.Close();
-                }    
-            }
-
+            mysqlcommand();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -93,10 +72,12 @@ namespace ClientFileStorage
             }
             if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox1.Text))
             {
-                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,Time)VALUES (@IdUser,@FileName,@Time)", sqlConnection);
+                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,LastUploadDate)VALUES (@IdUser,@FileName,@LastUploadDate)", sqlConnection);
                 command1.Parameters.AddWithValue("IdUser", IDUSER);
                 command1.Parameters.AddWithValue("FileName", textBox1.Text);
-                command1.Parameters.AddWithValue("Time", dateTimePicker1.Value);
+                command1.Parameters.AddWithValue("LastUploadDate", dateTimePicker1.Value);
+                command1.Parameters.AddWithValue("IsPeriodic", 0);
+                command1.Parameters.AddWithValue("Period", 0);
                 await command1.ExecuteNonQueryAsync();
             }
             else
@@ -104,6 +85,12 @@ namespace ClientFileStorage
                 label1.Visible = true;
                 label1.Text = "Данные не введены";
             }
+            mysqlcommand();
+
+        }
+
+        private async void mysqlcommand()
+        {
             SqlDataReader sqlReader = null;
             SqlCommand command = new SqlCommand("SELECT * FROM [Task]", sqlConnection);
             try
@@ -111,7 +98,11 @@ namespace ClientFileStorage
                 sqlReader = await command.ExecuteReaderAsync();
                 while (await sqlReader.ReadAsync())
                 {
-                    listBox1.Items.Add(Convert.ToString(sqlReader["Id"]) + " " + Convert.ToString(sqlReader["IdUser"]) + " " + Convert.ToString(sqlReader["FileName"]) + " " + Convert.ToString(sqlReader["Time"]));
+                    listBox1.Items.Add(
+                        Convert.ToString(sqlReader["Id"]) + " " + Convert.ToString(sqlReader["IdUser"])
+                        + " " + Convert.ToString(sqlReader["FileName"]) + " " + Convert.ToString(sqlReader["LastUploadDate"])
+                        + " " + Convert.ToString(sqlReader["IsPeriodic"]) + " " + Convert.ToString(sqlReader["Period"])
+                        );
                 }
             }
             catch (Exception ex)
@@ -125,7 +116,23 @@ namespace ClientFileStorage
                     sqlReader.Close();
                 }
             }
+        }
 
+        private void radioButtonTrue_CheckedChanged(object sender, EventArgs e)
+        {
+            comboBox1.Enabled = true;
+        }
+
+        private void radioButtonFalse_CheckedChanged(object sender, EventArgs e)
+        {
+            comboBox1.Enabled = false;
+        }
+
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.Text == "ввести своё")
+                { textBox2.Enabled = true; }
+            else textBox2.Enabled = false;
         }
     }
 }
