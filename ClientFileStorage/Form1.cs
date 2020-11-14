@@ -22,12 +22,19 @@ namespace ClientFileStorage
             _cp = cp;
         }
 
+        private Dictionary<int, int> periodicity = new Dictionary<int, int>(5);
 
         public Form1(string Link, string IdUser)
         {
             InitializeComponent();
             IDUSER = IdUser;
             dateTimePicker1.CustomFormat = "dd/MM/yyyy hh:mm";
+
+            periodicity.Add(0, 60);
+            periodicity.Add(1, 360);
+            periodicity.Add(2, 720);
+            periodicity.Add(3, 1440);
+            periodicity.Add(4, 10080);
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -72,12 +79,23 @@ namespace ClientFileStorage
             }
             if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox1.Text))
             {
-                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,LastUploadDate)VALUES (@IdUser,@FileName,@LastUploadDate)", sqlConnection);
+                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,LastUploadDate,IsPeriodic,Period)VALUES (@IdUser,@FileName,@LastUploadDate)", sqlConnection);
                 command1.Parameters.AddWithValue("IdUser", IDUSER);
                 command1.Parameters.AddWithValue("FileName", textBox1.Text);
                 command1.Parameters.AddWithValue("LastUploadDate", dateTimePicker1.Value);
-                command1.Parameters.AddWithValue("IsPeriodic", 0);
-                command1.Parameters.AddWithValue("Period", 0);
+                if (radioButtonFalse.Checked)
+                    command1.Parameters.AddWithValue("IsPeriodic", 0);
+                else if (radioButtonTrue.Checked)
+                    command1.Parameters.AddWithValue("IsPeriodic", 1);
+                if (radioButtonTrue.Checked)
+                {
+                    if (comboBox1.SelectedIndex<5)
+                        command1.Parameters.AddWithValue("Period", periodicity[comboBox1.SelectedIndex]);
+                    else command1.Parameters.AddWithValue("Period", textBox2.Text);
+                }    
+                
+                else
+                    command1.Parameters.AddWithValue("Period", 0);
                 await command1.ExecuteNonQueryAsync();
             }
             else
@@ -86,7 +104,6 @@ namespace ClientFileStorage
                 label1.Text = "Данные не введены";
             }
             mysqlcommand();
-
         }
 
         private async void mysqlcommand()
@@ -133,6 +150,14 @@ namespace ClientFileStorage
             if (comboBox1.Text == "ввести своё")
                 { textBox2.Enabled = true; }
             else textBox2.Enabled = false;
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

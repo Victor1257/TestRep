@@ -168,6 +168,8 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "ежечасовая",
+            "раз в шесть часов",
+            "раз в двенадцать часов",
             "ежедневная",
             "еженедельная",
             "ввести своё"});
@@ -184,6 +186,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(200, 20);
             this.textBox2.TabIndex = 10;
+            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
             // 
             // Form1
             // 
