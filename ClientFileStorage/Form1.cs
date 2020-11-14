@@ -77,21 +77,21 @@ namespace ClientFileStorage
             {
                 label1.Visible = false;
             }
-            if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox1.Text))
+            if (!string.IsNullOrEmpty(textBox1.Text)/* && !string.IsNullOrWhiteSpace(textBox1.Text)*/)
             {
-                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,LastUploadDate,IsPeriodic,Period)VALUES (@IdUser,@FileName,@LastUploadDate)", sqlConnection);
+                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,LastUploadDate,IsPeriodic,Period) VALUES (@IdUser,@FileName,@LastUploadDate,@IsPeriodic,@Period)", sqlConnection);
                 command1.Parameters.AddWithValue("IdUser", IDUSER);
                 command1.Parameters.AddWithValue("FileName", textBox1.Text);
                 command1.Parameters.AddWithValue("LastUploadDate", dateTimePicker1.Value);
                 if (radioButtonFalse.Checked)
-                    command1.Parameters.AddWithValue("IsPeriodic", 0);
+                    command1.Parameters.AddWithValue("IsPeriodic", false);
                 else if (radioButtonTrue.Checked)
-                    command1.Parameters.AddWithValue("IsPeriodic", 1);
+                    command1.Parameters.AddWithValue("IsPeriodic", true);
                 if (radioButtonTrue.Checked)
                 {
                     if (comboBox1.SelectedIndex<5)
                         command1.Parameters.AddWithValue("Period", periodicity[comboBox1.SelectedIndex]);
-                    else command1.Parameters.AddWithValue("Period", textBox2.Text);
+                    else command1.Parameters.AddWithValue("Period", Convert.ToInt32(textBox2.Text) );
                 }    
                 
                 else
@@ -154,7 +154,7 @@ namespace ClientFileStorage
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!Char.IsDigit(e.KeyChar))
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != 8)
             {
                 e.Handled = true;
             }
