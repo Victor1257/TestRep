@@ -414,3 +414,6 @@ C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\MessagePack
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\MessagePack.xml
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.xml
+C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\obj\Debug\ClientFileStorage.Form1.resources
+C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Database1.mdf
+C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Database1_log.ldf

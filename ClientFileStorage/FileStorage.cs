@@ -11,6 +11,11 @@ using System.Web.Script.Serialization;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Cryptography;
+using System.Data.OleDb;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO.Compression;
 
 namespace ClientFileStorage
 {
@@ -22,6 +27,10 @@ namespace ClientFileStorage
         private ListViewColumnSorter lvwColumnSorter;
         public ListViewItem listView;
         public string price;
+        private SqlConnection sqlConnection = null;
+        private SqlCommandBuilder sqlBuilder = null;
+        private SqlDataAdapter sqlDataAdapter = null;
+        private DataSet dataSet = null;
 
         public FileStorage(string LINK, string IDUser)
         {
@@ -31,6 +40,7 @@ namespace ClientFileStorage
             IdUser = IDUser;
             lvwColumnSorter = new ListViewColumnSorter();
             this.listView1.ListViewItemSorter = lvwColumnSorter;
+
         }
 
         public class Movie
@@ -73,11 +83,56 @@ namespace ClientFileStorage
             }
 
         }
-
-
-        private async void Form2_Load(object sender, EventArgs e)
+        private void LoadData()
         {
-            // Ensure that the view is set to show details.
+            try
+            {
+                sqlDataAdapter = new SqlDataAdapter("SELECT *,'Delete' AS [Delete] FROM Task", sqlConnection);
+                sqlBuilder = new SqlCommandBuilder(sqlDataAdapter);
+                sqlBuilder.GetInsertCommand();
+                sqlBuilder.GetUpdateCommand();
+                sqlBuilder.GetDeleteCommand();
+                dataSet = new DataSet();
+                sqlDataAdapter.Fill(dataSet, "Task");
+                dataGridView1.DataSource = dataSet.Tables["Task"];
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                    dataGridView1[4, i] = linkCell;
+                }    
+                
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        public void ReloadData()
+        {
+            try
+            {
+                dataSet.Tables["Task"].Clear();
+                sqlDataAdapter.Fill(dataSet, "Task");
+                dataGridView1.DataSource = dataSet.Tables["Task"];
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                    dataGridView1[4, i] = linkCell;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+            private async void Form2_Load(object sender, EventArgs e)
+        {
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+Application.StartupPath+ @"\Database1.mdf" + ";Integrated Security=True");
+            sqlConnection.Open();
+            LoadData();
             listView1.View = View.Details;
             try
             {
@@ -94,7 +149,7 @@ namespace ClientFileStorage
                 return;
             }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
-            _connection.On<byte[], string>("doStuff", (s1, s2) => DoStuff(s1, s2));
+            _connection.On<byte[], string, long,long,long>("doStuff", (s1, s2,s3,s4,s5) => DoStuff(s1, s2,s3,s4,s5));
             _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
             _connection.On<string>("ReceiveAll", (s1) => OnSendAll(s1));
 
@@ -134,20 +189,20 @@ namespace ClientFileStorage
             if (e.Column == lvwColumnSorter.SortColumn)
             {
                 // Reverse the current sort direction for this column.
-                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                if (lvwColumnSorter.Order == System.Windows.Forms.SortOrder.Ascending)
                 {
-                    lvwColumnSorter.Order = SortOrder.Descending;
+                    lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Descending;
                 }
                 else
                 {
-                    lvwColumnSorter.Order = SortOrder.Ascending;
+                    lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Ascending;
                 }
             }
             else
             {
                 // Set the column number that is to be sorted; default to ascending.
                 lvwColumnSorter.SortColumn = e.Column;
-                lvwColumnSorter.Order = SortOrder.Ascending;
+                lvwColumnSorter.Order = System.Windows.Forms.SortOrder.Ascending;
             }
 
             // Perform the sort with these new sort options.
@@ -156,17 +211,55 @@ namespace ClientFileStorage
      
        
 
-        private  void DoStuff(byte[] data, string name)
+        private  void DoStuff(byte[] data, string name, long Position,long Lenght,long READBUFFER_SIZE)
         {
+            
             try
             {
-                File.WriteAllBytes("./Uploads/" + name, data);
-                GC.Collect();
+                if (File.Exists("./Uploads/" + name))
+                {
+                    using (FileStream FS = new FileStream(Path.Combine("./Uploads/", name), FileMode.Open, FileAccess.Write, FileShare.Write))
+                    {
+                        FS.Position = Position;
+                        FS.Write(data, 0, (int)READBUFFER_SIZE);
+                    }
+                }
+                else
+                {
+                    using (FileStream FS = new FileStream(Path.Combine("./Uploads/", name), FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        FS.Position = Position;
+                        FS.Write(data, 0, (int)READBUFFER_SIZE);
+                    }
+                }
+                progressBar1.Minimum = 0;
+                progressBar1.Maximum = (int)Lenght;
+                progressBar1.Value = (int)Position;
+                if (progressBar1.Value >= (int)Lenght-1048576)
+                {
+                    progressBar1.Value = 0;
+                    MessageBox.Show("Файл загружен!");
+                }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+
+
+
+            //try
+            //{
+            //    File.WriteAllBytes("./Uploads/" + name, data);
+            //    GC.Collect();
+            //    MessageBox.Show("Файл успешно заружен");
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
         }
 
         private static void DeleteFile(string name)
@@ -203,7 +296,7 @@ namespace ClientFileStorage
             textBox1.Text = price;
             try
             {
-                await _connection.InvokeAsync("GetMovie", price);
+                await _connection.InvokeAsync("GetMovie", price,IdUser);
             }
             catch (Exception ex)
             {
@@ -222,7 +315,7 @@ namespace ClientFileStorage
             textBox1.Text = price;
             try
             {
-                await _connection.InvokeAsync("DeleteFile", price);
+                await _connection.InvokeAsync("DeleteFile", price,IdUser);
                 получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(sender, e);
             }
             catch (Exception ex)
@@ -246,8 +339,120 @@ namespace ClientFileStorage
 
         private void задачиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TaskForm form1 = new TaskForm();
-            form1.Show();
+
+        }
+
+        private void переподключитьсяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2_Load(sender, e);
+        }
+
+        private async void загрузитьФайлToolStripMenuItem_Click1(string FileNamePath)
+        {
+            var fileName = new DirectoryInfo(FileNamePath).Name;
+            long READBUFFER_SIZE = 1048576;
+            int offset = 0;
+            long Pos = 0;
+            try
+            {
+                using (FileStream FS = new FileStream(FileNamePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    long n = FS.Length;
+                    while (FS.Position < FS.Length)
+                    {
+                        if (n <= READBUFFER_SIZE)
+                        {
+                            byte[] FSBuffer = new byte[n];
+                            FS.Read(FSBuffer, offset, (int)n);
+                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n,IdUser);
+                        }
+                        else
+                        {
+                            byte[] FSBuffer = new byte[READBUFFER_SIZE];
+                            FS.Read(FSBuffer, offset, (int)READBUFFER_SIZE);
+                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE,IdUser);
+                            n -= READBUFFER_SIZE;
+                        }
+                        Pos = FS.Position;
+                        GC.Collect();
+                    }
+                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void создатьЗадачуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form1 newForm = new Form1(Link, IdUser);
+            newForm.SetCP(this);
+            newForm.Show();
+        }
+
+        public void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReloadData();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.ColumnIndex==4)
+                {
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString();
+                    if (task == "Delete")
+                    {
+                        if (MessageBox.Show("Удалить задачу?","Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                            == DialogResult.Yes)
+                        {
+                            int rowIndex = e.RowIndex;
+                            dataGridView1.Rows.RemoveAt(rowIndex);
+                            dataSet.Tables["Task"].Rows[rowIndex].Delete();
+                            sqlDataAdapter.Update(dataSet, "Task");
+                        }
+                    }
+                }    
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private  void timer1_Tick(object sender, EventArgs e)
+        {
+            var Time = DateTime.Now; 
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+
+               if(Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value)<=Time.AddMinutes(1))
+                {
+                    var A = Convert.ToDateTime(dataGridView1[3, i].Value);
+                    var B = DateTime.Now;
+                    string path = (string)dataGridView1[2, i].Value;
+                    string archivePath = "./ToSend/";
+                    string dirName = new DirectoryInfo(path).Name;
+                    ZipFile.CreateFromDirectory(path, archivePath + dirName+".zip");
+                    загрузитьФайлToolStripMenuItem_Click1("./ToSend/" + dirName + ".zip");
+                }
+            }
+        }
+        private void Zip(string directoryPath)
+        {
+            // путь к архиву
+            string archivePath = "./ToSend/";
+
+            // вызов метода, который заархивирует указанную папку
+            ZipFile.CreateFromDirectory(directoryPath, archivePath+directoryPath.FirstOrDefault());
         }
     }
 }

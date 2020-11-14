@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="30176">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="76256">
       <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>1b8P/G5qa0nt4ue+R4b2DtcoRFFyZZ82UD2piXJ8JVU=</dsig:DigestValue>
+        <dsig:DigestValue>hfstxNxfYmipvqr4X1qv1QcBj8Q5UO3bvKbxklZi0J4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -485,13 +485,31 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="ClientFileStorage.exe.config" size="4439">
+  <file name="ClientFileStorage.exe.config" size="4812">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>AtpwOYrxQz/8crPkIqbKzOeMGm3plLBIs+mubPCkWP0=</dsig:DigestValue>
+      <dsig:DigestValue>cLxB4hLFSUrGjFFn7Ybbx7sJQRWlw4cOv3TzxZ6tQN8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Database1.mdf" size="8388608" writeableType="applicationData">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>3NlBxgYzP/A9s+h2sxaVe4GdtdPWc4x1TIBg+pBHiiQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Database1_log.ldf" size="8388608" writeableType="applicationData">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>LRR9BULNHUKP/lke10mELF5egRcqlejJuFW0YAVe63g=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
