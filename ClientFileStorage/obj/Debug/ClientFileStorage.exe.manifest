@@ -61,7 +61,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>cqJE3Oy5OAvydmqDeX18iMzlgaqXZTzoDIOmk3qXwhk=</dsig:DigestValue>
+        <dsig:DigestValue>im18eWh8WWbDHOLnB3C5yR87AK9EOmnGd1SBsLg9wqk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -500,7 +500,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>26nvaaFOKfrk7ai/dZczEn3jholGzph/Cr8nPY8Ux/0=</dsig:DigestValue>
+      <dsig:DigestValue>cXXchNwvmohgTpFovRN5xSLwGhy5e2jXU0z0HWv/SXY=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Database1_log.ldf" size="8388608" writeableType="applicationData">
@@ -509,7 +509,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>TJrC2OTzzgN+ZhI3lR8vuRF+bnHp4RcN14/Wv//KfwM=</dsig:DigestValue>
+      <dsig:DigestValue>++du8oSedH5jvMrj0qGm3dg6HVQl44u+L2+JN4k7cKw=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
