@@ -48,7 +48,7 @@ namespace ClientFileStorage
             }
             else
             {
-                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + databasefilename + "Integrated Security=True");
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + databasefilename + ";Integrated Security=True");
                 await sqlConnection.OpenAsync();
                 mysqlcommand();
             }
