@@ -39,7 +39,7 @@ namespace ClientFileStorage
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+Application.StartupPath+ @"\Database1.mdf" + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True");
             await sqlConnection.OpenAsync();
             mysqlcommand();
         }

@@ -98,7 +98,7 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[4, i] = linkCell;
+                    dataGridView1[6, i] = linkCell;
                 }    
                 
             }
@@ -119,7 +119,7 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[4, i] = linkCell;
+                    dataGridView1[6, i] = linkCell;
                 }
             }
             catch (Exception ex)
@@ -130,7 +130,7 @@ namespace ClientFileStorage
 
             private async void Form2_Load(object sender, EventArgs e)
         {
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+Application.StartupPath+ @"\Database1.mdf" + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True;"+ "MultipleActiveResultSets=True");
             sqlConnection.Open();
             LoadData();
             listView1.View = View.Details;
@@ -406,9 +406,9 @@ namespace ClientFileStorage
         {
             try
             {
-                if (e.ColumnIndex==4)
+                if (e.ColumnIndex==6)
                 {
-                    string task = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString();
                     if (task == "Delete")
                     {
                         if (MessageBox.Show("Удалить задачу?","Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -428,36 +428,84 @@ namespace ClientFileStorage
             }
         }
 
-        private  void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
-            var Time = DateTime.Now; 
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (Convert.ToInt32(dataGridView1[4, i].Value) == 0)
+                {
+                    await Task.Run(() => MakeTaskNoPeriod());
+                }
+                else
+                {
+                    await Task.Run(() => MakeTask());
+                }
+            }
+        }
+
+        private async void MakeTaskNoPeriod()
+        {
+            var Time = DateTime.Now;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
 
-               if(Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value)<=Time.AddMinutes(1))
+                if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 0)
                 {
-                    var A = Convert.ToDateTime(dataGridView1[3, i].Value);
-                    var B = DateTime.Now;
                     string path = (string)dataGridView1[2, i].Value;
-                    
                     string dirName = new DirectoryInfo(path).Name;
                     string time = get_formatted_time();
-
                     string archivePath = "./ToSend/";
                     string archivename = dirName + time + ".zip";
 
                     //string destinationpath = @"./filesfolder/archive " + time + ".zip";
                     string destinationpath = archivePath + archivename;
                     ZipFile.CreateFromDirectory(path, destinationpath);
-                    if (    System.IO.File.Exists(destinationpath)    )
-                            { MessageBox.Show("Архив успешно создан"); }
+                    if (System.IO.File.Exists(destinationpath))
+                    { MessageBox.Show("Архив успешно создан"); }
                     //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
-                    загрузитьФайлToolStripMenuItem_Click1(destinationpath);
+                   await Task.Run(()=> загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                    dataSet.Tables["Task"].Rows[i].Delete();
+                    sqlDataAdapter.Update(dataSet, "Task");
+                    ReloadData();
                 }
             }
         }
 
-        private string get_formatted_time()
+        private async void MakeTask()
+        {
+            var Time = DateTime.Now;
+            
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
+                if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
+                {
+                    string path = (string)dataGridView1[2, i].Value;
+                    string dirName = new DirectoryInfo(path).Name;
+                    string time = get_formatted_time();
+                    string archivePath = "./ToSend/";
+                    string archivename = dirName + time + ".zip";
+
+                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
+                    string destinationpath = archivePath + archivename;
+                    ZipFile.CreateFromDirectory(path, destinationpath);
+                    if (System.IO.File.Exists(destinationpath))
+                    { MessageBox.Show("Архив успешно создан"); }
+                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
+                    await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                    sqlDataAdapter.Update(dataSet, "Task");
+                    Time2.AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
+                    SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
+                    command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
+                    command.Parameters.AddWithValue("LastUploadDate", Time2);
+                    await command.ExecuteNonQueryAsync();
+                }
+            
+                
+
+            }
+        }
+            private string get_formatted_time()
         {
             return DateTime.Now.Day.ToString() + "d-"
                 + DateTime.Now.Month.ToString() + "m-"
