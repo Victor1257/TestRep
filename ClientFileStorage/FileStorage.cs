@@ -366,19 +366,19 @@ namespace ClientFileStorage
                         {
                             byte[] FSBuffer = new byte[n];
                             FS.Read(FSBuffer, offset, (int)n);
-                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n,IdUser);
+                            //await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n,IdUser);
                         }
                         else
                         {
                             byte[] FSBuffer = new byte[READBUFFER_SIZE];
                             FS.Read(FSBuffer, offset, (int)READBUFFER_SIZE);
-                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE,IdUser);
+                            //await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE,IdUser);
                             n -= READBUFFER_SIZE;
                         }
                         Pos = FS.Position;
                         GC.Collect();
                     }
-                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
+                    //await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
                 }
             }
             catch (FileNotFoundException ex)
@@ -434,18 +434,22 @@ namespace ClientFileStorage
         {
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                if (Convert.ToInt32(dataGridView1[4, i].Value) == 0)
+                bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataGridView1[4, i].Value));
+
+                //MessageBox.Show( Convert.ToString(isPeriodic) );
+
+                if (isPeriodic)
                 {
-                    await Task.Run(() => MakeTaskNoPeriod());
+                    await Task.Run(() => MakeTask(true));
                 }
                 else
                 {
-                    await Task.Run(() => MakeTask());
+                    await Task.Run(() => MakeTask(false));
                 }
             }
         }
 
-        private async void MakeTaskNoPeriod()
+        /*private async void MakeTaskNoPeriod()
         {
             var Time = DateTime.Now;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
@@ -466,21 +470,23 @@ namespace ClientFileStorage
                     { MessageBox.Show("Архив успешно создан"); }
                     //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
                    await Task.Run(()=> загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+
                     dataSet.Tables["Task"].Rows[i].Delete();
                     sqlDataAdapter.Update(dataSet, "Task");
                     ReloadData();
                 }
             }
-        }
+        }*/
 
-        private async void MakeTask()
+        private async void MakeTask(bool isPeriodic)
         {
             var Time = DateTime.Now;
             
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
-                if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
+                //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
+                if (Convert.ToDateTime(dataGridView1[3, i].Value)/*.AddMinutes( Convert.ToInt32( dataGridView1[5, i].Value ) )*/ <= Time)
                 {
                     string path = (string)dataGridView1[2, i].Value;
                     string dirName = new DirectoryInfo(path).Name;
@@ -495,16 +501,27 @@ namespace ClientFileStorage
                     { MessageBox.Show("Архив успешно создан"); }
                     //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
                     await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                    sqlDataAdapter.Update(dataSet, "Task");
-                    Time2.AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
-                    SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
-                    command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
-                    command.Parameters.AddWithValue("LastUploadDate", Time2);
-                    await command.ExecuteNonQueryAsync();
+
+                    if (isPeriodic)
+                        {
+                            sqlDataAdapter.Update(dataSet, "Task");
+                        //var Time343 = Time2;
+                            //MessageBox.Show("*Time2 " + Convert.ToString(Time2) );
+                            Time2 = Time2.AddMinutes( Convert.ToDouble (dataGridView1[5, i].Value) );
+                            //MessageBox.Show(Convert.ToString(Time343) + "\n" + Convert.ToString(Time2) );
+                            SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
+                            command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
+                            command.Parameters.AddWithValue("LastUploadDate", Time2);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    else if (!isPeriodic)
+                        {
+                            dataSet.Tables["Task"].Rows[i].Delete();
+                            sqlDataAdapter.Update(dataSet, "Task");
+                            ReloadData();
+                        }
                 }
             
-                
-
             }
         }
             private string get_formatted_time()
