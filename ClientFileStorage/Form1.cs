@@ -37,9 +37,25 @@ namespace ClientFileStorage
             periodicity.Add(4, 10080);
         }
 
+        private async void connect_to_sql_database(string dbfilename)
+        {
+            //строка для удобства отладки: чтобы если поменял в условии, то не надо было менять в else название БД
+            if (!System.IO.File.Exists(Application.StartupPath + @"\" + dbfilename))
+            {
+                MessageBox.Show("Подключение невозможно");
+                Application.Exit();
+            }
+            else
+            {
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + dbfilename + ";Integrated Security=True");
+                await sqlConnection.OpenAsync();
+            }
+        }
+
         private async void Form1_Load(object sender, EventArgs e)
         {
-            string databasefilename = "Database1.mdf";
+
+            /*string databasefilename = "Database1.mdf";
             //строка для удобства отладки: чтобы если поменял в условии, то не надо было менять в else название БД
             if (!System.IO.File.Exists(Application.StartupPath + @"\" + databasefilename))
             {
@@ -50,9 +66,12 @@ namespace ClientFileStorage
             {
                 sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + databasefilename + ";Integrated Security=True");
                 await sqlConnection.OpenAsync();
-                mysqlcommand();
-            }
-            
+                
+            }*/
+
+            connect_to_sql_database("Database1.mdf");
+
+            mysqlcommand();
         }
 
         private void button1_Click(object sender, EventArgs e)

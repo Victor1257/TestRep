@@ -128,12 +128,39 @@ namespace ClientFileStorage
             }
         }
 
-            private async void Form2_Load(object sender, EventArgs e)
+
+
+        private void connect_to_sql_database(string dbfilename)
+        {
+            //строка для удобства отладки: чтобы если поменял в условии, то не надо было менять в else название БД
+            if (!System.IO.File.Exists(Application.StartupPath + @"\" + dbfilename))
+            {
+                MessageBox.Show("Подключение невозможно");
+                Application.Exit();
+            }
+            else
+            {
+
+                /*
+                 * sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\Database1.mdf" + ";Integrated Security=True");
+                    sqlConnection.Open();
+                 */
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + dbfilename + ";Integrated Security=True");
+                sqlConnection.Open();
+            }
+        }
+
+
+
+        private async void Form2_Load(object sender, EventArgs e)
         {
 
             //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True;"+ "MultipleActiveResultSets=True");
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\Database1.mdf" + ";Integrated Security=True");
-            sqlConnection.Open();
+            /*sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\Database1.mdf" + ";Integrated Security=True");
+            sqlConnection.Open();*/
+
+            connect_to_sql_database("Database1.mdf");
+
             LoadData();
             listView1.View = View.Details;
             try
@@ -482,7 +509,7 @@ namespace ClientFileStorage
         {
             var Time = DateTime.Now;
             
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            for (int i = 0; i < dataGridView1.Rows.Count && dataGridView1[0, i].Value != null; i++)
             {
                 var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
                 //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
@@ -510,7 +537,7 @@ namespace ClientFileStorage
                             Time2 = Time2.AddMinutes( Convert.ToDouble (dataGridView1[5, i].Value) );
                             //MessageBox.Show(Convert.ToString(Time343) + "\n" + Convert.ToString(Time2) );
                             SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
-                            command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
+                            command.Parameters.AddWithValue("id", Convert.ToInt32( dataGridView1[0, i].Value) );
                             command.Parameters.AddWithValue("LastUploadDate", Time2);
                             await command.ExecuteNonQueryAsync();
                         }

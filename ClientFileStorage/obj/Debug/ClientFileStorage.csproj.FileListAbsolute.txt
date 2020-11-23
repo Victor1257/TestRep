@@ -417,8 +417,6 @@ C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Microsoft.A
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\obj\Debug\ClientFileStorage.Form1.resources
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Database1.mdf
 C:\Users\merli\Desktop\Client\StoreFile2\ClientFileStorage\bin\Debug\Database1_log.ldf
-D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1.mdf
-D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1_log.ldf
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.exe.config
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.exe.manifest
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.application
@@ -599,3 +597,5 @@ C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorag
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CopyComplete
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.exe
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1.mdf
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1_log.ldf
