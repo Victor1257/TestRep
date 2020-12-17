@@ -459,78 +459,26 @@ namespace ClientFileStorage
 
         private async void timer1_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataGridView1[4, i].Value));
-
-                //MessageBox.Show( Convert.ToString(isPeriodic) );
-
-                if (isPeriodic)
+            //for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
+            for (int i = 0; i < dataGridView1.Rows.Count - 1 && dataGridView1[0, i].Value.ToString() != ""; i++)
                 {
-                    await Task.Run(() => MakeTask(true));
+                    //MessageBox.Show("Итерация " + i.ToString() + " timer_tick");
+                    await Task.Run(() => MakeTask(i));
                 }
-                else
-                {
-                    await Task.Run(() => MakeTask(false));
-                }
-            }
         }
 
-        /*private async void MakeTaskNoPeriod()
+        private async void MakeTask(int i)
         {
             var Time = DateTime.Now;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
+            bool isPeriodic = Convert.ToBoolean(dataGridView1[4, i].Value);
+            //MessageBox.Show(dataGridView1[4, i].Value.GetType().ToString());
 
-                if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 0)
-                {
-                    string path = (string)dataGridView1[2, i].Value;
-                    string dirName = new DirectoryInfo(path).Name;
-                    string time = get_formatted_time();
-                    string archivePath = "./ToSend/";
-                    string archivename = dirName + time + ".zip";
-
-                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
-                    string destinationpath = archivePath + archivename;
-                    ZipFile.CreateFromDirectory(path, destinationpath);
-                    if (System.IO.File.Exists(destinationpath))
-                    { MessageBox.Show("Архив успешно создан"); }
-                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
-                   await Task.Run(()=> загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-
-                    dataSet.Tables["Task"].Rows[i].Delete();
-                    sqlDataAdapter.Update(dataSet, "Task");
-                    ReloadData();
-                }
-            }
-        }*/
-
-        private async void MakeTask(bool isPeriodic)
-        {
-            var Time = DateTime.Now;
-                                                            // Эта штука исключение выбрасывает, пока что закомментил
-            for (int i = 0; i < dataGridView1.Rows.Count-1 && dataGridView1[0, i]/*.Value*/ != null; i++)
-            {
                 var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
-                //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
                 if (Convert.ToDateTime(dataGridView1[3, i].Value)/*.AddMinutes( Convert.ToInt32( dataGridView1[5, i].Value ) )*/ <= Time)
                 {
                     string path = (string)dataGridView1[2, i].Value;
-                    string dirName = new DirectoryInfo(path).Name;
-                    string time = Get_formatted_time();
-                    string archivePath = "./ToSend/";
-                    string archivename = dirName + time + ".zip";
-
-                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
-                    string destinationpath = archivePath + archivename;
-                    ZipFile.CreateFromDirectory(path, destinationpath);
-                    if (System.IO.File.Exists(destinationpath))
-                    {
-                        MessageBox.Show("Архив успешно создан");
-                        MakeNotify(this, archivename);
-                    }
-                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
-                    await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                    string UploadingFileName = MakeZip(path);
+                    await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(UploadingFileName));
 
                     if (isPeriodic)
                         {
@@ -546,12 +494,11 @@ namespace ClientFileStorage
                         }
                     else if (!isPeriodic)
                         {
-                            //dataSet.Tables["Task"].Rows[i].Delete();
+                            dataSet.Tables["Task"].Rows[i].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
                             ReloadData();
                         }
                 }
-            }
         }
 
         private NotifyIcon NI = new NotifyIcon();
@@ -580,13 +527,27 @@ namespace ClientFileStorage
                 + DateTime.Now.Second.ToString() + "s";
         }
 
-        private void Zip(string directoryPath)
+        private string MakeZip(string SourcePath)
         {
+            string dirName = new DirectoryInfo(SourcePath).Name;
+            string time = Get_formatted_time();
             // путь к архиву
             string archivePath = "./ToSend/";
 
             // вызов метода, который заархивирует указанную папку
-            ZipFile.CreateFromDirectory(directoryPath, archivePath+directoryPath.FirstOrDefault());
+            //ZipFile.CreateFromDirectory(directoryPath, archivePath+directoryPath.FirstOrDefault());
+
+            string archivename = dirName + time + ".zip";
+
+            //string destinationpath = @"./filesfolder/archive " + time + ".zip";
+            string destinationpath = archivePath + archivename;
+            ZipFile.CreateFromDirectory(SourcePath, destinationpath);
+            if (System.IO.File.Exists(destinationpath))
+            {
+                //MessageBox.Show("Архив успешно создан");
+                MakeNotify(this, archivename);
+            }
+            return destinationpath;
         }
     }
 }

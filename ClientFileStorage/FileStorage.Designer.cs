@@ -69,17 +69,17 @@
             // IDUser
             // 
             this.IDUser.Text = "IDUser";
-            this.IDUser.Width = 429;
+            this.IDUser.Width = 175;
             // 
             // Name
             // 
             this.Name.Text = "FileStorage";
-            this.Name.Width = 102;
+            this.Name.Width = 160;
             // 
             // ReleaseDate
             // 
             this.ReleaseDate.Text = "ReleaseDate";
-            this.ReleaseDate.Width = 135;
+            this.ReleaseDate.Width = 178;
             // 
             // FileName
             // 
@@ -230,9 +230,9 @@
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.dataGridView1.Location = new System.Drawing.Point(945, 24);
+            this.dataGridView1.Location = new System.Drawing.Point(809, 24);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(240, 573);
+            this.dataGridView1.Size = new System.Drawing.Size(376, 573);
             this.dataGridView1.TabIndex = 8;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -254,7 +254,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name.Text = "FileStorage";
+            //this.Name = "FileStorage";
             this.Text = "FileStorage";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.menuStrip1.ResumeLayout(false);
