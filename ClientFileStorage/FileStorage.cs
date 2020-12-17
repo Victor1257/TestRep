@@ -460,13 +460,14 @@ namespace ClientFileStorage
         private async void timer1_Tick(object sender, EventArgs e)
         {
             //for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
-            for (int i = 0; i < dataGridView1.Rows.Count - 1 && dataGridView1[0, i].Value.ToString() != ""; i++)
+            for (int i = 0; i < dataGridView1.Rows.Count - 1 && dataGridView1[0, i].Value != null; i++)
                 {
                     //MessageBox.Show("Итерация " + i.ToString() + " timer_tick");
                     await Task.Run(() => MakeTask(i));
                 }
-        }
 
+        }
+        // Баг с большими файлами не исправлен
         private async void MakeTask(int i)
         {
             var Time = DateTime.Now;
@@ -476,11 +477,13 @@ namespace ClientFileStorage
                 var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
                 if (Convert.ToDateTime(dataGridView1[3, i].Value)/*.AddMinutes( Convert.ToInt32( dataGridView1[5, i].Value ) )*/ <= Time)
                 {
+                    //MessageBox.Show(dataGridView1[3, i].Value.GetType().ToString());
                     string path = (string)dataGridView1[2, i].Value;
-                    string UploadingFileName = MakeZip(path);
-                    await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(UploadingFileName));
 
-                    if (isPeriodic)
+                string UploadingFileName = MakeZip(path);
+                await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(UploadingFileName));
+
+                if (isPeriodic)
                         {
                             sqlDataAdapter.Update(dataSet, "Task");
                             //var Time343 = Time2;
@@ -489,8 +492,10 @@ namespace ClientFileStorage
                             //MessageBox.Show(Convert.ToString(Time343) + "\n" + Convert.ToString(Time2) );
                             SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
                             command.Parameters.AddWithValue("id", Convert.ToInt32( dataGridView1[0, i].Value) );
+                    //MessageBox.Show(dataGridView1[0, i].Value.GetType().ToString());
                             command.Parameters.AddWithValue("LastUploadDate", Time2);
                             await command.ExecuteNonQueryAsync();
+                            ReloadData();
                         }
                     else if (!isPeriodic)
                         {
