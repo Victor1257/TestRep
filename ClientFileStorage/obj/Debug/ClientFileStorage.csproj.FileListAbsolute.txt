@@ -495,7 +495,6 @@ D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Threading.Tasks.Exten
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.ValueTuple.xml
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.FileStorage.resources
-D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Form1.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Login.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Properties.Resources.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.UserControl1.resources
@@ -599,3 +598,4 @@ C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorag
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1.mdf
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Database1_log.ldf
+D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.TaskManager.resources

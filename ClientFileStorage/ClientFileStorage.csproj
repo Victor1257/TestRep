@@ -195,11 +195,11 @@
     <Compile Include="FileStorage.Designer.cs">
       <DependentUpon>FileStorage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="TaskManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="TaskManager.Designer.cs">
+      <DependentUpon>TaskManager.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="Login.cs">
@@ -227,8 +227,8 @@
     <EmbeddedResource Include="FileStorage.resx">
       <DependentUpon>FileStorage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="TaskManager.resx">
+      <DependentUpon>TaskManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

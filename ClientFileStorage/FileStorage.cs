@@ -421,7 +421,7 @@ namespace ClientFileStorage
 
         private void создатьЗадачуToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form1 newForm = new Form1(Link, IdUser);
+            TaskManager newForm = new TaskManager(Link, IdUser);
             newForm.SetCP(this);
             newForm.Show();
         }
@@ -508,8 +508,8 @@ namespace ClientFileStorage
         private async void MakeTask(bool isPeriodic)
         {
             var Time = DateTime.Now;
-            
-            for (int i = 0; i < dataGridView1.Rows.Count && dataGridView1[0, i].Value != null; i++)
+                                                            // Эта штука исключение выбрасывает, пока что закомментил
+            for (int i = 0; i < dataGridView1.Rows.Count-1 && dataGridView1[0, i]/*.Value*/ != null; i++)
             {
                 var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
                 //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
@@ -517,7 +517,7 @@ namespace ClientFileStorage
                 {
                     string path = (string)dataGridView1[2, i].Value;
                     string dirName = new DirectoryInfo(path).Name;
-                    string time = get_formatted_time();
+                    string time = Get_formatted_time();
                     string archivePath = "./ToSend/";
                     string archivename = dirName + time + ".zip";
 
@@ -525,14 +525,17 @@ namespace ClientFileStorage
                     string destinationpath = archivePath + archivename;
                     ZipFile.CreateFromDirectory(path, destinationpath);
                     if (System.IO.File.Exists(destinationpath))
-                    { MessageBox.Show("Архив успешно создан"); }
+                    {
+                        MessageBox.Show("Архив успешно создан");
+                        MakeNotify(this, archivename);
+                    }
                     //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
                     await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
 
                     if (isPeriodic)
                         {
                             sqlDataAdapter.Update(dataSet, "Task");
-                        //var Time343 = Time2;
+                            //var Time343 = Time2;
                             //MessageBox.Show("*Time2 " + Convert.ToString(Time2) );
                             Time2 = Time2.AddMinutes( Convert.ToDouble (dataGridView1[5, i].Value) );
                             //MessageBox.Show(Convert.ToString(Time343) + "\n" + Convert.ToString(Time2) );
@@ -543,15 +546,31 @@ namespace ClientFileStorage
                         }
                     else if (!isPeriodic)
                         {
-                            dataSet.Tables["Task"].Rows[i].Delete();
+                            //dataSet.Tables["Task"].Rows[i].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
                             ReloadData();
                         }
                 }
-            
             }
         }
-            private string get_formatted_time()
+
+        private NotifyIcon NI = new NotifyIcon();
+        private void MakeNotify(object sender, string fileName/*, EventArgs e*/)
+        {
+            NI.BalloonTipText = "Архив " + fileName + " успешно был создан";
+            NI.BalloonTipTitle = "Информация";
+            NI.BalloonTipIcon = ToolTipIcon.Info;
+            NI.Icon = this.Icon;
+            NI.Visible = true;
+            NI.ShowBalloonTip(1000);
+        }
+        private void NI_BalloonTipClosed(Object sender, EventArgs e)
+        {
+            NI.Visible = false;
+            MessageBox.Show("The balloon tip is now closed.");
+        }
+
+        private string Get_formatted_time()
         {
             return DateTime.Now.Day.ToString() + "d-"
                 + DateTime.Now.Month.ToString() + "m-"
