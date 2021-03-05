@@ -39,9 +39,20 @@ namespace ClientFileStorage
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True");
-            await sqlConnection.OpenAsync();
-            mysqlcommand();
+            string databasefilename = "Database1.mdf";
+            //строка для удобства отладки: чтобы если поменял в условии, то не надо было менять в else название БД
+            if (!System.IO.File.Exists(Application.StartupPath + @"\" + databasefilename))
+            {
+                MessageBox.Show("Подключение невозможно");
+                Application.Exit();
+            }
+            else
+            {
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\" + databasefilename + ";Integrated Security=True");
+                await sqlConnection.OpenAsync();
+                mysqlcommand();
+            }
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
