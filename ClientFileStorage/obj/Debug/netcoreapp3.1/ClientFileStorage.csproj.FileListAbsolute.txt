@@ -1,0 +1,11 @@
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.csprojAssemblyReference.cache
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.FileStorage.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.Login.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.Properties.Resources.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.Task.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.TaskForm.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.UserControl1.resources
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.csproj.GenerateResource.cache
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.AssemblyInfoInputs.cache
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.AssemblyInfo.cs
+C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\netcoreapp3.1\ClientFileStorage.csproj.CoreCompileInputs.cache

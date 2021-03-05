@@ -121,8 +121,8 @@ namespace ClientFileStorage
             {
                 IDUSER = UserId;
                 FileStorage newForm = new FileStorage(this.LINK,this.IDUSER);
-                newForm.Show();
                 this.Hide();
+                newForm.Show();
  
             }    
         }

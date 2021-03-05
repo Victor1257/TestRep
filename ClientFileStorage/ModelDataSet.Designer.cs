@@ -285,7 +285,35 @@ namespace ClientFileStorage {
             
             private global::System.Data.DataColumn columnFileName;
             
-            private global::System.Data.DataColumn columnTime;
+            private global::System.Data.DataColumn columnIsPeriodic;
+            
+            private global::System.Data.DataColumn columnFrequency_InProgress;
+            
+            private global::System.Data.DataColumn columnFrequency_RepeatedEvery;
+            
+            private global::System.Data.DataColumn columnDayOfTheWeek;
+            
+            private global::System.Data.DataColumn columnAOneTimeJob;
+            
+            private global::System.Data.DataColumn columnAOneTimeJobValue;
+            
+            private global::System.Data.DataColumn columnRunsEvery;
+            
+            private global::System.Data.DataColumn columnStartsAt;
+            
+            private global::System.Data.DataColumn columnEndsIn;
+            
+            private global::System.Data.DataColumn columnStartDate;
+            
+            private global::System.Data.DataColumn columnEndDate;
+            
+            private global::System.Data.DataColumn columnEndDateValue;
+            
+            private global::System.Data.DataColumn columnDateNoPeriodic;
+            
+            private global::System.Data.DataColumn columnTimeNoPeriodic;
+            
+            private global::System.Data.DataColumn columnMustBeExecuted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -346,9 +374,121 @@ namespace ClientFileStorage {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn TimeColumn {
+            public global::System.Data.DataColumn IsPeriodicColumn {
                 get {
-                    return this.columnTime;
+                    return this.columnIsPeriodic;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Frequency_InProgressColumn {
+                get {
+                    return this.columnFrequency_InProgress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Frequency_RepeatedEveryColumn {
+                get {
+                    return this.columnFrequency_RepeatedEvery;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DayOfTheWeekColumn {
+                get {
+                    return this.columnDayOfTheWeek;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn AOneTimeJobColumn {
+                get {
+                    return this.columnAOneTimeJob;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn AOneTimeJobValueColumn {
+                get {
+                    return this.columnAOneTimeJobValue;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn RunsEveryColumn {
+                get {
+                    return this.columnRunsEvery;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn StartsAtColumn {
+                get {
+                    return this.columnStartsAt;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn EndsInColumn {
+                get {
+                    return this.columnEndsIn;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn StartDateColumn {
+                get {
+                    return this.columnStartDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn EndDateColumn {
+                get {
+                    return this.columnEndDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn EndDateValueColumn {
+                get {
+                    return this.columnEndDateValue;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DateNoPeriodicColumn {
+                get {
+                    return this.columnDateNoPeriodic;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TimeNoPeriodicColumn {
+                get {
+                    return this.columnTimeNoPeriodic;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn MustBeExecutedColumn {
+                get {
+                    return this.columnMustBeExecuted;
                 }
             }
             
@@ -389,13 +529,44 @@ namespace ClientFileStorage {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public TaskRow AddTaskRow(string IdUser, string FileName, System.DateTime Time) {
+            public TaskRow AddTaskRow(
+                        string IdUser, 
+                        string FileName, 
+                        bool IsPeriodic, 
+                        string Frequency_InProgress, 
+                        int Frequency_RepeatedEvery, 
+                        string DayOfTheWeek, 
+                        bool AOneTimeJob, 
+                        string AOneTimeJobValue, 
+                        int RunsEvery, 
+                        string StartsAt, 
+                        string EndsIn, 
+                        string StartDate, 
+                        bool EndDate, 
+                        string EndDateValue, 
+                        string DateNoPeriodic, 
+                        string TimeNoPeriodic, 
+                        string MustBeExecuted) {
                 TaskRow rowTaskRow = ((TaskRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         IdUser,
                         FileName,
-                        Time};
+                        IsPeriodic,
+                        Frequency_InProgress,
+                        Frequency_RepeatedEvery,
+                        DayOfTheWeek,
+                        AOneTimeJob,
+                        AOneTimeJobValue,
+                        RunsEvery,
+                        StartsAt,
+                        EndsIn,
+                        StartDate,
+                        EndDate,
+                        EndDateValue,
+                        DateNoPeriodic,
+                        TimeNoPeriodic,
+                        MustBeExecuted};
                 rowTaskRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowTaskRow);
                 return rowTaskRow;
@@ -428,7 +599,21 @@ namespace ClientFileStorage {
                 this.columnId = base.Columns["Id"];
                 this.columnIdUser = base.Columns["IdUser"];
                 this.columnFileName = base.Columns["FileName"];
-                this.columnTime = base.Columns["Time"];
+                this.columnIsPeriodic = base.Columns["IsPeriodic"];
+                this.columnFrequency_InProgress = base.Columns["Frequency_InProgress"];
+                this.columnFrequency_RepeatedEvery = base.Columns["Frequency_RepeatedEvery"];
+                this.columnDayOfTheWeek = base.Columns["DayOfTheWeek"];
+                this.columnAOneTimeJob = base.Columns["AOneTimeJob"];
+                this.columnAOneTimeJobValue = base.Columns["AOneTimeJobValue"];
+                this.columnRunsEvery = base.Columns["RunsEvery"];
+                this.columnStartsAt = base.Columns["StartsAt"];
+                this.columnEndsIn = base.Columns["EndsIn"];
+                this.columnStartDate = base.Columns["StartDate"];
+                this.columnEndDate = base.Columns["EndDate"];
+                this.columnEndDateValue = base.Columns["EndDateValue"];
+                this.columnDateNoPeriodic = base.Columns["DateNoPeriodic"];
+                this.columnTimeNoPeriodic = base.Columns["TimeNoPeriodic"];
+                this.columnMustBeExecuted = base.Columns["MustBeExecuted"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -440,8 +625,36 @@ namespace ClientFileStorage {
                 base.Columns.Add(this.columnIdUser);
                 this.columnFileName = new global::System.Data.DataColumn("FileName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFileName);
-                this.columnTime = new global::System.Data.DataColumn("Time", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnTime);
+                this.columnIsPeriodic = new global::System.Data.DataColumn("IsPeriodic", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnIsPeriodic);
+                this.columnFrequency_InProgress = new global::System.Data.DataColumn("Frequency_InProgress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFrequency_InProgress);
+                this.columnFrequency_RepeatedEvery = new global::System.Data.DataColumn("Frequency_RepeatedEvery", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFrequency_RepeatedEvery);
+                this.columnDayOfTheWeek = new global::System.Data.DataColumn("DayOfTheWeek", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDayOfTheWeek);
+                this.columnAOneTimeJob = new global::System.Data.DataColumn("AOneTimeJob", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAOneTimeJob);
+                this.columnAOneTimeJobValue = new global::System.Data.DataColumn("AOneTimeJobValue", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAOneTimeJobValue);
+                this.columnRunsEvery = new global::System.Data.DataColumn("RunsEvery", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRunsEvery);
+                this.columnStartsAt = new global::System.Data.DataColumn("StartsAt", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStartsAt);
+                this.columnEndsIn = new global::System.Data.DataColumn("EndsIn", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnEndsIn);
+                this.columnStartDate = new global::System.Data.DataColumn("StartDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStartDate);
+                this.columnEndDate = new global::System.Data.DataColumn("EndDate", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnEndDate);
+                this.columnEndDateValue = new global::System.Data.DataColumn("EndDateValue", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnEndDateValue);
+                this.columnDateNoPeriodic = new global::System.Data.DataColumn("DateNoPeriodic", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDateNoPeriodic);
+                this.columnTimeNoPeriodic = new global::System.Data.DataColumn("TimeNoPeriodic", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTimeNoPeriodic);
+                this.columnMustBeExecuted = new global::System.Data.DataColumn("MustBeExecuted", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMustBeExecuted);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId}, true));
                 this.columnId.AutoIncrement = true;
@@ -452,7 +665,17 @@ namespace ClientFileStorage {
                 this.columnIdUser.MaxLength = 2147483647;
                 this.columnFileName.AllowDBNull = false;
                 this.columnFileName.MaxLength = 2147483647;
-                this.columnTime.AllowDBNull = false;
+                this.columnIsPeriodic.AllowDBNull = false;
+                this.columnFrequency_InProgress.MaxLength = 2147483647;
+                this.columnDayOfTheWeek.MaxLength = 2147483647;
+                this.columnAOneTimeJobValue.MaxLength = 2147483647;
+                this.columnStartsAt.MaxLength = 2147483647;
+                this.columnEndsIn.MaxLength = 2147483647;
+                this.columnStartDate.MaxLength = 2147483647;
+                this.columnEndDateValue.MaxLength = 2147483647;
+                this.columnDateNoPeriodic.MaxLength = 2147483647;
+                this.columnTimeNoPeriodic.MaxLength = 2147483647;
+                this.columnMustBeExecuted.MaxLength = 2147483647;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -628,13 +851,405 @@ namespace ClientFileStorage {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public System.DateTime Time {
+            public bool IsPeriodic {
                 get {
-                    return ((global::System.DateTime)(this[this.tableTask.TimeColumn]));
+                    return ((bool)(this[this.tableTask.IsPeriodicColumn]));
                 }
                 set {
-                    this[this.tableTask.TimeColumn] = value;
+                    this[this.tableTask.IsPeriodicColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Frequency_InProgress {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.Frequency_InProgressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Frequency_InProgress\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.Frequency_InProgressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int Frequency_RepeatedEvery {
+                get {
+                    try {
+                        return ((int)(this[this.tableTask.Frequency_RepeatedEveryColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Frequency_RepeatedEvery\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.Frequency_RepeatedEveryColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string DayOfTheWeek {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.DayOfTheWeekColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'DayOfTheWeek\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.DayOfTheWeekColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool AOneTimeJob {
+                get {
+                    try {
+                        return ((bool)(this[this.tableTask.AOneTimeJobColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'AOneTimeJob\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.AOneTimeJobColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string AOneTimeJobValue {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.AOneTimeJobValueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'AOneTimeJobValue\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.AOneTimeJobValueColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int RunsEvery {
+                get {
+                    try {
+                        return ((int)(this[this.tableTask.RunsEveryColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'RunsEvery\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.RunsEveryColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string StartsAt {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.StartsAtColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'StartsAt\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.StartsAtColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string EndsIn {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.EndsInColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'EndsIn\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.EndsInColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string StartDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.StartDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'StartDate\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.StartDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool EndDate {
+                get {
+                    try {
+                        return ((bool)(this[this.tableTask.EndDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'EndDate\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.EndDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string EndDateValue {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.EndDateValueColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'EndDateValue\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.EndDateValueColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string DateNoPeriodic {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.DateNoPeriodicColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'DateNoPeriodic\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.DateNoPeriodicColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string TimeNoPeriodic {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.TimeNoPeriodicColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'TimeNoPeriodic\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.TimeNoPeriodicColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string MustBeExecuted {
+                get {
+                    try {
+                        return ((string)(this[this.tableTask.MustBeExecutedColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'MustBeExecuted\' в таблице \'Task\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTask.MustBeExecutedColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsFrequency_InProgressNull() {
+                return this.IsNull(this.tableTask.Frequency_InProgressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetFrequency_InProgressNull() {
+                this[this.tableTask.Frequency_InProgressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsFrequency_RepeatedEveryNull() {
+                return this.IsNull(this.tableTask.Frequency_RepeatedEveryColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetFrequency_RepeatedEveryNull() {
+                this[this.tableTask.Frequency_RepeatedEveryColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDayOfTheWeekNull() {
+                return this.IsNull(this.tableTask.DayOfTheWeekColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDayOfTheWeekNull() {
+                this[this.tableTask.DayOfTheWeekColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsAOneTimeJobNull() {
+                return this.IsNull(this.tableTask.AOneTimeJobColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetAOneTimeJobNull() {
+                this[this.tableTask.AOneTimeJobColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsAOneTimeJobValueNull() {
+                return this.IsNull(this.tableTask.AOneTimeJobValueColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetAOneTimeJobValueNull() {
+                this[this.tableTask.AOneTimeJobValueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsRunsEveryNull() {
+                return this.IsNull(this.tableTask.RunsEveryColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetRunsEveryNull() {
+                this[this.tableTask.RunsEveryColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsStartsAtNull() {
+                return this.IsNull(this.tableTask.StartsAtColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetStartsAtNull() {
+                this[this.tableTask.StartsAtColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsEndsInNull() {
+                return this.IsNull(this.tableTask.EndsInColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetEndsInNull() {
+                this[this.tableTask.EndsInColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsStartDateNull() {
+                return this.IsNull(this.tableTask.StartDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetStartDateNull() {
+                this[this.tableTask.StartDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsEndDateNull() {
+                return this.IsNull(this.tableTask.EndDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetEndDateNull() {
+                this[this.tableTask.EndDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsEndDateValueNull() {
+                return this.IsNull(this.tableTask.EndDateValueColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetEndDateValueNull() {
+                this[this.tableTask.EndDateValueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDateNoPeriodicNull() {
+                return this.IsNull(this.tableTask.DateNoPeriodicColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDateNoPeriodicNull() {
+                this[this.tableTask.DateNoPeriodicColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTimeNoPeriodicNull() {
+                return this.IsNull(this.tableTask.TimeNoPeriodicColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTimeNoPeriodicNull() {
+                this[this.tableTask.TimeNoPeriodicColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsMustBeExecutedNull() {
+                return this.IsNull(this.tableTask.MustBeExecutedColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetMustBeExecutedNull() {
+                this[this.tableTask.MustBeExecutedColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -800,37 +1415,91 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("Id", "Id");
             tableMapping.ColumnMappings.Add("IdUser", "IdUser");
             tableMapping.ColumnMappings.Add("FileName", "FileName");
-            tableMapping.ColumnMappings.Add("Time", "Time");
+            tableMapping.ColumnMappings.Add("IsPeriodic", "IsPeriodic");
+            tableMapping.ColumnMappings.Add("Frequency_InProgress", "Frequency_InProgress");
+            tableMapping.ColumnMappings.Add("Frequency_RepeatedEvery", "Frequency_RepeatedEvery");
+            tableMapping.ColumnMappings.Add("DayOfTheWeek", "DayOfTheWeek");
+            tableMapping.ColumnMappings.Add("AOneTimeJob", "AOneTimeJob");
+            tableMapping.ColumnMappings.Add("AOneTimeJobValue", "AOneTimeJobValue");
+            tableMapping.ColumnMappings.Add("RunsEvery", "RunsEvery");
+            tableMapping.ColumnMappings.Add("StartsAt", "StartsAt");
+            tableMapping.ColumnMappings.Add("EndsIn", "EndsIn");
+            tableMapping.ColumnMappings.Add("StartDate", "StartDate");
+            tableMapping.ColumnMappings.Add("EndDate", "EndDate");
+            tableMapping.ColumnMappings.Add("EndDateValue", "EndDateValue");
+            tableMapping.ColumnMappings.Add("DateNoPeriodic", "DateNoPeriodic");
+            tableMapping.ColumnMappings.Add("TimeNoPeriodic", "TimeNoPeriodic");
+            tableMapping.ColumnMappings.Add("MustBeExecuted", "MustBeExecuted");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Task] WHERE (([Id] = @Original_Id) AND ([Time] = @Original_Tim" +
-                "e))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Task] WHERE (([Id] = @Original_Id) AND ([IsPeriodic] = @Original_IsPeriodic) AND ((@IsNull_Frequency_RepeatedEvery = 1 AND [Frequency_RepeatedEvery] IS NULL) OR ([Frequency_RepeatedEvery] = @Original_Frequency_RepeatedEvery)) AND ((@IsNull_AOneTimeJob = 1 AND [AOneTimeJob] IS NULL) OR ([AOneTimeJob] = @Original_AOneTimeJob)) AND ((@IsNull_RunsEvery = 1 AND [RunsEvery] IS NULL) OR ([RunsEvery] = @Original_RunsEvery)) AND ((@IsNull_EndDate = 1 AND [EndDate] IS NULL) OR ([EndDate] = @Original_EndDate)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Time", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Time", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IsPeriodic", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IsPeriodic", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AOneTimeJob", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AOneTimeJob", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_EndDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_EndDate", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Task] ([Id], [IdUser], [FileName], [Time]) VALUES (@Id, @IdUse" +
-                "r, @FileName, @Time);\r\nSELECT Id, IdUser, FileName, Time FROM Task WHERE (Id = @" +
-                "Id)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Task] ([IdUser], [FileName], [IsPeriodic], [Frequency_InProgress], [Frequency_RepeatedEvery], [DayOfTheWeek], [AOneTimeJob], [AOneTimeJobValue], [RunsEvery], [StartsAt], [EndsIn], [StartDate], [EndDate], [EndDateValue], [DateNoPeriodic], [TimeNoPeriodic], [MustBeExecuted]) VALUES (@IdUser, @FileName, @IsPeriodic, @Frequency_InProgress, @Frequency_RepeatedEvery, @DayOfTheWeek, @AOneTimeJob, @AOneTimeJobValue, @RunsEvery, @StartsAt, @EndsIn, @StartDate, @EndDate, @EndDateValue, @DateNoPeriodic, @TimeNoPeriodic, @MustBeExecuted);
+SELECT Id, IdUser, FileName, IsPeriodic, Frequency_InProgress, Frequency_RepeatedEvery, DayOfTheWeek, AOneTimeJob, AOneTimeJobValue, RunsEvery, StartsAt, EndsIn, StartDate, EndDate, EndDateValue, DateNoPeriodic, TimeNoPeriodic, MustBeExecuted FROM Task WHERE (Id = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdUser", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FileName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Time", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Time", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsPeriodic", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IsPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Frequency_InProgress", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_InProgress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DayOfTheWeek", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DayOfTheWeek", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AOneTimeJob", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AOneTimeJobValue", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJobValue", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StartsAt", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StartsAt", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndsIn", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndsIn", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StartDate", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StartDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndDate", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndDateValue", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDateValue", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateNoPeriodic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateNoPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TimeNoPeriodic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TimeNoPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MustBeExecuted", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MustBeExecuted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[Task] SET [Id] = @Id, [IdUser] = @IdUser, [FileName] = @FileName, [" +
-                "Time] = @Time WHERE (([Id] = @Original_Id) AND ([Time] = @Original_Time));\r\nSELE" +
-                "CT Id, IdUser, FileName, Time FROM Task WHERE (Id = @Id)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Task] SET [IdUser] = @IdUser, [FileName] = @FileName, [IsPeriodic] = @IsPeriodic, [Frequency_InProgress] = @Frequency_InProgress, [Frequency_RepeatedEvery] = @Frequency_RepeatedEvery, [DayOfTheWeek] = @DayOfTheWeek, [AOneTimeJob] = @AOneTimeJob, [AOneTimeJobValue] = @AOneTimeJobValue, [RunsEvery] = @RunsEvery, [StartsAt] = @StartsAt, [EndsIn] = @EndsIn, [StartDate] = @StartDate, [EndDate] = @EndDate, [EndDateValue] = @EndDateValue, [DateNoPeriodic] = @DateNoPeriodic, [TimeNoPeriodic] = @TimeNoPeriodic, [MustBeExecuted] = @MustBeExecuted WHERE (([Id] = @Original_Id) AND ([IsPeriodic] = @Original_IsPeriodic) AND ((@IsNull_Frequency_RepeatedEvery = 1 AND [Frequency_RepeatedEvery] IS NULL) OR ([Frequency_RepeatedEvery] = @Original_Frequency_RepeatedEvery)) AND ((@IsNull_AOneTimeJob = 1 AND [AOneTimeJob] IS NULL) OR ([AOneTimeJob] = @Original_AOneTimeJob)) AND ((@IsNull_RunsEvery = 1 AND [RunsEvery] IS NULL) OR ([RunsEvery] = @Original_RunsEvery)) AND ((@IsNull_EndDate = 1 AND [EndDate] IS NULL) OR ([EndDate] = @Original_EndDate)));
+SELECT Id, IdUser, FileName, IsPeriodic, Frequency_InProgress, Frequency_RepeatedEvery, DayOfTheWeek, AOneTimeJob, AOneTimeJobValue, RunsEvery, StartsAt, EndsIn, StartDate, EndDate, EndDateValue, DateNoPeriodic, TimeNoPeriodic, MustBeExecuted FROM Task WHERE (Id = @Id)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdUser", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileName", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FileName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Time", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Time", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsPeriodic", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IsPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Frequency_InProgress", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_InProgress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DayOfTheWeek", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DayOfTheWeek", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AOneTimeJob", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AOneTimeJobValue", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJobValue", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StartsAt", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StartsAt", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndsIn", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndsIn", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StartDate", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StartDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndDate", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@EndDateValue", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDateValue", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateNoPeriodic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateNoPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TimeNoPeriodic", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TimeNoPeriodic", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MustBeExecuted", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MustBeExecuted", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Time", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Time", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IsPeriodic", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IsPeriodic", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Frequency_RepeatedEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Frequency_RepeatedEvery", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AOneTimeJob", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AOneTimeJob", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AOneTimeJob", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_RunsEvery", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "RunsEvery", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_EndDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_EndDate", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "EndDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "Id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -846,7 +1515,9 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT Id, IdUser, FileName, Time FROM dbo.Task";
+            this._commandCollection[0].CommandText = @"SELECT        Id, IdUser, FileName, IsPeriodic, Frequency_InProgress, Frequency_RepeatedEvery, DayOfTheWeek, AOneTimeJob, AOneTimeJobValue, RunsEvery, StartsAt, EndsIn, StartDate, EndDate, EndDateValue, DateNoPeriodic, 
+                         TimeNoPeriodic, MustBeExecuted
+FROM            Task";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -907,9 +1578,41 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_Id, System.DateTime Original_Time) {
+        public virtual int Delete(int Original_Id, bool Original_IsPeriodic, global::System.Nullable<int> Original_Frequency_RepeatedEvery, global::System.Nullable<bool> Original_AOneTimeJob, global::System.Nullable<int> Original_RunsEvery, global::System.Nullable<bool> Original_EndDate) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_Id));
-            this.Adapter.DeleteCommand.Parameters[1].Value = ((System.DateTime)(Original_Time));
+            this.Adapter.DeleteCommand.Parameters[1].Value = ((bool)(Original_IsPeriodic));
+            if ((Original_Frequency_RepeatedEvery.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[2].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((int)(Original_Frequency_RepeatedEvery.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[2].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((Original_AOneTimeJob.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[5].Value = ((bool)(Original_AOneTimeJob.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            if ((Original_RunsEvery.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[7].Value = ((int)(Original_RunsEvery.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            if ((Original_EndDate.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((bool)(Original_EndDate.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -930,21 +1633,121 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(int Id, string IdUser, string FileName, System.DateTime Time) {
-            this.Adapter.InsertCommand.Parameters[0].Value = ((int)(Id));
+        public virtual int Insert(
+                    string IdUser, 
+                    string FileName, 
+                    bool IsPeriodic, 
+                    string Frequency_InProgress, 
+                    global::System.Nullable<int> Frequency_RepeatedEvery, 
+                    string DayOfTheWeek, 
+                    global::System.Nullable<bool> AOneTimeJob, 
+                    string AOneTimeJobValue, 
+                    global::System.Nullable<int> RunsEvery, 
+                    string StartsAt, 
+                    string EndsIn, 
+                    string StartDate, 
+                    global::System.Nullable<bool> EndDate, 
+                    string EndDateValue, 
+                    string DateNoPeriodic, 
+                    string TimeNoPeriodic, 
+                    string MustBeExecuted) {
             if ((IdUser == null)) {
                 throw new global::System.ArgumentNullException("IdUser");
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(IdUser));
+                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(IdUser));
             }
             if ((FileName == null)) {
                 throw new global::System.ArgumentNullException("FileName");
             }
             else {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(FileName));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(FileName));
             }
-            this.Adapter.InsertCommand.Parameters[3].Value = ((System.DateTime)(Time));
+            this.Adapter.InsertCommand.Parameters[2].Value = ((bool)(IsPeriodic));
+            if ((Frequency_InProgress == null)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(Frequency_InProgress));
+            }
+            if ((Frequency_RepeatedEvery.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((int)(Frequency_RepeatedEvery.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            if ((DayOfTheWeek == null)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(DayOfTheWeek));
+            }
+            if ((AOneTimeJob.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[6].Value = ((bool)(AOneTimeJob.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            if ((AOneTimeJobValue == null)) {
+                this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[7].Value = ((string)(AOneTimeJobValue));
+            }
+            if ((RunsEvery.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[8].Value = ((int)(RunsEvery.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            if ((StartsAt == null)) {
+                this.Adapter.InsertCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[9].Value = ((string)(StartsAt));
+            }
+            if ((EndsIn == null)) {
+                this.Adapter.InsertCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[10].Value = ((string)(EndsIn));
+            }
+            if ((StartDate == null)) {
+                this.Adapter.InsertCommand.Parameters[11].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[11].Value = ((string)(StartDate));
+            }
+            if ((EndDate.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[12].Value = ((bool)(EndDate.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            if ((EndDateValue == null)) {
+                this.Adapter.InsertCommand.Parameters[13].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[13].Value = ((string)(EndDateValue));
+            }
+            if ((DateNoPeriodic == null)) {
+                this.Adapter.InsertCommand.Parameters[14].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[14].Value = ((string)(DateNoPeriodic));
+            }
+            if ((TimeNoPeriodic == null)) {
+                this.Adapter.InsertCommand.Parameters[15].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[15].Value = ((string)(TimeNoPeriodic));
+            }
+            if ((MustBeExecuted == null)) {
+                this.Adapter.InsertCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[16].Value = ((string)(MustBeExecuted));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -965,23 +1768,163 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(int Id, string IdUser, string FileName, System.DateTime Time, int Original_Id, System.DateTime Original_Time) {
-            this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(Id));
+        public virtual int Update(
+                    string IdUser, 
+                    string FileName, 
+                    bool IsPeriodic, 
+                    string Frequency_InProgress, 
+                    global::System.Nullable<int> Frequency_RepeatedEvery, 
+                    string DayOfTheWeek, 
+                    global::System.Nullable<bool> AOneTimeJob, 
+                    string AOneTimeJobValue, 
+                    global::System.Nullable<int> RunsEvery, 
+                    string StartsAt, 
+                    string EndsIn, 
+                    string StartDate, 
+                    global::System.Nullable<bool> EndDate, 
+                    string EndDateValue, 
+                    string DateNoPeriodic, 
+                    string TimeNoPeriodic, 
+                    string MustBeExecuted, 
+                    int Original_Id, 
+                    bool Original_IsPeriodic, 
+                    global::System.Nullable<int> Original_Frequency_RepeatedEvery, 
+                    global::System.Nullable<bool> Original_AOneTimeJob, 
+                    global::System.Nullable<int> Original_RunsEvery, 
+                    global::System.Nullable<bool> Original_EndDate, 
+                    int Id) {
             if ((IdUser == null)) {
                 throw new global::System.ArgumentNullException("IdUser");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(IdUser));
+                this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(IdUser));
             }
             if ((FileName == null)) {
                 throw new global::System.ArgumentNullException("FileName");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(FileName));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(FileName));
             }
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((System.DateTime)(Time));
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_Id));
-            this.Adapter.UpdateCommand.Parameters[5].Value = ((System.DateTime)(Original_Time));
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((bool)(IsPeriodic));
+            if ((Frequency_InProgress == null)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(Frequency_InProgress));
+            }
+            if ((Frequency_RepeatedEvery.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Frequency_RepeatedEvery.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            if ((DayOfTheWeek == null)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(DayOfTheWeek));
+            }
+            if ((AOneTimeJob.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((bool)(AOneTimeJob.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            if ((AOneTimeJobValue == null)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(AOneTimeJobValue));
+            }
+            if ((RunsEvery.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((int)(RunsEvery.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            if ((StartsAt == null)) {
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(StartsAt));
+            }
+            if ((EndsIn == null)) {
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(EndsIn));
+            }
+            if ((StartDate == null)) {
+                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(StartDate));
+            }
+            if ((EndDate.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((bool)(EndDate.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            if ((EndDateValue == null)) {
+                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(EndDateValue));
+            }
+            if ((DateNoPeriodic == null)) {
+                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((string)(DateNoPeriodic));
+            }
+            if ((TimeNoPeriodic == null)) {
+                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(TimeNoPeriodic));
+            }
+            if ((MustBeExecuted == null)) {
+                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((string)(MustBeExecuted));
+            }
+            this.Adapter.UpdateCommand.Parameters[17].Value = ((int)(Original_Id));
+            this.Adapter.UpdateCommand.Parameters[18].Value = ((bool)(Original_IsPeriodic));
+            if ((Original_Frequency_RepeatedEvery.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[20].Value = ((int)(Original_Frequency_RepeatedEvery.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[20].Value = global::System.DBNull.Value;
+            }
+            if ((Original_AOneTimeJob.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[21].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[22].Value = ((bool)(Original_AOneTimeJob.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[21].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[22].Value = global::System.DBNull.Value;
+            }
+            if ((Original_RunsEvery.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[23].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[24].Value = ((int)(Original_RunsEvery.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[23].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[24].Value = global::System.DBNull.Value;
+            }
+            if ((Original_EndDate.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[25].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[26].Value = ((bool)(Original_EndDate.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[25].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[26].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[27].Value = ((int)(Id));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1002,8 +1945,31 @@ namespace ClientFileStorage.ModelDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string IdUser, string FileName, System.DateTime Time, int Original_Id, System.DateTime Original_Time) {
-            return this.Update(Original_Id, IdUser, FileName, Time, Original_Id, Original_Time);
+        public virtual int Update(
+                    string IdUser, 
+                    string FileName, 
+                    bool IsPeriodic, 
+                    string Frequency_InProgress, 
+                    global::System.Nullable<int> Frequency_RepeatedEvery, 
+                    string DayOfTheWeek, 
+                    global::System.Nullable<bool> AOneTimeJob, 
+                    string AOneTimeJobValue, 
+                    global::System.Nullable<int> RunsEvery, 
+                    string StartsAt, 
+                    string EndsIn, 
+                    string StartDate, 
+                    global::System.Nullable<bool> EndDate, 
+                    string EndDateValue, 
+                    string DateNoPeriodic, 
+                    string TimeNoPeriodic, 
+                    string MustBeExecuted, 
+                    int Original_Id, 
+                    bool Original_IsPeriodic, 
+                    global::System.Nullable<int> Original_Frequency_RepeatedEvery, 
+                    global::System.Nullable<bool> Original_AOneTimeJob, 
+                    global::System.Nullable<int> Original_RunsEvery, 
+                    global::System.Nullable<bool> Original_EndDate) {
+            return this.Update(IdUser, FileName, IsPeriodic, Frequency_InProgress, Frequency_RepeatedEvery, DayOfTheWeek, AOneTimeJob, AOneTimeJobValue, RunsEvery, StartsAt, EndsIn, StartDate, EndDate, EndDateValue, DateNoPeriodic, TimeNoPeriodic, MustBeExecuted, Original_Id, Original_IsPeriodic, Original_Frequency_RepeatedEvery, Original_AOneTimeJob, Original_RunsEvery, Original_EndDate, Original_Id);
         }
     }
     

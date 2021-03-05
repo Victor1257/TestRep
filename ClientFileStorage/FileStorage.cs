@@ -40,7 +40,8 @@ namespace ClientFileStorage
             IdUser = IDUser;
             lvwColumnSorter = new ListViewColumnSorter();
             this.listView1.ListViewItemSorter = lvwColumnSorter;
-
+            tabPage1.Text = "Файлы";
+            tabPage2.Text = "Задачи";
         }
 
         public class Movie
@@ -98,11 +99,11 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[6, i] = linkCell;
-                }    
-                
+                    dataGridView1[18, i] = linkCell;
+                }
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -119,8 +120,9 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[6, i] = linkCell;
+                    dataGridView1[18, i] = linkCell;
                 }
+
             }
             catch (Exception ex)
             {
@@ -128,11 +130,13 @@ namespace ClientFileStorage
             }
         }
 
-            private async void Form2_Load(object sender, EventArgs e)
+        private async void Form2_Load(object sender, EventArgs e)
         {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "modelDataSet.Task". При необходимости она может быть перемещена или удалена.
+            this.taskTableAdapter.Fill(this.modelDataSet.Task);
 
-            //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True;"+ "MultipleActiveResultSets=True");
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Application.StartupPath + @"\Database1.mdf" + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Repositories\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True");
+            //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
             sqlConnection.Open();
             LoadData();
             listView1.View = View.Details;
@@ -151,7 +155,7 @@ namespace ClientFileStorage
                 return;
             }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
-            _connection.On<byte[], string, long,long,long>("doStuff", (s1, s2,s3,s4,s5) => DoStuff(s1, s2,s3,s4,s5));
+            _connection.On<byte[], string, long, long, long>("doStuff", (s1, s2, s3, s4, s5) => DoStuff(s1, s2, s3, s4, s5));
             _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
             _connection.On<string>("ReceiveAll", (s1) => OnSendAll(s1));
 
@@ -210,12 +214,12 @@ namespace ClientFileStorage
             // Perform the sort with these new sort options.
             this.listView1.Sort();
         }
-     
-       
 
-        private  void DoStuff(byte[] data, string name, long Position,long Lenght,long READBUFFER_SIZE)
+
+
+        private void DoStuff(byte[] data, string name, long Position, long Lenght, long READBUFFER_SIZE)
         {
-            
+
             try
             {
                 if (File.Exists("./Uploads/" + name))
@@ -237,7 +241,7 @@ namespace ClientFileStorage
                 progressBar1.Minimum = 0;
                 progressBar1.Maximum = (int)Lenght;
                 progressBar1.Value = (int)Position;
-                if (progressBar1.Value >= (int)Lenght-1048576)
+                if (progressBar1.Value >= (int)Lenght - 1048576)
                 {
                     progressBar1.Value = 0;
                     MessageBox.Show("Файл загружен!");
@@ -248,20 +252,6 @@ namespace ClientFileStorage
             {
                 MessageBox.Show(ex.Message);
             }
-
-
-
-            //try
-            //{
-            //    File.WriteAllBytes("./Uploads/" + name, data);
-            //    GC.Collect();
-            //    MessageBox.Show("Файл успешно заружен");
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
         }
 
         private static void DeleteFile(string name)
@@ -298,7 +288,7 @@ namespace ClientFileStorage
             textBox1.Text = price;
             try
             {
-                await _connection.InvokeAsync("GetMovie", price,IdUser);
+                await _connection.InvokeAsync("GetMovie", price, IdUser);
             }
             catch (Exception ex)
             {
@@ -317,8 +307,12 @@ namespace ClientFileStorage
             textBox1.Text = price;
             try
             {
-                await _connection.InvokeAsync("DeleteFile", price,IdUser);
-                получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(sender, e);
+                if (MessageBox.Show("Удалить файл?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                           == DialogResult.Yes)
+                {
+                    await _connection.InvokeAsync("DeleteFile", price, IdUser);
+                    получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(sender, e);
+                }
             }
             catch (Exception ex)
             {
@@ -366,19 +360,20 @@ namespace ClientFileStorage
                         {
                             byte[] FSBuffer = new byte[n];
                             FS.Read(FSBuffer, offset, (int)n);
-                            //await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n,IdUser);
+                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n, IdUser);
                         }
                         else
                         {
                             byte[] FSBuffer = new byte[READBUFFER_SIZE];
                             FS.Read(FSBuffer, offset, (int)READBUFFER_SIZE);
-                            //await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE,IdUser);
+                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE, IdUser);
                             n -= READBUFFER_SIZE;
                         }
                         Pos = FS.Position;
                         GC.Collect();
                     }
-                    //await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
+                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
+
                 }
             }
             catch (FileNotFoundException ex)
@@ -387,14 +382,11 @@ namespace ClientFileStorage
             }
 
         }
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
-        }
 
         private void создатьЗадачуToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form1 newForm = new Form1(Link, IdUser);
+            Task newForm = new Task(Link, IdUser);
             newForm.SetCP(this);
             newForm.Show();
         }
@@ -404,25 +396,39 @@ namespace ClientFileStorage
             ReloadData();
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private async void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
-                if (e.ColumnIndex==6)
+                if (e.ColumnIndex == 18)
                 {
-                    string task = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[18].Value.ToString();
                     if (task == "Delete")
                     {
-                        if (MessageBox.Show("Удалить задачу?","Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        if (MessageBox.Show("Удалить задачу?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                             == DialogResult.Yes)
                         {
+                            string[] stringTask = new string[18];
+                            for (int i = 0; i < 18; i++)
+                            {
+                                if (i == 2)
+                                {
+                                    stringTask[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() + dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString().Replace(":", "-");
+                                }
+                                else
+                                stringTask[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString();
+                            }
+                            //MessageBox.Show("BEFORE");
+                            //await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
+                            //MessageBox.Show("AFTER");
                             int rowIndex = e.RowIndex;
                             dataGridView1.Rows.RemoveAt(rowIndex);
                             dataSet.Tables["Task"].Rows[rowIndex].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
+                            
                         }
                     }
-                }    
+                }
             }
             catch (Exception ex)
             {
@@ -432,106 +438,566 @@ namespace ClientFileStorage
 
         private async void timer1_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataGridView1[4, i].Value));
-
-                //MessageBox.Show( Convert.ToString(isPeriodic) );
-
-                if (isPeriodic)
-                {
-                    await Task.Run(() => MakeTask(true));
-                }
-                else
-                {
-                    await Task.Run(() => MakeTask(false));
-                }
-            }
+            await System.Threading.Tasks.Task.Run(() => MakeTask());
         }
 
-        /*private async void MakeTaskNoPeriod()
+        private async void MakeTask()
         {
-            var Time = DateTime.Now;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            try
             {
+                var Time = DateTime.Now;
 
-                if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 0)
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
-                    string path = (string)dataGridView1[2, i].Value;
-                    string dirName = new DirectoryInfo(path).Name;
-                    string time = get_formatted_time();
-                    string archivePath = "./ToSend/";
-                    string archivename = dirName + time + ".zip";
 
-                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
-                    string destinationpath = archivePath + archivename;
-                    ZipFile.CreateFromDirectory(path, destinationpath);
-                    if (System.IO.File.Exists(destinationpath))
-                    { MessageBox.Show("Архив успешно создан"); }
-                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
-                   await Task.Run(()=> загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                    bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataGridView1[3, i].Value));
+/*                    var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value)*/;
 
-                    dataSet.Tables["Task"].Rows[i].Delete();
-                    sqlDataAdapter.Update(dataSet, "Task");
-                    ReloadData();
-                }
-            }
-        }*/
-
-        private async void MakeTask(bool isPeriodic)
-        {
-            var Time = DateTime.Now;
-            
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value);
-                //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1) && Convert.ToInt32(dataGridView1[4, i].Value) == 1)
-                if (Convert.ToDateTime(dataGridView1[3, i].Value)/*.AddMinutes( Convert.ToInt32( dataGridView1[5, i].Value ) )*/ <= Time)
-                {
-                    string path = (string)dataGridView1[2, i].Value;
-                    string dirName = new DirectoryInfo(path).Name;
-                    string time = get_formatted_time();
-                    string archivePath = "./ToSend/";
-                    string archivename = dirName + time + ".zip";
-
-                    //string destinationpath = @"./filesfolder/archive " + time + ".zip";
-                    string destinationpath = archivePath + archivename;
-                    ZipFile.CreateFromDirectory(path, destinationpath);
-                    if (System.IO.File.Exists(destinationpath))
-                    { MessageBox.Show("Архив успешно создан"); }
-                    //ZipFile.CreateFromDirectory(path, archivePath + dirName + ".zip");
-                    await Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-
-                    if (isPeriodic)
+                    if (!isPeriodic)
+                    {
+                        if (Convert.ToDateTime(dataGridView1[15, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[16, i].Value).TimeOfDay.TotalMinutes>= Time.TimeOfDay.TotalMinutes && Convert.ToDateTime(dataGridView1[16, i].Value).TimeOfDay.TotalMinutes <= Time.AddMinutes(1).TimeOfDay.TotalMinutes)
                         {
-                            sqlDataAdapter.Update(dataSet, "Task");
-                        //var Time343 = Time2;
-                            //MessageBox.Show("*Time2 " + Convert.ToString(Time2) );
-                            Time2 = Time2.AddMinutes( Convert.ToDouble (dataGridView1[5, i].Value) );
-                            //MessageBox.Show(Convert.ToString(Time343) + "\n" + Convert.ToString(Time2) );
-                            SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
-                            command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
-                            command.Parameters.AddWithValue("LastUploadDate", Time2);
-                            await command.ExecuteNonQueryAsync();
-                        }
-                    else if (!isPeriodic)
-                        {
+                            string path = (string)dataGridView1[2, i].Value;
+                            string dirName = new DirectoryInfo(path).Name;
+                            string time = dataGridView1[16, i].Value.ToString();
+                            string archivePath = "./ToSend/";
+                            string archivename = dirName + time.Replace(":", "-") + ".zip";
+                            string destinationpath = archivePath + archivename;
+                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                            await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
                             dataSet.Tables["Task"].Rows[i].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
                             ReloadData();
                         }
+                    }
+
+                    if (isPeriodic)
+                    {
+                        if (Time.DayOfWeek == DayOfWeek.Monday)
+                        {
+                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Понедельник;"))
+                            {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                //dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataGridView1.Rows[i].Cells["MustBeExecuted"].Value);
+                                                //sqlDataAdapter.Update(dataSet,"Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = dataGridView1.Rows[i].Cells["MustBeExecuted"].Value;
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                        if (Time.DayOfWeek == DayOfWeek.Tuesday)
+                            {
+                                if (Convert.ToString(dataGridView1[6, i].Value).Contains("Вторник;"))
+                                {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
+                                        {
+                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                        }
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                sqlDataAdapter.Update(dataSet, "Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
+                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                        if (Time.DayOfWeek == DayOfWeek.Wednesday)
+                                {
+                                    if (Convert.ToString(dataGridView1[6, i].Value).Contains("Среда;"))
+                                    {
+                                        bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                        if (AOneTimeJob)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
+                                            {
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+                                    }
+                                        }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60);
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                                }
+                        if (Time.DayOfWeek == DayOfWeek.Thursday)
+                        {
+                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Четверг;"))
+                            {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
+                                        {
+                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                        }
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                sqlDataAdapter.Update(dataSet, "Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
+                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                        if (Time.DayOfWeek == DayOfWeek.Friday)
+                        {
+                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Пятница;"))
+                            {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
+                                        {
+                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                        }
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay )
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
+                                            {
+                                                dataGridView1[17, i].Value =Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                sqlDataAdapter.Update(dataSet, "Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
+                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                        if (Time.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Суббота;"))
+                            {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                        
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            ReloadData();
+                                        }
+                                        
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        //dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        //sqlDataAdapter.Update(dataSet, "Task");
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
+                                    {
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date==Time.Date)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                sqlDataAdapter.Update(dataSet, "Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
+                                        //dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60); 
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                        if (Time.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Воскресенье;"))
+                            {
+                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
+                                if (AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
+                                    {
+                                        string path = (string)dataGridView1[2, i].Value;
+                                        string dirName = new DirectoryInfo(path).Name;
+                                        string time = DateTime.Now.ToString();
+                                        string archivePath = "./ToSend/";
+                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                        string destinationpath = archivePath + archivename;
+                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+
+                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i].Delete();
+                                            sqlDataAdapter.Update(dataSet,"Task");
+                                            ReloadData();
+                                        }
+
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                                if (!AOneTimeJob)
+                                {
+                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
+                                    {  
+                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
+                                        {
+                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
+                                            {
+                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
+                                                dataSet.Tables["Task"].Rows[i][17] = dataGridView1[17, i].Value;
+                                                sqlDataAdapter.Update(dataSet, "Task");
+                                                string path = (string)dataGridView1[2, i].Value;
+                                                string dirName = new DirectoryInfo(path).Name;
+                                                string time = DateTime.Now.ToString();
+                                                string archivePath = "./ToSend/";
+                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
+                                                string destinationpath = archivePath + archivename;
+                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i].Delete();
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    ReloadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
+                                    {
+                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = dataGridView1[17, i].Value;
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1))
+                    //{
+                    //        string path = (string)dataGridView1[2, i].Value;
+                    //        string dirName = new DirectoryInfo(path).Name;
+                    //        string time = dataGridView1[3, i].Value.ToString();
+                    //        string archivePath = "./ToSend/";
+                    //        string archivename = dirName +time.Replace(":","-")+ ".zip";
+                    //        string destinationpath = archivePath + archivename;
+                    //        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal,true);
+                    //        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                    //    if (isPeriodic)
+                    //    {
+                    //        sqlDataAdapter.Update(dataSet, "Task");
+                    //        Time2 = Time2.AddMinutes(Convert.ToDouble(dataGridView1[5, i].Value));
+                    //        SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
+                    //        command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
+                    //        command.Parameters.AddWithValue("LastUploadDate", Time2);
+                    //        await command.ExecuteNonQueryAsync();
+                    //        ReloadData();
+                    //        string[] stringTask = new string[6];
+                    //        for (int j = 0; j < 6; j++)
+                    //        {
+                    //            if (j==2)
+                    //            {
+                    //                stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString() + dataGridView1[3, i].Value.ToString().Replace(":","-") ;
+                    //            }
+                    //            else
+                    //            stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString();
+                    //        }
+                    //       await WriteTaskToServer(stringTask);
+                    //    }
+                    //    else if (!isPeriodic)
+                    //    {
+                    //        string[] stringTask = new string[6];
+                    //        for (int j = 0; j < 6; j++)
+                    //        {
+                    //            stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString();
+                    //        }
+                    //        await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
+                    //        dataSet.Tables["Task"].Rows[i].Delete();
+                    //        sqlDataAdapter.Update(dataSet, "Task");
+                    //        ReloadData();
+                    //    }
+                    //}
+
                 }
-            
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-            private string get_formatted_time()
+        private string get_formatted_time()
         {
             return DateTime.Now.Day.ToString() + "d-"
                 + DateTime.Now.Month.ToString() + "m-"
                 + DateTime.Now.Year.ToString() + "y "
                 + DateTime.Now.Hour.ToString() + "h-"
-                + DateTime.Now.Minute.ToString() + "m-"
-                + DateTime.Now.Second.ToString() + "s";
+                + DateTime.Now.Minute.ToString() + "m";
+
         }
 
         private void Zip(string directoryPath)
@@ -540,7 +1006,26 @@ namespace ClientFileStorage
             string archivePath = "./ToSend/";
 
             // вызов метода, который заархивирует указанную папку
-            ZipFile.CreateFromDirectory(directoryPath, archivePath+directoryPath.FirstOrDefault());
+            ZipFile.CreateFromDirectory(directoryPath, archivePath + directoryPath.FirstOrDefault());
+        }
+
+        public async
+        System.Threading.Tasks.Task
+        WriteTaskToServer(string[] Data)
+        {
+            await _connection.InvokeAsync("WriteTaskToDataBase", Data, IdUser);
+        }
+
+       
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FileStorage_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
