@@ -316,7 +316,7 @@
             this.radioButton5.Size = new System.Drawing.Size(107, 17);
             this.radioButton5.TabIndex = 19;
             this.radioButton5.TabStop = true;
-            this.radioButton5.Text = "Дата онончания";
+            this.radioButton5.Text = "Дата окончания";
             this.radioButton5.UseVisualStyleBackColor = true;
             this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
             // 

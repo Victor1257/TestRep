@@ -64,6 +64,11 @@ namespace ClientFileStorage
                 mysqlcommand();
             }
 
+            groupBox1.Enabled = false;
+            groupBox2.Enabled = false;
+            groupBox3.Enabled = false;
+            groupBox4.Enabled = false;
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -139,25 +144,32 @@ namespace ClientFileStorage
                 {
                     if (comboBox1.SelectedIndex<0)
                     {
-                        MessageBox.Show(comboBox1.SelectedIndex.ToString());
+                        //MessageBox.Show(comboBox1.SelectedIndex.ToString());
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не выбрана частота выполнения");
+                        ok = false;
                     }
-                    
-                    if (radioButton1.Checked)
+
+                    if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked
+                        && !checkBox5.Checked && !checkBox6.Checked && !checkBox7.Checked)
                     {
-                        
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не выбран ни один день недели");
+                        ok = false;
                     }
-                    else
+
+                    if (!(radioButton1.Checked || radioButton2.Checked))
                     {
-                        
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не выбран переключатель периодичности дневного копирования");
+                        ok = false;
                     }
-                    
-                    if (radioButton5.Checked)
+
+                    if (!(radioButton5.Checked || radioButton6.Checked))
                     {
-                        
-                    }
-                    else
-                    {
-                        
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не выбран переключатель даты окончания");
+                        ok = false;
                     }
                 }
                 else
