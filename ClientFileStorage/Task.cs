@@ -93,23 +93,84 @@ namespace ClientFileStorage
             textBox1.Text = FileNamePath;
         }
 
+        private string addErrorLine(int number, string errorString)
+        {
+            string temp = "";
+            string errorcountsymbols = ") ";
+            string endline = "\r\n";
+
+            temp += number + errorcountsymbols + errorString + endline;
+            return temp;
+        }
+
         private async void button3_Click(object sender, EventArgs e)
         {
-            string error = " задача не добавлена.";
+            string error = "";
+            int errorcount = 0;
+
+
             bool ok = true;
             if (textBox1.Text == "")
             {
-                MessageBox.Show("Не указан источник копирования (папка)" + error);
+                errorcount++;
+                error += addErrorLine(errorcount, "Не указан источник копирования (папка)");
                 ok = false;
+            }
+            else
+            {
+                if (!System.IO.File.Exists(textBox1.Text) && !System.IO.Directory.Exists(textBox1.Text))
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Файл или папка не существует");
+                    ok = false;
+                }
+
             }
                 
             if ( ! ( radioButton3.Checked || radioButton4.Checked) )
             {
-                MessageBox.Show("Не выбран переключатель периодичности копирования" + error);
+                errorcount++;
+                error += addErrorLine(errorcount, "Не выбран переключатель периодичности копирования");
                 ok = false;
             }
+            else
+            {
+                if (radioButton3.Checked)
+                {
+                    if (comboBox1.SelectedIndex<0)
+                    {
+                        MessageBox.Show(comboBox1.SelectedIndex.ToString());
+                    }
+                    
+                    if (radioButton1.Checked)
+                    {
+                        
+                    }
+                    else
+                    {
+                        
+                    }
+                    
+                    if (radioButton5.Checked)
+                    {
+                        
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    //MessageBox.Show("radiobutton4");
+                }
+            }
 
-            if (ok)
+            error += "Задача не добавлена.";
+
+            if (!ok)
+                MessageBox.Show(error, "Окно вывода ошибок");
+            else
             {//#okSTART
                 listBox1.Items.Clear();
                 if (label1.Visible)
@@ -117,30 +178,30 @@ namespace ClientFileStorage
                     label1.Visible = false;
                 }
 
-                    SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,IsPeriodic,Frequency_InProgress,Frequency_RepeatedEvery,DayOfTheWeek,AOneTimeJob,AOneTimeJobValue,RunsEvery,StartsAt,EndsIn,StartDate,EndDate,EndDateValue,DateNoPeriodic,TimeNoPeriodic,MustBeExecuted) VALUES (@IdUser,@FileName,@IsPeriodic,@Frequency_InProgress,@Frequency_RepeatedEvery,@DayOfTheWeek,@AOneTimeJob,@AOneTimeJobValue,@RunsEvery,@StartsAt,@EndsIn,@StartDate,@EndDate,@EndDateValue,@DateNoPeriodic,@TimeNoPeriodic,@MustBeExecuted)", sqlConnection);
-                    command1.Parameters.AddWithValue("IdUser", IDUSER);
-                    command1.Parameters.AddWithValue("FileName", textBox1.Text);
+                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,IsPeriodic,Frequency_InProgress,Frequency_RepeatedEvery,DayOfTheWeek,AOneTimeJob,AOneTimeJobValue,RunsEvery,StartsAt,EndsIn,StartDate,EndDate,EndDateValue,DateNoPeriodic,TimeNoPeriodic,MustBeExecuted) VALUES (@IdUser,@FileName,@IsPeriodic,@Frequency_InProgress,@Frequency_RepeatedEvery,@DayOfTheWeek,@AOneTimeJob,@AOneTimeJobValue,@RunsEvery,@StartsAt,@EndsIn,@StartDate,@EndDate,@EndDateValue,@DateNoPeriodic,@TimeNoPeriodic,@MustBeExecuted)", sqlConnection);
+                command1.Parameters.AddWithValue("IdUser", IDUSER);
+                command1.Parameters.AddWithValue("FileName", textBox1.Text);
 
-                    if (radioButton3.Checked)
-                    {
-                        command1.Parameters.AddWithValue("IsPeriodic", true);
-                        command1.Parameters.AddWithValue("Frequency_InProgress", comboBox1.SelectedItem.ToString());
-                        command1.Parameters.AddWithValue("Frequency_RepeatedEvery", n1);
-                        command1.Parameters.AddWithValue("DayOfTheWeek", s1);
-                        command1.Parameters.AddWithValue("DateNoPeriodic", "");
-                        command1.Parameters.AddWithValue("TimeNoPeriodic", "");
+                if (radioButton3.Checked)
+                {
+                    command1.Parameters.AddWithValue("IsPeriodic", true);
+                    command1.Parameters.AddWithValue("Frequency_InProgress", comboBox1.SelectedItem.ToString());
+                    command1.Parameters.AddWithValue("Frequency_RepeatedEvery", n1);
+                    command1.Parameters.AddWithValue("DayOfTheWeek", s1);
+                    command1.Parameters.AddWithValue("DateNoPeriodic", "");
+                    command1.Parameters.AddWithValue("TimeNoPeriodic", "");
                     if (radioButton1.Checked)
-                        {
-                            command1.Parameters.AddWithValue("AOneTimeJob", true);
-                            command1.Parameters.AddWithValue("AOneTimeJobValue", dateTimePicker2.Value);
-                            command1.Parameters.AddWithValue("RunsEvery", 0);
-                            command1.Parameters.AddWithValue("StartsAt", "");
-                            command1.Parameters.AddWithValue("EndsIn", "");
-                            command1.Parameters.AddWithValue("MustBeExecuted", dateTimePicker1.Value);
+                    {
+                        command1.Parameters.AddWithValue("AOneTimeJob", true);
+                        command1.Parameters.AddWithValue("AOneTimeJobValue", dateTimePicker2.Value);
+                        command1.Parameters.AddWithValue("RunsEvery", 0);
+                        command1.Parameters.AddWithValue("StartsAt", "");
+                        command1.Parameters.AddWithValue("EndsIn", "");
+                        command1.Parameters.AddWithValue("MustBeExecuted", dateTimePicker1.Value);
                     }
-                        else
-                        {
-                        string s2 =Convert.ToDateTime(dateTimePicker3.Value).Date.ToString();
+                    else
+                    {
+                        string s2 = Convert.ToDateTime(dateTimePicker3.Value).Date.ToString();
                         string s3 = Convert.ToDateTime(dateTimePicker3.Value).TimeOfDay.ToString();
                         s2 = s2.Replace(Convert.ToDateTime(dateTimePicker3.Value).Date.ToString(), Convert.ToDateTime(dateTimePicker1.Value).Date.ToString());
                         s2 = s2.Replace("0:00:00", s3);
@@ -151,7 +212,7 @@ namespace ClientFileStorage
                         command1.Parameters.AddWithValue("EndsIn", dateTimePicker4.Value);
                         command1.Parameters.AddWithValue("MustBeExecuted", s2);
                     }
-                        command1.Parameters.AddWithValue("StartDate", dateTimePicker1.Value);
+                    command1.Parameters.AddWithValue("StartDate", dateTimePicker1.Value);
                     if (radioButton5.Checked)
                     {
                         command1.Parameters.AddWithValue("EndDateValue", dateTimePicker7.Value);
@@ -163,13 +224,13 @@ namespace ClientFileStorage
                         command1.Parameters.AddWithValue("EndDateValue", "");
                     }
                 }
-                    else
-                    {
+                else
+                {
                     command1.Parameters.AddWithValue("IsPeriodic", false);
                     command1.Parameters.AddWithValue("DateNoPeriodic", dateTimePicker5.Value);
                     command1.Parameters.AddWithValue("TimeNoPeriodic", dateTimePicker6.Value);
                     command1.Parameters.AddWithValue("Frequency_InProgress", "");
-                    command1.Parameters.AddWithValue("Frequency_RepeatedEvery",0);
+                    command1.Parameters.AddWithValue("Frequency_RepeatedEvery", 0);
                     command1.Parameters.AddWithValue("DayOfTheWeek", "");
                     command1.Parameters.AddWithValue("AOneTimeJob", false);
                     command1.Parameters.AddWithValue("AOneTimeJobValue", "");
@@ -177,12 +238,12 @@ namespace ClientFileStorage
                     command1.Parameters.AddWithValue("StartsAt", "");
                     command1.Parameters.AddWithValue("EndsIn", "");
                     command1.Parameters.AddWithValue("StartDate", "");
-                    command1.Parameters.AddWithValue("EndDateValue","" );
+                    command1.Parameters.AddWithValue("EndDateValue", "");
                     command1.Parameters.AddWithValue("EndDate", false);
                     command1.Parameters.AddWithValue("MustBeExecuted", "");
 
                 }
-                 await command1.ExecuteNonQueryAsync();
+                await command1.ExecuteNonQueryAsync();
 
 
                 //}
