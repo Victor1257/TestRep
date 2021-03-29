@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
 
-
 namespace ClientFileStorage
 {
     
     public partial class Login : Form
     {
-        private HubConnection _connection;
+        public static HubConnection _connection;
         public string IDUSER;
         public string LINK;
         public Login()
@@ -41,6 +40,7 @@ namespace ClientFileStorage
                 _connection = new HubConnectionBuilder()
                     .WithUrl(addressTextBox.Text)
                     .Build();
+                _connection.ServerTimeout = TimeSpan.FromMinutes(60);
                 LINK = addressTextBox.Text;
             }
             catch (Exception ex)
@@ -149,6 +149,7 @@ namespace ClientFileStorage
                 Content = content;
             }
         }
+
 
     }
 }

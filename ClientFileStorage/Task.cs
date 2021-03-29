@@ -18,6 +18,8 @@ namespace ClientFileStorage
         public string IDUSER;
         public string s1;
         public int n1;
+        public List<string> arrProjectList;
+        public Dictionary<int, string> dataSource;
         SqlConnection sqlConnection;
         public FileStorage _cp;
         public void SetCP(FileStorage cp)
@@ -49,7 +51,10 @@ namespace ClientFileStorage
         private async void Form1_Load(object sender, EventArgs e)
         {
             string databasefilename = "Database1.mdf";
-            //строка для удобства отладки: чтобы если поменял в условии, то не надо было менять в else название БД
+            radioButton7.Checked = true;
+            radioButton9.Checked = false;
+            radioButton10.Checked = true;
+            radioButton9_CheckedChanged(sender,e);
             if (!System.IO.File.Exists(Application.StartupPath + @"\" + databasefilename))
             {
                 MessageBox.Show("Подключение невозможно");
@@ -57,17 +62,10 @@ namespace ClientFileStorage
             }
             else
             {
-                //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=False");
-                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Repositories\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True");
-                //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True;" + "MultipleActiveResultSets=True");
+               //  sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=False");
+               sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
                 await sqlConnection.OpenAsync();
-                mysqlcommand();
             }
-
-            groupBox1.Enabled = false;
-            groupBox2.Enabled = false;
-            groupBox3.Enabled = false;
-            groupBox4.Enabled = false;
 
         }
 
@@ -88,113 +86,49 @@ namespace ClientFileStorage
             {
                 sqlConnection.Close();
             }
-            _cp.ReloadData();
+         //   _cp.ReloadData();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DialogResult rslt = folderBrowserDialog1.ShowDialog();
-            var FileNamePath = folderBrowserDialog1.SelectedPath;
-            textBox1.Text = FileNamePath;
-        }
-
-        private string addErrorLine(int number, string errorString)
-        {
-            string temp = "";
-            string errorcountsymbols = ") ";
-            string endline = "\r\n";
-
-            temp += number + errorcountsymbols + errorString + endline;
-            return temp;
+            if (trackBar1.Value == 1)
+            {
+                DialogResult rslt = folderBrowserDialog1.ShowDialog();
+                var FileNamePath = folderBrowserDialog1.SelectedPath;
+                textBox1.Text = FileNamePath;
+            }
+            if (trackBar1.Value == 2)
+            {
+                DialogResult rslt = openFileDialog1.ShowDialog();
+                var FileNamePath = openFileDialog1.FileName;
+                textBox1.Text = FileNamePath;
+            }
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
-            string error = "";
-            int errorcount = 0;
-
-
-            bool ok = true;
-            if (textBox1.Text == "")
+            listBox1.Items.Clear();
+            int a = -1;
+            if (label1.Visible)
             {
-                errorcount++;
-                error += addErrorLine(errorcount, "Не указан источник копирования (папка)");
-                ok = false;
+                label1.Visible = false;
+            }
+
+
+
+            SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,IsPeriodic,Frequency_InProgress,Frequency_RepeatedEvery,DayOfTheWeek,AOneTimeJob,AOneTimeJobValue,RunsEvery,StartsAt,EndsIn,StartDate,EndDate,EndDateValue,DateNoPeriodic,TimeNoPeriodic,MustBeExecuted,IsFile) VALUES (@IdUser,@IsPeriodic,@Frequency_InProgress,@Frequency_RepeatedEvery,@DayOfTheWeek,@AOneTimeJob,@AOneTimeJobValue,@RunsEvery,@StartsAt,@EndsIn,@StartDate,@EndDate,@EndDateValue,@DateNoPeriodic,@TimeNoPeriodic,@MustBeExecuted,@IsFile)", sqlConnection);
+            command1.Parameters.AddWithValue("IdUser", IDUSER);
+
+            // command1.Parameters.AddWithValue("FileName", textBox1.Text);
+            if (radioButton7.Checked)
+            {
+                command1.Parameters.AddWithValue("IsFile", true);
             }
             else
             {
-                if (!System.IO.File.Exists(textBox1.Text) && !System.IO.Directory.Exists(textBox1.Text))
-                {
-                    errorcount++;
-                    error += addErrorLine(errorcount, "Файл или папка не существует");
-                    ok = false;
-                }
-
+                command1.Parameters.AddWithValue("IsFile", false);
             }
-                
-            if ( ! ( radioButton3.Checked || radioButton4.Checked) )
-            {
-                errorcount++;
-                error += addErrorLine(errorcount, "Не выбран переключатель периодичности копирования");
-                ok = false;
-            }
-            else
-            {
-                if (radioButton3.Checked)
-                {
-                    if (comboBox1.SelectedIndex<0)
-                    {
-                        //MessageBox.Show(comboBox1.SelectedIndex.ToString());
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбрана частота выполнения");
-                        ok = false;
-                    }
-
-                    if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked
-                        && !checkBox5.Checked && !checkBox6.Checked && !checkBox7.Checked)
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран ни один день недели");
-                        ok = false;
-                    }
-
-                    if (!(radioButton1.Checked || radioButton2.Checked))
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран переключатель периодичности дневного копирования");
-                        ok = false;
-                    }
-
-                    if (!(radioButton5.Checked || radioButton6.Checked))
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран переключатель даты окончания");
-                        ok = false;
-                    }
-                }
-                else
-                {
-                    //MessageBox.Show("radiobutton4");
-                }
-            }
-
-            error += "Задача не добавлена.";
-
-            if (!ok)
-                MessageBox.Show(error, "Окно вывода ошибок");
-            else
-            {//#okSTART
-                listBox1.Items.Clear();
-                if (label1.Visible)
-                {
-                    label1.Visible = false;
-                }
-
-                SqlCommand command1 = new SqlCommand("INSERT INTO [Task] (IdUser,FileName,IsPeriodic,Frequency_InProgress,Frequency_RepeatedEvery,DayOfTheWeek,AOneTimeJob,AOneTimeJobValue,RunsEvery,StartsAt,EndsIn,StartDate,EndDate,EndDateValue,DateNoPeriodic,TimeNoPeriodic,MustBeExecuted) VALUES (@IdUser,@FileName,@IsPeriodic,@Frequency_InProgress,@Frequency_RepeatedEvery,@DayOfTheWeek,@AOneTimeJob,@AOneTimeJobValue,@RunsEvery,@StartsAt,@EndsIn,@StartDate,@EndDate,@EndDateValue,@DateNoPeriodic,@TimeNoPeriodic,@MustBeExecuted)", sqlConnection);
-                command1.Parameters.AddWithValue("IdUser", IDUSER);
-                command1.Parameters.AddWithValue("FileName", textBox1.Text);
-
-                if (radioButton3.Checked)
+            if (radioButton3.Checked)
                 {
                     command1.Parameters.AddWithValue("IsPeriodic", true);
                     command1.Parameters.AddWithValue("Frequency_InProgress", comboBox1.SelectedItem.ToString());
@@ -204,12 +138,15 @@ namespace ClientFileStorage
                     command1.Parameters.AddWithValue("TimeNoPeriodic", "");
                     if (radioButton1.Checked)
                     {
-                        command1.Parameters.AddWithValue("AOneTimeJob", true);
+                    string s2 = Convert.ToDateTime(dateTimePicker1.Value).Date.ToString();
+                    string s3 = Convert.ToDateTime(dateTimePicker2.Value).TimeOfDay.ToString();
+                    s2 = s2.Replace("0:00:00", s3);
+                    command1.Parameters.AddWithValue("AOneTimeJob", true);
                         command1.Parameters.AddWithValue("AOneTimeJobValue", dateTimePicker2.Value);
                         command1.Parameters.AddWithValue("RunsEvery", 0);
                         command1.Parameters.AddWithValue("StartsAt", "");
                         command1.Parameters.AddWithValue("EndsIn", "");
-                        command1.Parameters.AddWithValue("MustBeExecuted", dateTimePicker1.Value);
+                        command1.Parameters.AddWithValue("MustBeExecuted", s2);
                     }
                     else
                     {
@@ -253,58 +190,107 @@ namespace ClientFileStorage
                     command1.Parameters.AddWithValue("EndDateValue", "");
                     command1.Parameters.AddWithValue("EndDate", false);
                     command1.Parameters.AddWithValue("MustBeExecuted", "");
-
                 }
                 await command1.ExecuteNonQueryAsync();
+                SqlDataReader sqlReader = null;
+            SqlCommand command3 = new SqlCommand("SELECT * FROM [Task]", sqlConnection);
+            sqlReader = await command3.ExecuteReaderAsync();
+            try
+            {
+                while (await sqlReader.ReadAsync())
+                {
+                    if (Convert.ToInt32(sqlReader["id"]) > a)
+                    {
+                        a = Convert.ToInt32(sqlReader["id"]);
+                    }
+                }
+            }
+            finally
+            {
+                sqlReader.Close();
+            }
+
+            if (radioButton7.Checked)
+            {
+                SqlCommand command2 = new SqlCommand("INSERT INTO [File] (IdFile,FileName) VALUES (@IdFile,@FileName)",sqlConnection);
+                command2.Parameters.AddWithValue("IdFile", a);
+                command2.Parameters.AddWithValue("FileName", textBox1.Text);
+                await command2.ExecuteNonQueryAsync();
+            }
+
+            if (radioButton8.Checked)
+            {
+                SqlCommand command2 = new SqlCommand("INSERT INTO [SYBD] (IdSYBD,The_Supplier,Adres_Server,Port_Server,Instance_Server,Login_SYBD,Password_SYBD,Way,Name_SYBD,Integrated_Security) VALUES (@IdSYBD,@The_Supplier,@Adres_Server,@Port_Server,@Instance_Server,@Login_SYBD,@Password_SYBD,@Way,@Name_SYBD,@Integrated_Security)", sqlConnection);
+                command2.Parameters.AddWithValue("IdSYBD", a);
+                command2.Parameters.AddWithValue("The_Supplier", comboBox2.Text);
+                command2.Parameters.AddWithValue("Adres_Server", comboBox3.Text);
+                command2.Parameters.AddWithValue("Port_Server", comboBox4.Text);
+                command2.Parameters.AddWithValue("Instance_Server", comboBox5.Text);
+                command2.Parameters.AddWithValue("Login_SYBD", comboBox6.Text);
+                command2.Parameters.AddWithValue("Password_SYBD", textBox2.Text);
+                command2.Parameters.AddWithValue("Way", comboBox7.Text);
+                command2.Parameters.AddWithValue("Name_SYBD", comboBox8.Text);
+                if (radioButton9.Checked)
+                {
+                    command2.Parameters.AddWithValue("Integrated_Security", true);
+                }
+                if (radioButton10.Checked)
+                {
+                    command2.Parameters.AddWithValue("Integrated_Security", false);
+                }
+
+                    await command2.ExecuteNonQueryAsync();
+            }
+             
 
 
-                //}
-                //    else if (radioButtonTrue.Checked)
-                //        command1.Parameters.AddWithValue("IsPeriodic", true);
-                //    if (radioButtonTrue.Checked)
-                //    {
-                //        if (comboBox1.SelectedIndex < 5)
-                //            command1.Parameters.AddWithValue("Period", periodicity[comboBox1.SelectedIndex]);
-                //        else command1.Parameters.AddWithValue("Period", Convert.ToInt32(textBox2.Text));
-                //    }
+            //}
+            //    else if (radioButtonTrue.Checked)
+            //        command1.Parameters.AddWithValue("IsPeriodic", true);
+            //    if (radioButtonTrue.Checked)
+            //    {
+            //        if (comboBox1.SelectedIndex < 5)
+            //            command1.Parameters.AddWithValue("Period", periodicity[comboBox1.SelectedIndex]);
+            //        else command1.Parameters.AddWithValue("Period", Convert.ToInt32(textBox2.Text));
+            //    }
 
-                //    else
-                //        command1.Parameters.AddWithValue("Period", 0);
-                //    await command1.ExecuteNonQueryAsync();
-                //}
-                //else
-                //{
-                //    label1.Visible = true;
-                //    label1.Text = "Данные не введены";
-                //}
-                mysqlcommand();
-            }//#okEND
-
-
+            //    else
+            //        command1.Parameters.AddWithValue("Period", 0);
+            //    await command1.ExecuteNonQueryAsync();
+            //}
+            //else
+            //{
+            //    label1.Visible = true;
+            //    label1.Text = "Данные не введены";
+            //}
+            mysqlcommand();
+            
         }
 
         private async void mysqlcommand()
         {
             SqlDataReader sqlReader = null;
+            SqlDataReader sqlReader2 = null;
             SqlCommand command = new SqlCommand("SELECT * FROM [Task]", sqlConnection);
+            SqlCommand command1 = new SqlCommand("SELECT * FROM [File]", sqlConnection);
             try
             {
-                string[] stringTask = new string[18];
+                string[] stringTask = new string[19];
                 sqlReader = await command.ExecuteReaderAsync();
                 while (await sqlReader.ReadAsync())
                 {
                     listBox1.Items.Add(
                         Convert.ToString(sqlReader["Id"]) + " " + Convert.ToString(sqlReader["IdUser"])
-                        + " " + Convert.ToString(sqlReader["FileName"]) + " "+
+                        + " " + Convert.ToString(sqlReader["IsFile"]) + " " +
                         Convert.ToString(sqlReader["IsPeriodic"]) + " " + Convert.ToString(sqlReader["Frequency_InProgress"]) + " " + Convert.ToString(sqlReader["Frequency_RepeatedEvery"]) + " " +
                         Convert.ToString(sqlReader["DayOfTheWeek"]) + " " + Convert.ToString(sqlReader["AOneTimeJob"]) + " " + Convert.ToString(sqlReader["AOneTimeJobValue"]) + " " +
                         Convert.ToString(sqlReader["RunsEvery"]) + " " + Convert.ToString(sqlReader["StartsAt"]) + " " + Convert.ToString(sqlReader["EndsIn"]) + " " +
                         Convert.ToString(sqlReader["StartDate"]) + " " + Convert.ToString(sqlReader["EndDate"]) + " " + Convert.ToString(sqlReader["EndDateValue"]) + " " +
-                        Convert.ToString(sqlReader["DateNoPeriodic"]) + " " + Convert.ToString(sqlReader["TimeNoPeriodic"]) + " " + Convert.ToString(sqlReader["MustBeExecuted"])
+                        Convert.ToString(sqlReader["DateNoPeriodic"]) + " " + Convert.ToString(sqlReader["TimeNoPeriodic"]) + " " + Convert.ToString(sqlReader["MustBeExecuted"]) + " " + Convert.ToString(sqlReader["GUID"])
                         );
                     stringTask[0] = Convert.ToString(sqlReader["Id"]);
                     stringTask[1] = Convert.ToString(sqlReader["IdUser"]);
-                    stringTask[2] = Convert.ToString(sqlReader["FileName"]);// + Convert.ToString(sqlReader["LastUploadDate"]).Replace(":", "-");
+                    stringTask[2] = Convert.ToString(sqlReader["IsFile"]);// + Convert.ToString(sqlReader["LastUploadDate"]).Replace(":", "-");
                     stringTask[3] = Convert.ToString(sqlReader["IsPeriodic"]);
                     stringTask[4] = Convert.ToString(sqlReader["Frequency_InProgress"]);
                     stringTask[5] = Convert.ToString(sqlReader["Frequency_RepeatedEvery"]);
@@ -320,11 +306,12 @@ namespace ClientFileStorage
                     stringTask[15] = Convert.ToString(sqlReader["DateNoPeriodic"]);
                     stringTask[16] = Convert.ToString(sqlReader["TimeNoPeriodic"]);
                     stringTask[17] = Convert.ToString(sqlReader["MustBeExecuted"]);
-                    //MessageBox.Show("BEFORE");
-                    //await _cp.WriteTaskToServer(stringTask);
-                    //MessageBox.Show("AFTER");
+                    stringTask[18] = Convert.ToString(sqlReader["GUID"]);
+
+                    await _cp.WriteTaskToServer(stringTask);
                 }
             }
+           
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString(), ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -340,7 +327,39 @@ namespace ClientFileStorage
                     sqlReader.Close();
                 }
             }
+            try
+            {
+                if (radioButton7.Checked)
+                {
+
+                    string[] stringTask2 = new string[2];
+                    sqlReader2 = await command1.ExecuteReaderAsync();
+                    while (await sqlReader2.ReadAsync())
+                    {
+                        stringTask2[0] = Convert.ToString(sqlReader2["IdFile"]);
+                        stringTask2[1] = Convert.ToString(sqlReader2["FileName"]);
+                    }
+                    await _cp.WriteFileToServer(stringTask2);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (sqlReader2 != null)
+                {
+                    sqlReader2.Close();
+                }
+            }
+            finally
+            {
+                if (sqlReader2 != null)
+                {
+                    sqlReader2.Close();
+                }
+            }
         }
+
+            
 
         //private string get_formatted_time()
         //{
@@ -417,7 +436,6 @@ namespace ClientFileStorage
             {
                 dateTimePicker2.Enabled = true;
                 numericUpDown1.Enabled = false;
-                textBox5.Enabled = false;
                 dateTimePicker3.Enabled = false;
                 dateTimePicker4.Enabled = false;
             }
@@ -426,7 +444,6 @@ namespace ClientFileStorage
             {
                 dateTimePicker2.Enabled = false;
                 numericUpDown1.Enabled = true;
-                textBox5.Enabled = true;
                 dateTimePicker3.Enabled = true;
                 dateTimePicker4.Enabled = true;
             }
@@ -546,6 +563,107 @@ namespace ClientFileStorage
                 n1 = (int)(numericUpDown2.Value * 43200);
             }
         }
+
+        private void radioButton7_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton7.Checked)
+            {
+                textBox1.Enabled = true;
+                button2.Enabled = true;
+                trackBar1.Enabled = true;
+                groupBox6.Enabled = false;
+                groupBox7.Enabled = false;
+                groupBox8.Enabled = false;
+                groupBox9.Enabled = false;
+                groupBox10.Enabled = false;
+                groupBox11.Enabled = false;
+                groupBox12.Enabled = false;
+                groupBox13.Enabled = false;
+
+
+            }
+        }
+
+        private void radioButton8_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton8.Checked)
+            {
+                radioButton10.Checked = true;
+                textBox1.Enabled = false;
+                button2.Enabled = false;
+                trackBar1.Enabled = false;
+                groupBox6.Enabled = true;
+                groupBox7.Enabled = true;
+                groupBox8.Enabled = true;
+                groupBox9.Enabled = true;
+                groupBox10.Enabled = true;
+                groupBox11.Enabled = true;
+                groupBox12.Enabled = true;
+                groupBox13.Enabled = true;
+            }
+        }
+
+        private void radioButton9_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox9.Enabled = false;
+            groupBox10.Enabled = false;
+        }
+
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox9.Enabled = true;
+            groupBox10.Enabled = true;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string con1;
+            if (comboBox4.Text == "")
+            {
+                if (radioButton9.Checked)
+                {
+                    con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; Integrated Security = True";
+                }
+                else
+                {
+                    con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
+                }
+            }
+            else
+            {
+                if (radioButton9.Checked)
+                {
+                    con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; Integrated Security = True";
+                }
+                else
+                {
+                    con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
+                }
+            }
+            SqlConnection sqlConnection1 = new SqlConnection(@con1);
+            sqlConnection1.Open();
+            Console.WriteLine(sqlConnection1.State.ToString());
+            if (sqlConnection1.State.ToString() == "Open")
+            {
+                if (comboBox4.Text == "")
+                {
+                    comboBox3.Items.Add(comboBox3.Text);
+                    comboBox5.Items.Add(comboBox5.Text);
+                }
+                else
+                    comboBox3.Items.Add(comboBox3.Text);
+                comboBox4.Items.Add(comboBox4.Text);
+            }
+            SqlCommand command2 = new SqlCommand("SELECT name  FROM sys.databases", sqlConnection1);
+            SqlDataReader reader = command2.ExecuteReader();
+            while (reader.Read())
+            {
+                comboBox8.Items.Add(reader[0]);
+            }
+
+        }
+
+
     }
-    }
+}
 

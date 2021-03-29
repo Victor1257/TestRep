@@ -23,14 +23,17 @@ namespace ClientFileStorage
     {
         public string Link;
         public string IdUser;
-        private HubConnection _connection;
+        public HubConnection _connection;
         private ListViewColumnSorter lvwColumnSorter;
         public ListViewItem listView;
         public string price;
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlBuilder = null;
-        private SqlDataAdapter sqlDataAdapter = null;
+        private SqlDataAdapter sqlDataAdapter = null, FileAdapter = null, SYBDAdapter = null;
         private DataSet dataSet = null;
+        private DataGridView detailsDataGridView = new DataGridView();
+        private BindingSource masterBindingSource = new BindingSource();
+        private BindingSource detailsBindingSource = new BindingSource();
 
         public FileStorage(string LINK, string IDUser)
         {
@@ -44,6 +47,10 @@ namespace ClientFileStorage
             tabPage2.Text = "Задачи";
         }
 
+        public DataGridView GetDataGridView()
+        {
+            return dataGridView1;
+        }
         public class Movie
         {
             public int Id { get; set; }
@@ -99,9 +106,9 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[18, i] = linkCell;
+                    dataGridView1[19, i] = linkCell;
                 }
-
+                Check();
             }
             catch (Exception ex)
             {
@@ -120,9 +127,8 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[18, i] = linkCell;
+                    dataGridView1[19, i] = linkCell;
                 }
-
             }
             catch (Exception ex)
             {
@@ -132,14 +138,13 @@ namespace ClientFileStorage
 
         private async void Form2_Load(object sender, EventArgs e)
         {
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "modelDataSet.Task". При необходимости она может быть перемещена или удалена.
             this.taskTableAdapter.Fill(this.modelDataSet.Task);
 
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Repositories\TestRep\ClientFileStorage\Database1.mdf;Integrated Security=True");
-            //sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
+            //    sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
             sqlConnection.Open();
-            LoadData();
             listView1.View = View.Details;
+            Console.WriteLine("State: {0}", sqlConnection.State);
             try
             {
                 _connection = new HubConnectionBuilder()
@@ -162,10 +167,11 @@ namespace ClientFileStorage
             try
             {
                 await _connection.StartAsync();
+                LoadData();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
                 return;
             }
         }
@@ -183,6 +189,510 @@ namespace ClientFileStorage
             }
         }
 
+        private async void Check()
+        {
+            for (int i = 0; i < dataSet.Tables["Task"].Rows.Count; i++)
+            {
+                DateTime Time = DateTime.Now;
+                if (Time.DayOfWeek == DayOfWeek.Monday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Понедельник;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Понедельник;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Tuesday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Вторник;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Вторник;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Wednesday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Среда;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Среда;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Thursday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Четверг;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Четверг;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Friday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Пятница;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {                                   
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Пятница;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Суббота;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Суббота;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Time.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+                    {
+                        if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Воскресенье;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    {
+                                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+                                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                            {
+                                                while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+                                                {
+                                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+                                                    sqlDataAdapter.Update(dataSet, "Task");
+                                                    string[] stringTask = new string[19];
+                                                    for (int j = 0; j < 19; j++)
+                                                    {
+                                                        stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+                                                    }
+                                                    await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Воскресенье;"))
+                            {
+                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+                                {
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+                                    {
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+                                        sqlDataAdapter.Update(dataSet, "Task");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -333,10 +843,7 @@ namespace ClientFileStorage
             }
         }
 
-        private void задачиToolStripMenuItem_Click(object sender, EventArgs e)
-        {
 
-        }
 
         private void переподключитьсяToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -372,7 +879,7 @@ namespace ClientFileStorage
                         Pos = FS.Position;
                         GC.Collect();
                     }
-                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
+                    await _connection.InvokeAsync("WriteToDataBase", fileName.Remove(fileName.Length - 7, 3), IdUser);
 
                 }
             }
@@ -400,32 +907,41 @@ namespace ClientFileStorage
         {
             try
             {
-                if (e.ColumnIndex == 18)
+                if (e.ColumnIndex == 19)
                 {
-                    string task = dataGridView1.Rows[e.RowIndex].Cells[18].Value.ToString();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[19].Value.ToString();
                     if (task == "Delete")
                     {
                         if (MessageBox.Show("Удалить задачу?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                             == DialogResult.Yes)
                         {
-                            string[] stringTask = new string[18];
-                            for (int i = 0; i < 18; i++)
+                            string[] stringTask = new string[19];
+                            for (int i = 0; i < 19; i++)
                             {
-                                if (i == 2)
-                                {
-                                    stringTask[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() + dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString().Replace(":", "-");
-                                }
-                                else
                                 stringTask[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString();
                             }
-                            //MessageBox.Show("BEFORE");
-                            //await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
-                            //MessageBox.Show("AFTER");
+                            await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
                             int rowIndex = e.RowIndex;
+                            int id1 = (int)dataSet.Tables["Task"].Rows[rowIndex]["Id"];
+                            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[rowIndex]["IsFile"]) == true)
+                            {
+                                string sql = "DELETE FROM [File] " + "WHERE Idfile = @IdFile";
+                                SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                                command1.Parameters.AddWithValue("@IdFile", id1);
+                                command1.ExecuteNonQuery();
+                            }
+                            else
+                            {
+                                string sql = "DELETE FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
+                                SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                                command1.Parameters.AddWithValue("@IdSYBD", id1);
+                                command1.ExecuteNonQuery();
+                            }
                             dataGridView1.Rows.RemoveAt(rowIndex);
                             dataSet.Tables["Task"].Rows[rowIndex].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
-                            
+
+
                         }
                     }
                 }
@@ -438,558 +954,13 @@ namespace ClientFileStorage
 
         private async void timer1_Tick(object sender, EventArgs e)
         {
-            await System.Threading.Tasks.Task.Run(() => MakeTask());
+            sqlDataAdapter.Update(dataSet, "Task");
+            MakeTasks makeTasks = new MakeTasks(Link, IdUser);
+            await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());
+            ReloadData();
         }
 
-        private async void MakeTask()
-        {
-            try
-            {
-                var Time = DateTime.Now;
 
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
-                {
-
-                    bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataGridView1[3, i].Value));
-/*                    var Time2 = Convert.ToDateTime(dataGridView1[3, i].Value)*/;
-
-                    if (!isPeriodic)
-                    {
-                        if (Convert.ToDateTime(dataGridView1[15, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[16, i].Value).TimeOfDay.TotalMinutes>= Time.TimeOfDay.TotalMinutes && Convert.ToDateTime(dataGridView1[16, i].Value).TimeOfDay.TotalMinutes <= Time.AddMinutes(1).TimeOfDay.TotalMinutes)
-                        {
-                            string path = (string)dataGridView1[2, i].Value;
-                            string dirName = new DirectoryInfo(path).Name;
-                            string time = dataGridView1[16, i].Value.ToString();
-                            string archivePath = "./ToSend/";
-                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                            string destinationpath = archivePath + archivename;
-                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                            await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                            dataSet.Tables["Task"].Rows[i].Delete();
-                            sqlDataAdapter.Update(dataSet, "Task");
-                            ReloadData();
-                        }
-                    }
-
-                    if (isPeriodic)
-                    {
-                        if (Time.DayOfWeek == DayOfWeek.Monday)
-                        {
-                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Понедельник;"))
-                            {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                //dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataGridView1.Rows[i].Cells["MustBeExecuted"].Value);
-                                                //sqlDataAdapter.Update(dataSet,"Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = dataGridView1.Rows[i].Cells["MustBeExecuted"].Value;
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                        if (Time.DayOfWeek == DayOfWeek.Tuesday)
-                            {
-                                if (Convert.ToString(dataGridView1[6, i].Value).Contains("Вторник;"))
-                                {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
-                                        {
-                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                        }
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                sqlDataAdapter.Update(dataSet, "Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
-                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                        if (Time.DayOfWeek == DayOfWeek.Wednesday)
-                                {
-                                    if (Convert.ToString(dataGridView1[6, i].Value).Contains("Среда;"))
-                                    {
-                                        bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                        if (AOneTimeJob)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
-                                            {
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-                                    }
-                                        }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60);
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                                }
-                        if (Time.DayOfWeek == DayOfWeek.Thursday)
-                        {
-                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Четверг;"))
-                            {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
-                                        {
-                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                        }
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                sqlDataAdapter.Update(dataSet, "Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
-                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                        if (Time.DayOfWeek == DayOfWeek.Friday)
-                        {
-                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Пятница;"))
-                            {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay >= Time.TimeOfDay && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay <= Time.AddMinutes(1).TimeOfDay)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                        if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная")
-                                        {
-                                            dataGridView1[12, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60));
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                        }
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date == Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay )
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes >= Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes)
-                                            {
-                                                dataGridView1[17, i].Value =Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                sqlDataAdapter.Update(dataSet, "Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
-                                        dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataGridView1[17, i].Value = dataGridView1[12, i].Value;
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                        if (Time.DayOfWeek == DayOfWeek.Saturday)
-                        {
-                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Суббота;"))
-                            {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                        
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
-                                            ReloadData();
-                                        }
-                                        
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        //dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        //sqlDataAdapter.Update(dataSet, "Task");
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
-                                    {
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date==Time.Date)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                sqlDataAdapter.Update(dataSet, "Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        // dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[5, i].Value));
-                                        //dataGridView1[12, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60); 
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                        if (Time.DayOfWeek == DayOfWeek.Sunday)
-                        {
-                            if (Convert.ToString(dataGridView1[6, i].Value).Contains("Воскресенье;"))
-                            {
-                                bool AOneTimeJob = Convert.ToBoolean(dataGridView1[7, i].Value);
-                                if (AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Hours == Time.TimeOfDay.Hours && Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
-                                    {
-                                        string path = (string)dataGridView1[2, i].Value;
-                                        string dirName = new DirectoryInfo(path).Name;
-                                        string time = DateTime.Now.ToString();
-                                        string archivePath = "./ToSend/";
-                                        string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                        string destinationpath = archivePath + archivename;
-                                        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-
-                                        if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                        {
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet,"Task");
-                                            ReloadData();
-                                        }
-
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[8, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[8, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                                if (!AOneTimeJob)
-                                {
-                                    if (Convert.ToDateTime(dataGridView1[12, i].Value).Date <= Time.Date)
-                                    {  
-                                        if (Convert.ToDateTime(dataGridView1[10, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes && Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay >= Time.TimeOfDay)
-                                        {
-                                            if (Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes == Time.TimeOfDay.Minutes /*&& Convert.ToDateTime(dataGridView1[17, i].Value).TimeOfDay.Minutes <= Time.AddMinutes(1).TimeOfDay.Minutes*/ && Convert.ToDateTime(dataGridView1[17, i].Value).Date == Time.Date)
-                                            {
-                                                dataGridView1[17, i].Value = Convert.ToString(Convert.ToDateTime(dataGridView1[17, i].Value).AddMinutes(Convert.ToInt32(dataGridView1[9, i].Value) * 60));
-                                                dataSet.Tables["Task"].Rows[i][17] = dataGridView1[17, i].Value;
-                                                sqlDataAdapter.Update(dataSet, "Task");
-                                                string path = (string)dataGridView1[2, i].Value;
-                                                string dirName = new DirectoryInfo(path).Name;
-                                                string time = DateTime.Now.ToString();
-                                                string archivePath = "./ToSend/";
-                                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                                string destinationpath = archivePath + archivename;
-                                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                                await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                                                if (Convert.ToBoolean(dataGridView1[13, i].Value) && Convert.ToDateTime(dataGridView1[12, i].Value).Date == DateTime.Now.Date)
-                                                {
-                                                    dataSet.Tables["Task"].Rows[i].Delete();
-                                                    sqlDataAdapter.Update(dataSet, "Task");
-                                                    ReloadData();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (Convert.ToString(dataGridView1[4, i].Value) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataGridView1[11, i].Value).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataGridView1[11, i].Value).AddMinutes(1).TimeOfDay)
-                                    {
-                                        dataGridView1[17, i].Value = Convert.ToDateTime(dataGridView1[12, i].Value).AddDays(Convert.ToInt32(dataGridView1[5, i].Value) / 24 / 60);
-                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = dataGridView1[17, i].Value;
-                                        sqlDataAdapter.Update(dataSet, "Task");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //if (Convert.ToDateTime(dataGridView1[3, i].Value) >= Time && Convert.ToDateTime(dataGridView1[3, i].Value) <= Time.AddMinutes(1))
-                    //{
-                    //        string path = (string)dataGridView1[2, i].Value;
-                    //        string dirName = new DirectoryInfo(path).Name;
-                    //        string time = dataGridView1[3, i].Value.ToString();
-                    //        string archivePath = "./ToSend/";
-                    //        string archivename = dirName +time.Replace(":","-")+ ".zip";
-                    //        string destinationpath = archivePath + archivename;
-                    //        ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal,true);
-                    //        await System.Threading.Tasks.Task.Run(() => загрузитьФайлToolStripMenuItem_Click1(destinationpath));
-                    //    if (isPeriodic)
-                    //    {
-                    //        sqlDataAdapter.Update(dataSet, "Task");
-                    //        Time2 = Time2.AddMinutes(Convert.ToDouble(dataGridView1[5, i].Value));
-                    //        SqlCommand command = new SqlCommand("UPDATE [Task] SET [LastUploadDate]=@LastUploadDate WHERE [id]=@id", sqlConnection);
-                    //        command.Parameters.AddWithValue("id", dataGridView1[0, i].Value);
-                    //        command.Parameters.AddWithValue("LastUploadDate", Time2);
-                    //        await command.ExecuteNonQueryAsync();
-                    //        ReloadData();
-                    //        string[] stringTask = new string[6];
-                    //        for (int j = 0; j < 6; j++)
-                    //        {
-                    //            if (j==2)
-                    //            {
-                    //                stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString() + dataGridView1[3, i].Value.ToString().Replace(":","-") ;
-                    //            }
-                    //            else
-                    //            stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString();
-                    //        }
-                    //       await WriteTaskToServer(stringTask);
-                    //    }
-                    //    else if (!isPeriodic)
-                    //    {
-                    //        string[] stringTask = new string[6];
-                    //        for (int j = 0; j < 6; j++)
-                    //        {
-                    //            stringTask[j] = dataGridView1.Rows[i].Cells[j].Value.ToString();
-                    //        }
-                    //        await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
-                    //        dataSet.Tables["Task"].Rows[i].Delete();
-                    //        sqlDataAdapter.Update(dataSet, "Task");
-                    //        ReloadData();
-                    //    }
-                    //}
-
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private string get_formatted_time()
         {
             return DateTime.Now.Day.ToString() + "d-"
@@ -1009,24 +980,44 @@ namespace ClientFileStorage
             ZipFile.CreateFromDirectory(directoryPath, archivePath + directoryPath.FirstOrDefault());
         }
 
-        public async
-        System.Threading.Tasks.Task
-        WriteTaskToServer(string[] Data)
+        public async System.Threading.Tasks.Task WriteTaskToServer(string[] Data)
         {
             await _connection.InvokeAsync("WriteTaskToDataBase", Data, IdUser);
         }
-
-       
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        public async System.Threading.Tasks.Task WriteFileToServer(string[] Data)
         {
-
+            await _connection.InvokeAsync("WriteFileToDataBase", Data, IdUser);
         }
 
         private void FileStorage_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+            sqlConnection.Close();
         }
+
+
+
+        //private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["IdUser"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["IdUser"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["FileName"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["FileName"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["IsPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["IsPeriodic"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["Frequency_InProgress"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Frequency_InProgress"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["Frequency_RepeatedEvery"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Frequency_RepeatedEvery"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["DayOfTheWeek"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["DayOfTheWeek"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["AOneTimeJob"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["AOneTimeJob"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["AOneTimeJobValue"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["AOneTimeJobValue"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["RunsEvery"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["RunsEvery"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["StartsAt"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["StartsAt"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndsIn"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndsIn"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["StartDate"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["StartDate"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndDate"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndDate"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndDateValue"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndDateValue"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["DateNoPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["DateNoPeriodic"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["TimeNoPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["TimeNoPeriodic"].Value);
+        //    dataSet.Tables["Task"].Rows[e.RowIndex]["MustBeExecuted"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["MustBeExecuted"].Value);
+        //    sqlDataAdapter.Update(dataSet, "Task");
+        //}
     }
 }
 

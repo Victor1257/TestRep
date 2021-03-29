@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.addressTextBox = new System.Windows.Forms.TextBox();
             this.connectButton = new System.Windows.Forms.Button();
             this.disconnectButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -38,6 +37,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.sendButton = new System.Windows.Forms.Button();
+            this.addressTextBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -48,15 +48,6 @@
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Address:";
-            // 
-            // addressTextBox
-            // 
-            this.addressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.addressTextBox.Location = new System.Drawing.Point(56, 6);
-            this.addressTextBox.Name = "addressTextBox";
-            this.addressTextBox.Size = new System.Drawing.Size(306, 20);
-            this.addressTextBox.TabIndex = 4;
             // 
             // connectButton
             // 
@@ -123,7 +114,6 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(386, 20);
             this.textBox3.TabIndex = 12;
-
             // 
             // sendButton
             // 
@@ -138,12 +128,23 @@
             this.sendButton.UseVisualStyleBackColor = false;
             this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
+            // addressTextBox
+            // 
+            this.addressTextBox.FormattingEnabled = true;
+            this.addressTextBox.Items.AddRange(new object[] {
+            "http://localhost:53500/chat"});
+            this.addressTextBox.Location = new System.Drawing.Point(56, 6);
+            this.addressTextBox.Name = "addressTextBox";
+            this.addressTextBox.Size = new System.Drawing.Size(306, 21);
+            this.addressTextBox.TabIndex = 14;
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(388, 428);
+            this.Controls.Add(this.addressTextBox);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -152,7 +153,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.disconnectButton);
             this.Controls.Add(this.connectButton);
-            this.Controls.Add(this.addressTextBox);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Login";
@@ -165,7 +165,6 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox addressTextBox;
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Button disconnectButton;
         private System.Windows.Forms.Label label2;
@@ -174,6 +173,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button sendButton;
+        private System.Windows.Forms.ComboBox addressTextBox;
     }
 }
 

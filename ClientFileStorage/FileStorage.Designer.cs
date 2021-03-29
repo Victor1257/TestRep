@@ -79,22 +79,22 @@
             // 
             // IDUser
             // 
-            this.IDUser.Text = "IDUser";
+            this.IDUser.Text = "ID Пользователя";
             this.IDUser.Width = 429;
             // 
             // Name
             // 
-            this.Name.Text = "FileStorage";
-            this.Name.Width = 102;
+            this.Name.Text = "Имя сотрудника";
+            this.Name.Width = 150;
             // 
             // ReleaseDate
             // 
-            this.ReleaseDate.Text = "ReleaseDate";
+            this.ReleaseDate.Text = "Дата загрузки";
             this.ReleaseDate.Width = 135;
             // 
             // FileName
             // 
-            this.FileName.Text = "FileName";
+            this.FileName.Text = "Имя файла";
             this.FileName.Width = 512;
             // 
             // listView1
@@ -117,7 +117,6 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             // 
             // menuStrip1
@@ -175,14 +174,14 @@
             // списокВсехФайловToolStripMenuItem
             // 
             this.списокВсехФайловToolStripMenuItem.Name = "списокВсехФайловToolStripMenuItem";
-            this.списокВсехФайловToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.списокВсехФайловToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.списокВсехФайловToolStripMenuItem.Text = "Список всех файлов";
             this.списокВсехФайловToolStripMenuItem.Click += new System.EventHandler(this.списокВсехФайловToolStripMenuItem_Click);
             // 
             // создатьЗадачуToolStripMenuItem
             // 
             this.создатьЗадачуToolStripMenuItem.Name = "создатьЗадачуToolStripMenuItem";
-            this.создатьЗадачуToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.создатьЗадачуToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.создатьЗадачуToolStripMenuItem.Text = "Создать задачу";
             this.создатьЗадачуToolStripMenuItem.Click += new System.EventHandler(this.создатьЗадачуToolStripMenuItem_Click);
             // 
@@ -314,8 +313,8 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name.Text = "FileStorage";
-            this.Text = "FileStorage";
+            this.Name.Text = "Имя сотрудника";
+            this.Text = "Имя сотрудника";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FileStorage_FormClosed);
             this.Load += new System.EventHandler(this.Form2_Load);
             this.menuStrip1.ResumeLayout(false);

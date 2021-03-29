@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Repositories\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {}
+    "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {}
   },
   "projects": {
-    "D:\\Repositories\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {
+    "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Repositories\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
+        "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
         "projectName": "ClientFileStorage",
-        "projectPath": "D:\\Repositories\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
-        "packagesPath": "C:\\Users\\Виктор\\.nuget\\packages\\",
-        "outputPath": "D:\\Repositories\\TestRep\\ClientFileStorage\\obj\\",
+        "projectPath": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+        "packagesPath": "C:\\Users\\viper\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
-          "C:\\Users\\Виктор\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\viper\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

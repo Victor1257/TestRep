@@ -462,9 +462,42 @@ D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Threading.Tasks.Exten
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.ValueTuple.dll
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Common.pdb
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Model.pdb
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\MessagePack.xml
 D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.pdb
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Connections.Abstractions.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Client.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Common.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Features.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.Core.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Common.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.Json.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Binder.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.Abstractions.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Options.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Primitives.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\Newtonsoft.Json.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Buffers.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.IO.Pipelines.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Memory.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Numerics.Vectors.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Text.Encodings.Web.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Text.Json.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Threading.Channels.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.Threading.Tasks.Extensions.xml
+D:\Repositories\TestRep\ClientFileStorage\bin\Debug\System.ValueTuple.xml
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.FileStorage.resources
+D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Form1.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Login.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Properties.Resources.resources
 D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.UserControl1.resources
@@ -534,4 +567,180 @@ C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorag
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
 C:\Users\merli\Source\Repos\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Task.resources
-D:\Repositories\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Task.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Database1.mdf
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Database1_log.ldf
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.exe.config
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.exe.manifest
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.application
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.exe
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\ClientFileStorage.pdb
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Carbon.Json.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Common.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Common.pdb
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Model.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\MediaBrowser.Model.pdb
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\MessagePack.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.pdb
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Client.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Common.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.Core.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Common.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Options.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\Newtonsoft.Json.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Buffers.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.IO.Pipelines.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Memory.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Text.Json.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Threading.Channels.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\bin\Debug\System.ValueTuple.dll
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.FileStorage.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Task.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Login.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.Properties.Resources.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.UserControl1.resources
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.GenerateResource.cache
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CoreCompileInputs.cache
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.exe.manifest
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.application
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CopyComplete
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.exe
+C:\Users\meschaninov\Desktop\TestRep\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.FileStorage.resources
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Task.resources
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Login.resources
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Properties.Resources.resources
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.UserControl1.resources
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.GenerateResource.cache
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CoreCompileInputs.cache
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.exe
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Database1.mdf
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Database1_log.ldf
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe.config
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe.manifest
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.application
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Carbon.Json.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Common.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Common.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Model.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Model.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MessagePack.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Client.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Common.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.Core.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Common.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Options.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Newtonsoft.Json.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Buffers.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.IO.Pipelines.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Memory.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Text.Json.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Threading.Channels.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.ValueTuple.dll
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.exe.manifest
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.application
+C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CopyComplete
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csprojAssemblyReference.cache
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.FileStorage.resources
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Task.resources
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Login.resources
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.Properties.Resources.resources
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.UserControl1.resources
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.GenerateResource.cache
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CoreCompileInputs.cache
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.exe
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.pdb
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Database1.mdf
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Database1_log.ldf
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe.config
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe.manifest
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.application
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.exe
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\ClientFileStorage.pdb
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Carbon.Json.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Common.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Common.pdb
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Model.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MediaBrowser.Model.pdb
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\MessagePack.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNet.SignalR.Client.pdb
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Client.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Connections.Common.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Client.Core.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Common.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.AspNetCore.SignalR.Protocols.MessagePack.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Options.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\Newtonsoft.Json.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Buffers.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.IO.Pipelines.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Memory.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Text.Json.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Threading.Channels.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\bin\Debug\System.ValueTuple.dll
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.exe.manifest
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.application
+C:\Users\viper\Desktop\TestRep - копия\ClientFileStorage\obj\Debug\ClientFileStorage.csproj.CopyComplete
