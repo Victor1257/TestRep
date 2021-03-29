@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Kd3SwDF05oZeibGMjE81UA2oUwGtZ3scphTE8aabrV9Ie8fxRUndl4zpiWIX/K4JC2DZSFRfH0K4YQk8QCPVYQ==",
+  "dgSpecHash": "lwwLqWAnW94syVlIPKdLiKDo79AmiB353C5dPn+uaCz741GVsOxzOdc6bVnnv0cNPCN8D5D6CqB+sJykmXo2sw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+  "projectFilePath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\viper\\.nuget\\packages\\carbon.json\\2.5.0\\carbon.json.2.5.0.nupkg.sha512",
     "C:\\Users\\viper\\.nuget\\packages\\mediabrowser.common\\4.5.0.28\\mediabrowser.common.4.5.0.28.nupkg.sha512",

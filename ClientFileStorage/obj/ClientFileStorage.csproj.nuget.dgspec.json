@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {}
+    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {}
   },
   "projects": {
-    "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {
+    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+        "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
         "projectName": "ClientFileStorage",
-        "projectPath": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+        "projectPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
         "packagesPath": "C:\\Users\\viper\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\viper\\Desktop\\TestRep - копия\\ClientFileStorage\\obj\\",
+        "outputPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [

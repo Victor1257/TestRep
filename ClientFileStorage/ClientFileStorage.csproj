@@ -13,7 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\meschaninov\Desktop\Новая папка\</PublishUrl>
+    <PublishUrl>C:\Users\merli\Desktop\8\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -69,7 +69,6 @@
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -87,8 +86,6 @@
     <Compile Include="FileStorage.Designer.cs">
       <DependentUpon>FileStorage.cs</DependentUpon>
     </Compile>
-    <Compile Include="MakeTaskBD.cs" />
-    <Compile Include="MakeTasks.cs" />
     <Compile Include="Task.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,7 +115,6 @@
     <Compile Include="UserControl1.Designer.cs">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Загрузитьфайл.cs" />
     <EmbeddedResource Include="FileStorage.resx">
       <DependentUpon>FileStorage.cs</DependentUpon>
     </EmbeddedResource>
@@ -140,6 +136,7 @@
     <EmbeddedResource Include="UserControl1.resx">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="bin\Debug\Uploads" />
     <None Include="ClientFileStorage_TemporaryKey.pfx" />
     <None Include="ModelDataSet.xsc">
       <DependentUpon>ModelDataSet.xsd</DependentUpon>
@@ -178,8 +175,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\ToSend\" />
-    <Folder Include="bin\Debug\Uploads\" />
     <Folder Include="ToSend\" />
     <Folder Include="Uploads\" />
   </ItemGroup>

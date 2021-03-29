@@ -952,11 +952,13 @@ namespace ClientFileStorage
             }
         }
 
+
+        // вот тут ругается на MakeTasks
         private async void timer1_Tick(object sender, EventArgs e)
         {
             sqlDataAdapter.Update(dataSet, "Task");
-            MakeTasks makeTasks = new MakeTasks(Link, IdUser);
-            await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());
+            /*MakeTasks makeTasks = new MakeTasks(Link, IdUser);
+            await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());*/
             ReloadData();
         }
 
