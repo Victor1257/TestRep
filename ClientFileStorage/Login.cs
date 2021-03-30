@@ -150,6 +150,11 @@ namespace ClientFileStorage
             }
         }
 
-
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (textBox2.UseSystemPasswordChar == true)
+            textBox2.UseSystemPasswordChar = false;
+            else textBox2.UseSystemPasswordChar = true;
+        }
     }
 }

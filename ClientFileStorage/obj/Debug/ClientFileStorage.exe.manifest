@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="190976">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClientFileStorage.exe" size="191488">
       <assemblyIdentity name="ClientFileStorage" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>gF3nzudLUciJ46I0o4c0Rj04LJv/nOXFRL7QZA8OaF4=</dsig:DigestValue>
+        <dsig:DigestValue>uqogYK9cvjDRBv4sqM5uVH5cDF6K9mV0O30XbcG3B60=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
