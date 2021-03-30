@@ -768,7 +768,7 @@ namespace ClientFileStorage
         private void button4_Click(object sender, EventArgs e)
         {
             string con1;
-            if (comboBox4.Text == "")
+            if (comboBox4.Text == "") // порт пустой
             {
                 if (radioButton9.Checked)
                 {
@@ -779,7 +779,7 @@ namespace ClientFileStorage
                     con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
                 }
             }
-            else
+            else // порт не пустой
             {
                 if (radioButton9.Checked)
                 {

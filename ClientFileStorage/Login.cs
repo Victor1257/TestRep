@@ -20,6 +20,7 @@ namespace ClientFileStorage
         public Login()
         {
             InitializeComponent();
+            UpdateState(connected: false);
         }
 
         private void ChatForm_Load(object sender, EventArgs e)
@@ -66,7 +67,7 @@ namespace ClientFileStorage
             UpdateState(connected: true);
 
             textBox1.Focus();
-            textBox2.Focus();
+            //textBox2.Focus();
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
