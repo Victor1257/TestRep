@@ -130,7 +130,10 @@ namespace ClientFileStorage
             if (textBox1.Text == "")
             {
                 errorcount++;
-                error += addErrorLine(errorcount, "Не указан источник копирования (папка)");
+                string dest = "";
+                if (trackBar1.Value == 1) dest = "папка";
+                else dest = "файл";
+                error += addErrorLine(errorcount, "Не указан источник копирования (" + dest + ")");
                 ok = false;
             }
             else
