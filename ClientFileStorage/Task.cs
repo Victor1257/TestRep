@@ -330,9 +330,10 @@ namespace ClientFileStorage
                     }
 
                     await command2.ExecuteNonQueryAsync();
+                    
 
                 }
-
+                mysqlcommand();
             }
 
 
@@ -356,7 +357,6 @@ namespace ClientFileStorage
             //    label1.Visible = true;
             //    label1.Text = "Данные не введены";
             //}
-            mysqlcommand();
 
         }
 
