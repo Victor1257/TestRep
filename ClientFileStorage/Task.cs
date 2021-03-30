@@ -806,14 +806,65 @@ namespace ClientFileStorage
             }
             SqlCommand command2 = new SqlCommand("SELECT name  FROM sys.databases", sqlConnection1);
             SqlDataReader reader = command2.ExecuteReader();
+            bool temp = false;  // первый элемент необходимо пропустить, так как он не является именем бд
             while (reader.Read())
             {
                 comboBox8.Items.Add(reader[0]);
+                if (temp)
+                dblist.Add(reader[0].ToString());
+                temp = true;
             }
 
         }
 
+        List<string> dblist = new List<string>();
 
+        private void comboBox8_TextChanged(object sender, EventArgs e)
+        {
+            comboBox8.Items.Clear();
+            comboBox8.Focus();
+            comboBox8.SelectionStart = comboBox8.Text.Length;
+            for (int i = 0; i < dblist.Count(); i++)
+            {
+                string tempstring = dblist.ElementAt(i).ToString();
+                if (tempstring.Contains(comboBox8.Text))
+                {
+                    comboBox8.Items.Add(tempstring);
+                }
+            }
+            //comboBox8.DroppedDown = true;
+        }
+
+        /*private void comboBox8_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                comboBox8.DroppedDown = true;
+                for (int i = 0; i < dblist.Count(); i++)
+                    MessageBox.Show(dblist.ElementAt(i).ToString());
+                // можно удалять, для отладки создавал
+            }
+        }*/
+
+        /*private void comboBox8_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                comboBox8.DroppedDown = true;
+                for (int i = 0; i < dblist.Count(); i++)
+                    MessageBox.Show(dblist.ElementAt(i).ToString());
+                // можно удалять, для отладки создавал
+            }
+        }*/
+
+        /*private void comboBox8_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                comboBox8.DroppedDown = false;
+                // можно удалять, для отладки создавал
+            }
+        }*/
     }
 }
 
