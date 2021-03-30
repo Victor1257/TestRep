@@ -1,0 +1,7 @@
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\bin\Debug\WindowsService1.exe.config
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\bin\Debug\WindowsService1.exe
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\bin\Debug\WindowsService1.pdb
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\obj\Debug\WindowsService1.csprojAssemblyReference.cache
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\obj\Debug\WindowsService1.csproj.CoreCompileInputs.cache
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\obj\Debug\WindowsService1.exe
+C:\Users\meschaninov\Desktop\TestRep - копия\WindowsService1\obj\Debug\WindowsService1.pdb
