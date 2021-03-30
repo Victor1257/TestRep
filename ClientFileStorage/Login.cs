@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ClientFileStorage
 {
-    
+
     public partial class Login : Form
     {
         public static HubConnection _connection;
@@ -49,7 +49,7 @@ namespace ClientFileStorage
                 Log(Color.Red, ex.ToString());
                 return;
             }
-            _connection.On<string,string,string>("broadcastMessage", (s1, s2,s3) => OnSend(s1, s2,s3));
+            _connection.On<string, string, string>("broadcastMessage", (s1, s2, s3) => OnSend(s1, s2, s3));
 
             Log(Color.Gray, "Starting connection...");
             try
@@ -67,7 +67,6 @@ namespace ClientFileStorage
             UpdateState(connected: true);
 
             textBox1.Focus();
-            //textBox2.Focus();
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
@@ -96,7 +95,7 @@ namespace ClientFileStorage
         {
             try
             {
-                await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text,textBox2.Text);
+                await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text, textBox2.Text);
             }
             catch (Exception ex)
             {
@@ -115,24 +114,24 @@ namespace ClientFileStorage
             sendButton.Enabled = connected;
         }
 
-        private void OnSend(string name, string message,string UserId)
+        private void OnSend(string name, string message, string UserId)
         {
             Log(Color.Black, message);
-            if (message=="true")
+            if (message == "true")
             {
                 IDUSER = UserId;
-                FileStorage newForm = new FileStorage(this.LINK,this.IDUSER);
+                FileStorage newForm = new FileStorage(this.LINK, this.IDUSER);
                 this.Hide();
                 newForm.Show();
- 
-            }    
+
+            }
         }
 
         private void Log(Color color, string message)
         {
             Action callback = () =>
             {
-               textBox3.Text= message;
+                textBox3.Text = message;
             };
 
             Invoke(callback);
@@ -154,8 +153,29 @@ namespace ClientFileStorage
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (textBox2.UseSystemPasswordChar == true)
-            textBox2.UseSystemPasswordChar = false;
+                textBox2.UseSystemPasswordChar = false;
             else textBox2.UseSystemPasswordChar = true;
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) textBox2.Focus();
+        }
+
+        private async void textBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                try
+                {
+                    await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text, textBox2.Text);
+                }
+                catch (Exception ex)
+                {
+                    Log(Color.Red, ex.ToString());
+                }
+            }
+
         }
     }
 }
