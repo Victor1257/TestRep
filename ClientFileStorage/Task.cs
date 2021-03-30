@@ -127,76 +127,133 @@ namespace ClientFileStorage
             int errorcount = 0;
 
             bool ok = true;
-            if (textBox1.Text == "")
+
+            if (radioButton7.Checked) // Архивация файлов и папок
             {
-                errorcount++;
-                string dest = "";
-                if (trackBar1.Value == 1) dest = "папка";
-                else dest = "файл";
-                error += addErrorLine(errorcount, "Не указан источник копирования (" + dest + ")");
-                ok = false;
-            }
-            else
-            {
-                if (!System.IO.File.Exists(textBox1.Text) && !System.IO.Directory.Exists(textBox1.Text))
+                if (textBox1.Text == "")
                 {
                     errorcount++;
-                    error += addErrorLine(errorcount, "Файл или папка не существует");
+                    string dest = "";
+                    if (trackBar1.Value == 1) dest = "папка";
+                    else dest = "файл";
+                    error += addErrorLine(errorcount, "Не указан источник копирования (" + dest + ")");
                     ok = false;
-                }
-
-            }
-
-            if (!(radioButton3.Checked || radioButton4.Checked))
-            {
-                errorcount++;
-                error += addErrorLine(errorcount, "Не выбран переключатель периодичности копирования");
-                ok = false;
-            }
-
-            else
-            {
-
-                if (radioButton3.Checked)
-                {
-                    if (comboBox1.SelectedIndex < 0)
-                    {
-                        //MessageBox.Show(comboBox1.SelectedIndex.ToString());
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбрана частота выполнения");
-                        ok = false;
-                    }
-
-                    if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked
-                        && !checkBox5.Checked && !checkBox6.Checked && !checkBox7.Checked)
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран ни один день недели");
-                        ok = false;
-                    }
-
-                    if (!(radioButton1.Checked || radioButton2.Checked))
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран переключатель периодичности дневного копирования");
-                        ok = false;
-                    }
-
-                    if (!(radioButton5.Checked || radioButton6.Checked))
-                    {
-                        errorcount++;
-                        error += addErrorLine(errorcount, "Не выбран переключатель даты окончания");
-                        ok = false;
-                    }
                 }
                 else
                 {
-                    //MessageBox.Show("radiobutton4");
+                    if (!System.IO.File.Exists(textBox1.Text) && !System.IO.Directory.Exists(textBox1.Text))
+                    {
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Файл или папка не существует");
+                        ok = false;
+                    }
+                }
+
+                if (!(radioButton3.Checked || radioButton4.Checked))
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не выбран переключатель периодичности копирования");
+                    ok = false;
+                }
+
+                else
+                {
+
+                    if (radioButton3.Checked)
+                    {
+                        if (comboBox1.SelectedIndex < 0)
+                        {
+                            //MessageBox.Show(comboBox1.SelectedIndex.ToString());
+                            errorcount++;
+                            error += addErrorLine(errorcount, "Не выбрана частота выполнения");
+                            ok = false;
+                        }
+
+                        if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked
+                            && !checkBox5.Checked && !checkBox6.Checked && !checkBox7.Checked)
+                        {
+                            errorcount++;
+                            error += addErrorLine(errorcount, "Не выбран ни один день недели");
+                            ok = false;
+                        }
+
+                        if (!(radioButton1.Checked || radioButton2.Checked))
+                        {
+                            errorcount++;
+                            error += addErrorLine(errorcount, "Не выбран переключатель периодичности дневного копирования");
+                            ok = false;
+                        }
+
+                        if (!(radioButton5.Checked || radioButton6.Checked))
+                        {
+                            errorcount++;
+                            error += addErrorLine(errorcount, "Не выбран переключатель даты окончания");
+                            ok = false;
+                        }
+                    }
+                    else
+                    {
+                        //MessageBox.Show("radiobutton4");
+                    }
+                }
+
+            }
+            else if (radioButton8.Checked) // Архивация баз данных
+            {
+                if (comboBox2.Text == "")
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не указан поставщик СУБД");
+                    ok = false;
+                }
+
+                if (comboBox3.Text == "")
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не указан адрес сервера");
+                    ok = false;
+                }
+
+                if (comboBox4.Text == "" && comboBox5.Text == "")
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не указан порт либо экземпляр сервера");
+                    ok = false;
+                }
+
+                if (comboBox7.Text == "")
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не указан путь резервного копирования");
+                    ok = false;
+                }
+
+                if (comboBox8.Text == "")
+                {
+                    errorcount++;
+                    error += addErrorLine(errorcount, "Не указано имя базы данных");
+                    ok = false;
+                }
+
+                if (radioButton10.Checked)
+                {
+                    if (comboBox6.Text == "")
+                    {
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не указан логин СУБД");
+                        ok = false;
+                    }
+
+                    if (textBox2.Text == "")
+                    {
+                        errorcount++;
+                        error += addErrorLine(errorcount, "Не указан пароль СУБД");
+                        ok = false;
+                    }
                 }
             }
 
             error += "Задача не добавлена.";
-
             if (!ok)
                 MessageBox.Show(error, "Окно вывода ошибок");
             else
@@ -330,7 +387,7 @@ namespace ClientFileStorage
                     }
 
                     await command2.ExecuteNonQueryAsync();
-                    
+
 
                 }
                 mysqlcommand();
