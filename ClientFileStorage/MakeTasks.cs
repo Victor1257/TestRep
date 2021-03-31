@@ -1,18 +1,9 @@
-﻿using Carbon.Json;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Linq;
-using MediaBrowser.Model.Serialization;
-using Newtonsoft.Json.Converters;
-using System.Web.Script.Serialization;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography;
-using System.Data.OleDb;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
@@ -98,16 +89,14 @@ namespace ClientFileStorage
                         bool isPeriodic = Convert.ToBoolean(Convert.ToInt32(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]));
                         if (!isPeriodic)
                         {
-                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][15]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][16]).TimeOfDay.TotalMinutes >= Time.TimeOfDay.TotalMinutes && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][16]).TimeOfDay.TotalMinutes <= Time.AddMinutes(1).TimeOfDay.TotalMinutes)
+                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                             {
-                                string path = a;
-                                string dirName = new DirectoryInfo(path).Name;
-                                string time = dataSet.Tables["Task"].Rows[i][16].ToString();
-                                string archivePath = "./ToSend/";
-                                string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                string destinationpath = archivePath + archivename;
-                                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                CreatecompressFile(a);
+                                int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
+                                string sql1 = "DELETE FROM [File] " + "WHERE IdFile = @IdFile";
+                                SqlCommand command3 = new SqlCommand(sql1, sqlConnection);
+                                command3.Parameters.AddWithValue("@IdFile", id2);
+                                command3.ExecuteNonQuery();
                                 dataSet.Tables["Task"].Rows[i].Delete();
                                 sqlDataAdapter.Update(dataSet, "Task");
 
@@ -125,14 +114,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -158,20 +140,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -190,7 +165,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -213,7 +188,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -239,14 +214,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -272,20 +240,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -304,7 +265,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -327,7 +288,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -353,14 +314,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -386,20 +340,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -418,7 +365,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -441,7 +388,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -467,14 +414,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -500,20 +440,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -532,7 +465,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -555,7 +488,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -581,14 +514,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -614,20 +540,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -646,7 +565,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -669,7 +588,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -695,14 +614,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -728,20 +640,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -760,7 +665,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -783,7 +688,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -809,14 +714,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -842,20 +740,13 @@ namespace ClientFileStorage
                                         {
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
-                                            string[] stringTask = new string[18];
-                                            for (int j = 0; j < 18; j++)
+                                            string[] stringTask = new string[19];
+                                            for (int j = 0; j < 19; j++)
                                             {
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            string path = a;
-                                            string dirName = new DirectoryInfo(path).Name;
-                                            string time = DateTime.Now.ToString();
-                                            string archivePath = "./ToSend/";
-                                            string archivename = dirName + time.Replace(":", "-") + ".zip";
-                                            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-                                            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-                                            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+                                            CreatecompressFile(a);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -874,7 +765,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -897,7 +788,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1026,17 +917,18 @@ namespace ClientFileStorage
                                             SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
                                             command2.CommandTimeout = 10000;
                                             command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);    
-                                        }
-                                        if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
-                                        {
-                                            int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
-                                            string sql1 = "DELETE FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
-                                            SqlCommand command3 = new SqlCommand(sql1, sqlConnection);
-                                            command3.Parameters.AddWithValue("@IdSYBD", id2);
-                                            command3.ExecuteNonQuery();
-                                            dataSet.Tables["Task"].Rows[i].Delete();
-                                            sqlDataAdapter.Update(dataSet, "Task");
+                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
+                                            {
+                                                int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
+                                                string sql1 = "DELETE FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
+                                                SqlCommand command3 = new SqlCommand(sql1, sqlConnection);
+                                                command3.Parameters.AddWithValue("@IdSYBD", id2);
+                                                command3.ExecuteNonQuery();
+                                                dataSet.Tables["Task"].Rows[i].Delete();
+                                                sqlDataAdapter.Update(dataSet, "Task");
+
+                                            }
                                         }
 
                                         if (Convert.ToString(dataSet.Tables["Task"].Rows[i][4]) == "ежедневная" && Time.TimeOfDay >= Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][11]).TimeOfDay && Time.TimeOfDay <= Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][11]).AddMinutes(1).TimeOfDay)
@@ -1046,7 +938,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1069,7 +961,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1161,7 +1053,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1184,7 +1076,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1276,7 +1168,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1299,7 +1191,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1391,7 +1283,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1414,7 +1306,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1506,7 +1398,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1529,7 +1421,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1621,7 +1513,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1644,7 +1536,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1736,7 +1628,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1759,7 +1651,7 @@ namespace ClientFileStorage
                                                 sqlDataAdapter.Update(dataSet, "Task");
                                                 string s1 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][10]).TimeOfDay.ToString();
                                                 s1 = s1.Remove(s1.Length - 3, 3);
-                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString();
+                                                string s2 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddDays(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][5]) / 24 / 60).ToString("dd.MM.yyyy HH:mm:ff");
                                                 string s3 = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).TimeOfDay.ToString();
                                                 s3 = s3.Remove(s3.Length - 3, 3);
                                                 s2 = s2.Replace(s3, s1);
@@ -1902,6 +1794,18 @@ namespace ClientFileStorage
                 }
             }
             return con2;
+        }
+        public async void CreatecompressFile(string a)
+        {
+            Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
+            string path = a;
+            string dirName = new DirectoryInfo(path).Name;
+            string time = DateTime.Now.ToString();
+            string archivePath = "./ToSend/";
+            string archivename = dirName + time.Replace(":", "-") + ".zip";
+            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
+            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
         }
     }
 }

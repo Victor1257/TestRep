@@ -2892,21 +2892,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\viper\\.nuget\\packages\\": {}
+    "C:\\Users\\meschaninov\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
+      "projectUniqueName": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
       "projectName": "ClientFileStorage",
-      "projectPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
-      "packagesPath": "C:\\Users\\viper\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\obj\\",
+      "projectPath": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
+      "packagesPath": "C:\\Users\\meschaninov\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
+      "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet\\"
+      ],
       "configFilePaths": [
-        "C:\\Users\\viper\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\meschaninov\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net472"
