@@ -73,7 +73,6 @@ namespace ClientFileStorage
             UpdateState(connected: true);
 
             textBox1.Focus();
-            textBox2.Focus();
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
@@ -128,7 +127,11 @@ namespace ClientFileStorage
             {
                 IDUSER = UserId;
                 FileStorage newForm = new FileStorage(this.LINK,this.IDUSER);
-                using (FileStream fs = new FileStream("C:/Users/meschaninov/Desktop/TestRep - копия/WindowsService1/config.json", FileMode.OpenOrCreate))
+                /*MessageBox.Show( Application.StartupPath );
+                MessageBox.Show( Path.GetDirectoryName(Application.StartupPath) );
+                MessageBox.Show( Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) );*/
+                //using (FileStream fs = new FileStream("C:/Users/meschaninov/Desktop/TestRep - копия/WindowsService1/config.json", FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(Path.GetDirectoryName (Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath))) + "/WindowsService1/config.json", FileMode.OpenOrCreate))
                 {
                     Config tom = new Config() { Link = LINK, IdUser = IDUSER };
                     await JsonSerializer.SerializeAsync<Config>(fs, tom);
@@ -164,6 +167,32 @@ namespace ClientFileStorage
             }
         }
 
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) textBox2.Focus();
+        }
+
+        private async void textBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                try
+                {
+                    await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text, textBox2.Text);
+                }
+                catch (Exception ex)
+                {
+                    Log(Color.Red, ex.ToString());
+                }
+            }
+
+        }
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (textBox2.UseSystemPasswordChar == true)
+                textBox2.UseSystemPasswordChar = false;
+            else textBox2.UseSystemPasswordChar = true;
+        }
 
     }
 }

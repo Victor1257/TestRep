@@ -38,6 +38,8 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.sendButton = new System.Windows.Forms.Button();
             this.addressTextBox = new System.Windows.Forms.ComboBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -78,7 +80,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(12, 188);
+            this.label2.Location = new System.Drawing.Point(8, 188);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 15);
             this.label2.TabIndex = 8;
@@ -100,6 +102,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(290, 20);
             this.textBox1.TabIndex = 10;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // textBox2
             // 
@@ -108,6 +111,7 @@
             this.textBox2.Size = new System.Drawing.Size(290, 20);
             this.textBox2.TabIndex = 11;
             this.textBox2.UseSystemPasswordChar = true;
+            this.textBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox2_KeyDown);
             // 
             // textBox3
             // 
@@ -133,11 +137,32 @@
             // 
             this.addressTextBox.FormattingEnabled = true;
             this.addressTextBox.Items.AddRange(new object[] {
-            "http://localhost:53500/chat"});
+            "http://localhost:53500/chat",
+            "http://10.38.40.39:53500/chat"});
             this.addressTextBox.Location = new System.Drawing.Point(56, 6);
             this.addressTextBox.Name = "addressTextBox";
             this.addressTextBox.Size = new System.Drawing.Size(306, 21);
             this.addressTextBox.TabIndex = 14;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(116, 152);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(15, 14);
+            this.checkBox1.TabIndex = 15;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label4.Location = new System.Drawing.Point(8, 151);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 15);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Показать пароль";
             // 
             // Login
             // 
@@ -145,6 +170,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(388, 428);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.addressTextBox);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.textBox3);
@@ -175,6 +202,8 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.ComboBox addressTextBox;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label4;
     }
 }
 
