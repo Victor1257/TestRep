@@ -2898,11 +2898,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+      "projectUniqueName": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
       "projectName": "ClientFileStorage",
-      "projectPath": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+      "projectPath": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
       "packagesPath": "C:\\Users\\meschaninov\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\obj\\",
+      "outputPath": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [

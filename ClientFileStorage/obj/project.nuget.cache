@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tEfUERs3u7l0zPj3jvCCwqkcYB0sl9q6UNc3+wrEdf11+QAWOxRcDXpg7jgGp40+gHOy7oBibTVbL4ly9VBkYg==",
+  "dgSpecHash": "+EcleHWY7Q+X0WpBpSWxNE5skxxpHHKr22ryvj2wy0+olqhvKIu8XFMyMdTKRK98mwQmLLyQ0eMXXsEWHJoE9Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+  "projectFilePath": "C:\\Users\\meschaninov\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\meschaninov\\.nuget\\packages\\carbon.json\\2.5.0\\carbon.json.2.5.0.nupkg.sha512",
     "C:\\Users\\meschaninov\\.nuget\\packages\\mediabrowser.common\\4.5.0.28\\mediabrowser.common.4.5.0.28.nupkg.sha512",
