@@ -27,6 +27,7 @@ namespace ClientFileStorage
         public Login()
         {
             InitializeComponent();
+            UpdateState(connected: false);
         }
 
         private void ChatForm_Load(object sender, EventArgs e)
