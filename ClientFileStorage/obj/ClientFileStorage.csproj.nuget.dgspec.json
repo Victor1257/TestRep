@@ -1,22 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {}
+    "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {}
   },
   "projects": {
-    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {
+    "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
+        "projectUniqueName": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
         "projectName": "ClientFileStorage",
-        "projectPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
-        "packagesPath": "C:\\Users\\viper\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\obj\\",
+        "projectPath": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\ClientFileStorage.csproj",
+        "packagesPath": "C:\\Users\\meschaninov\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\meschaninov\\Desktop\\TestRep - копия\\ClientFileStorage\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "C:\\Users\\viper\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\meschaninov\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"

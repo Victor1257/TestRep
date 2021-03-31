@@ -1,18 +1,11 @@
-﻿using Carbon.Json;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Linq;
-using MediaBrowser.Model.Serialization;
-using Newtonsoft.Json.Converters;
 using System.Web.Script.Serialization;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography;
-using System.Data.OleDb;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
@@ -29,11 +22,8 @@ namespace ClientFileStorage
         public string price;
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlBuilder = null;
-        private SqlDataAdapter sqlDataAdapter = null, FileAdapter = null, SYBDAdapter = null;
+        private SqlDataAdapter sqlDataAdapter = null;
         private DataSet dataSet = null;
-        private DataGridView detailsDataGridView = new DataGridView();
-        private BindingSource masterBindingSource = new BindingSource();
-        private BindingSource detailsBindingSource = new BindingSource();
 
         public FileStorage(string LINK, string IDUser)
         {
@@ -140,8 +130,8 @@ namespace ClientFileStorage
         {
             this.taskTableAdapter.Fill(this.modelDataSet.Task);
 
-            //sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
-                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
+            //    sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
             sqlConnection.Open();
             listView1.View = View.Details;
             Console.WriteLine("State: {0}", sqlConnection.State);
@@ -208,7 +198,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -227,10 +217,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -279,7 +269,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -298,10 +288,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -350,7 +340,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -369,10 +359,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -421,7 +411,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -440,10 +430,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -492,7 +482,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -510,7 +500,7 @@ namespace ClientFileStorage
                                             }
                                         }
                                         else
-                                        {                                   
+                                        {
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
                                                 dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
@@ -563,7 +553,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -582,10 +572,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -634,7 +624,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
@@ -653,10 +643,10 @@ namespace ClientFileStorage
                                         }
                                         else
                                         {
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
-                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                             {
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+                                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
                                                 while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
                                                 {
                                                     dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
@@ -952,13 +942,11 @@ namespace ClientFileStorage
             }
         }
 
-
-        // вот тут ругается на MakeTasks
         private async void timer1_Tick(object sender, EventArgs e)
         {
             sqlDataAdapter.Update(dataSet, "Task");
-            /*MakeTasks makeTasks = new MakeTasks(Link, IdUser);
-            await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());*/
+            MakeTasks makeTasks = new MakeTasks(Link, IdUser);
+            await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());
             ReloadData();
         }
 
