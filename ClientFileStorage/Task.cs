@@ -667,7 +667,6 @@ namespace ClientFileStorage
         }
 
         List<string> dblist = new List<string>();
-
         private void comboBox8_TextChanged(object sender, EventArgs e)
         {
             comboBox8.Items.Clear();
@@ -683,8 +682,6 @@ namespace ClientFileStorage
             }
             //comboBox8.DroppedDown = true;
         }
-
-
     }
 }
 
