@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 
 namespace ClientFileStorage
 {
@@ -654,11 +655,33 @@ namespace ClientFileStorage
             }
             SqlCommand command2 = new SqlCommand("SELECT name  FROM sys.databases", sqlConnection1);
             SqlDataReader reader = command2.ExecuteReader();
+            bool temp = false;  // первый элемент необходимо пропустить, так как он не является именем бд
             while (reader.Read())
             {
                 comboBox8.Items.Add(reader[0]);
+                if (temp)
+                    dblist.Add(reader[0].ToString());
+                temp = true;
             }
 
+        }
+
+        List<string> dblist = new List<string>();
+
+        private void comboBox8_TextChanged(object sender, EventArgs e)
+        {
+            comboBox8.Items.Clear();
+            comboBox8.Focus();
+            comboBox8.SelectionStart = comboBox8.Text.Length;
+            for (int i = 0; i < dblist.Count; i++)
+            {
+                string tempstring = dblist.ElementAt(i).ToString();
+                if (tempstring.Contains(comboBox8.Text))
+                {
+                    comboBox8.Items.Add(tempstring);
+                }
+            }
+            //comboBox8.DroppedDown = true;
         }
 
 
