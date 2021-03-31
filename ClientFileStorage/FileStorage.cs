@@ -1,18 +1,11 @@
-﻿using Carbon.Json;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Linq;
-using MediaBrowser.Model.Serialization;
-using Newtonsoft.Json.Converters;
 using System.Web.Script.Serialization;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography;
-using System.Data.OleDb;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
@@ -29,11 +22,8 @@ namespace ClientFileStorage
         public string price;
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlBuilder = null;
-        private SqlDataAdapter sqlDataAdapter = null, FileAdapter = null, SYBDAdapter = null;
+        private SqlDataAdapter sqlDataAdapter = null;
         private DataSet dataSet = null;
-        private DataGridView detailsDataGridView = new DataGridView();
-        private BindingSource masterBindingSource = new BindingSource();
-        private BindingSource detailsBindingSource = new BindingSource();
 
         public FileStorage(string LINK, string IDUser)
         {

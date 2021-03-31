@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -17,6 +19,11 @@ namespace ClientFileStorage
         public static HubConnection _connection;
         public string IDUSER;
         public string LINK;
+        class Config
+        {
+            public string Link { get; set; }
+            public string IdUser { get; set; }
+        }
         public Login()
         {
             InitializeComponent();
@@ -114,13 +121,20 @@ namespace ClientFileStorage
             sendButton.Enabled = connected;
         }
 
-        private void OnSend(string name, string message,string UserId)
+        private async void OnSend(string name, string message,string UserId)
         {
             Log(Color.Black, message);
             if (message=="true")
             {
                 IDUSER = UserId;
                 FileStorage newForm = new FileStorage(this.LINK,this.IDUSER);
+                using (FileStream fs = new FileStream("C:/Users/meschaninov/Desktop/TestRep - копия/WindowsService1/config.json", FileMode.OpenOrCreate))
+                {
+                    Config tom = new Config() { Link = LINK, IdUser = IDUSER };
+                    await JsonSerializer.SerializeAsync<Config>(fs, tom);
+                    Console.WriteLine("Data has been saved to file");
+                }
+
                 this.Hide();
                 newForm.Show();
  
