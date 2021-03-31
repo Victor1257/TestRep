@@ -55,7 +55,7 @@ namespace WindowsService1
         {
         }
 
-        private async void Kake(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
             sqlDataAdapter1.Update(dataSet, "Task");
             TaskWorker makeTasks = new TaskWorker(Link, IdUser);
