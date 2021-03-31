@@ -763,6 +763,7 @@
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(770, 21);
             this.comboBox8.TabIndex = 1;
+            this.comboBox8.TextChanged += new System.EventHandler(this.comboBox8_TextChanged);
             // 
             // groupBox11
             // 
