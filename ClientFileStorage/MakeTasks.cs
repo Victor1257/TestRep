@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
+using Npgsql;
 
 namespace ClientFileStorage
 {
@@ -18,6 +19,7 @@ namespace ClientFileStorage
         public ListViewItem listView;
         public string price;
         private SqlConnection sqlConnection = null;
+        private SqlConnection sqlConnection1 = null;
         private SqlCommandBuilder sqlBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
         private DataSet dataSet = null;
@@ -65,7 +67,7 @@ namespace ClientFileStorage
                 SetCon();
                 Console.WriteLine(_connection.State);
                 // sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
-                sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
                 sqlConnection.Open();
                 sqlDataAdapter = new SqlDataAdapter("SELECT *,'Delete' AS [Delete] FROM Task", sqlConnection);
                 sqlBuilder = new SqlCommandBuilder(sqlDataAdapter);
@@ -79,6 +81,7 @@ namespace ClientFileStorage
                 var Time = DateTime.Now;
                 for (int i = 0; i < dataSet.Tables["Task"].Rows.Count; i++)
                 {
+                    var t = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date;
                     if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsFile"]))
                     {
                         int id1 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -91,8 +94,9 @@ namespace ClientFileStorage
                         {
                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                             {
-                                CreatecompressFile(a);
                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
+                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                CreatecompressFile(a,id2,MustBeEx);
                                 string sql1 = "DELETE FROM [File] " + "WHERE IdFile = @IdFile";
                                 SqlCommand command3 = new SqlCommand(sql1, sqlConnection);
                                 command3.Parameters.AddWithValue("@IdFile", id2);
@@ -114,7 +118,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -138,6 +143,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -146,7 +152,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -214,7 +220,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -238,6 +245,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -246,7 +254,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -314,7 +322,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -338,6 +347,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -346,7 +356,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -414,7 +424,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -438,6 +449,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -446,7 +458,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -514,7 +526,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -538,6 +551,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -546,7 +560,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -614,7 +628,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -638,6 +653,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -646,7 +662,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"], MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -714,7 +730,8 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
-                                            CreatecompressFile(a);
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"],MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -738,6 +755,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
                                             string[] stringTask = new string[19];
@@ -746,7 +764,7 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
-                                            CreatecompressFile(a);
+                                            CreatecompressFile(a, (int)dataSet.Tables["Task"].Rows[i]["Id"],MustBeEx);
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -844,12 +862,31 @@ namespace ClientFileStorage
                         {
                             if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][15]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][16]).TimeOfDay.TotalMinutes >= Time.TimeOfDay.TotalMinutes && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][16]).TimeOfDay.TotalMinutes <= Time.AddMinutes(1).TimeOfDay.TotalMinutes)
                             {
-                                con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                sqlConnection1.Open();
-                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                command2.ExecuteNonQuery();
-                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                if (The_Supplier == "Microsoft")
+                                {
+                                    sqlConnection1 = new SqlConnection(@con1);
+                                    sqlConnection1.Open();
+                                    SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                    command2.CommandTimeout = 10000;
+                                    command2.ExecuteNonQuery();
+                                    sqlConnection1.Close();
+                                    string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                    CreatecompressSYBD(Adres_Server, Way, Name_SYBD,id1,MustBeEx);
+                                }
+                                if (The_Supplier == "PostgreSQL")
+                                {
+                                    NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                    conn.Open();
+                                    NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                    string path = (string)npgsqlCommand1.ExecuteScalar();
+                                    NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                    npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                    npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                    npgsqlCommand.ExecuteNonQuery();
+                                    conn.Close();
+                                    string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                    CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD,id1,MustBeEx);
+                                }
                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
                                 string sql1 = "DELETE FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
                                 SqlCommand command3 = new SqlCommand(sql1, sqlConnection);
@@ -873,12 +910,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD,id1,MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD,id1,MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -902,6 +959,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -911,13 +969,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD,id1,MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD,id1,MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -988,12 +1066,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1017,6 +1115,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1026,13 +1125,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1103,12 +1222,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1132,6 +1271,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1141,13 +1281,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1218,12 +1378,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1247,6 +1427,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1256,13 +1437,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1333,12 +1534,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1362,6 +1583,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1371,13 +1593,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1448,12 +1690,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1477,6 +1739,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1486,13 +1749,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1563,12 +1846,32 @@ namespace ClientFileStorage
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, NOINIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
+                                            }
                                         }
                                         if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                         {
@@ -1592,6 +1895,7 @@ namespace ClientFileStorage
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Date == Time.Date && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Hour == Time.Hour && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).Minute == Time.Minute)
                                         {
+                                            string MustBeEx = dataSet.Tables["Task"].Rows[i][17].ToString();
                                             con1 = ConSYBD(Integrated_Security, Adres_Server, Instance_Server, Name_SYBD, Login_SYBD, Password_SYBD, Time, Port_Server);
                                             dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][17]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
                                             sqlDataAdapter.Update(dataSet, "Task");
@@ -1601,13 +1905,33 @@ namespace ClientFileStorage
                                                 stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
                                             }
                                             await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+                                            if (The_Supplier == "Microsoft")
+                                            {
+                                                sqlConnection1 = new SqlConnection(@con1);
+                                                sqlConnection1.Open();
+                                                SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
+                                                command2.CommandTimeout = 10000;
+                                                command2.ExecuteNonQuery();
+                                                sqlConnection1.Close();
+                                                CreatecompressSYBD(Adres_Server, Way, Name_SYBD, id1, MustBeEx);
+                                            }
+                                            if (The_Supplier == "PostgreSQL")
+                                            {
+                                                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                                                conn.Open();
+                                                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("show data_directory", conn);
+                                                string path = (string)npgsqlCommand1.ExecuteScalar();
+                                                path = path.Remove(path.Length - 4, 4) + "backups";
+                                                NpgsqlCommand npgsqlCommand = new NpgsqlCommand("select * from public.xp_pg_dump(@dbName, @backupName)", conn);
+                                                npgsqlCommand.CommandTimeout = 86400;
+                                                npgsqlCommand.Parameters.AddWithValue("@dbName", Name_SYBD);
+                                                npgsqlCommand.Parameters.AddWithValue("@backupName", path + "/" + Name_SYBD + ".bak");
+                                                npgsqlCommand.ExecuteNonQuery();
+                                                conn.Close();
+                                                CreatecompressSYBDPostg(Adres_Server, path, Name_SYBD, id1, MustBeEx);
 
-                                            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-                                            sqlConnection1.Open();
-                                            SqlCommand command2 = new SqlCommand("BACKUP DATABASE[" + Name_SYBD + "] TO  DISK = N'" + Way + "\\" + Name_SYBD + ".bak" + "' WITH NOFORMAT, INIT, NAME = N'" + Name_SYBD + "-Полная База данных Резервное копирование', SKIP, NOREWIND, NOUNLOAD, STATS = 10", sqlConnection1);
-                                            command2.CommandTimeout = 10000;
-                                            command2.ExecuteNonQuery();
-                                            CreatecompressSYBD(Adres_Server, Way, Name_SYBD);
+                                            }
+
                                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i][13]) && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i][12]).Date == DateTime.Now.Date)
                                             {
                                                 int id2 = (int)dataSet.Tables["Task"].Rows[i]["Id"];
@@ -1673,6 +1997,7 @@ namespace ClientFileStorage
 
                 }
             }
+            
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -1680,8 +2005,16 @@ namespace ClientFileStorage
             finally
             {
                 await _connection.StopAsync();
-                sqlConnection.Close();
+                if (sqlConnection != null)
+                {
+                    sqlConnection.Close();
+                }
+                if (sqlConnection1 != null)
+                {
+                    sqlConnection1.Close();
+                }
             }
+
         }
         public async System.Threading.Tasks.Task WriteTaskToServer(string[] Data)
         {
@@ -1756,56 +2089,149 @@ namespace ClientFileStorage
             return dayOfWeek;
         }
 
-        public async void CreatecompressSYBD(string Adres_Server, string Way, string Name_SYBD)
+        public async void CreatecompressSYBD(string Adres_Server, string Way, string Name_SYBD,int id1,string MustBeEx)
         {
-            Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
-            string path = @"\\" + Adres_Server + Way.Remove(0, 2) + "\\" + Name_SYBD + ".bak";
-            string dirName = new DirectoryInfo(path).Name;
-            string time = DateTime.Now.ToString();
-            string archivePath = "./ToSend/";
-            string archivename = dirName.Remove(dirName.Length - 4, 4) + time.Replace(":", "-") + ".bak";
-            string destinationpath = archivePath + archivename + ".gz";
-            Compress(path, destinationpath);
-            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+            try
+            {
+                Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
+                string path = @"\\" + Adres_Server + Way.Remove(0, 2) + "\\" + Name_SYBD + ".bak";
+                string dirName = new DirectoryInfo(path).Name;
+                string time = DateTime.Now.ToString();
+                string archivePath = "./ToSend/";
+                string archivename = dirName.Remove(dirName.Length - 4, 4) + " " + time.Replace(":", "-");
+                string destinationpath = archivePath + archivename + ".gz";
+                Compress(path, destinationpath);
+                await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath, false, id1, MustBeEx));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+        public async void CreatecompressSYBDPostg(string Adres_Server, string Way, string Name_SYBD,int id1,string MustBeEx)
+        {
+            try
+            {
+                Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
+                NpgsqlConnection conn1 = new NpgsqlConnection(con1);
+                conn1.Open();
+                NpgsqlCommand npgsqlCommand1 = new NpgsqlCommand("SELECT lo_import('" + Name_SYBD + ".bak" + "')", conn1);
+                var oid = npgsqlCommand1.ExecuteScalar();
+                NpgsqlCommand npgsqlCommand2 = new NpgsqlCommand("SELECT data FROM pg_largeobject WHERE loid =  " + oid + "  ORDER BY pageno", conn1);
+                byte[] s = new byte[] { };
+                NpgsqlDataReader npgsqlDataReader = npgsqlCommand2.ExecuteReader();
+                int position = 0;
+                while (npgsqlDataReader.Read())
+                {
+                    s = (byte[])npgsqlDataReader[0];
+                    DoStuff(s, Name_SYBD, position);
+                    position = position + s.Length;
+                }
+                string path = "./Uploads/" + "/" + Name_SYBD + ".bak";
+                string dirName = new DirectoryInfo(path).Name;
+                string time = DateTime.Now.ToString();
+                string archivePath = "./ToSend/";
+                string archivename = dirName.Remove(dirName.Length - 4, 4) + " " + time.Replace(":", "-");
+                string destinationpath = archivePath + archivename + ".gz";
+                Compress(path, destinationpath);
+                await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath, false, id1, MustBeEx));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
         public string ConSYBD(bool Integrated_Security, string Adres_Server, string Instance_Server, string Name_SYBD, string Login_SYBD, string Password_SYBD, DateTime Time, string Port_Server)
         {
-            string con2;
-            if (Port_Server == "")
+            try
             {
-                if (Integrated_Security)
+                string con2 = null;
+                if (The_Supplier == "Microsoft")
                 {
-                    con2 = "Data Source = " + Adres_Server + "\\" + Instance_Server + ";Initial Catalog=" + Name_SYBD + "; Integrated Security = True";
+                    if (Port_Server == "")
+                    {
+                        if (Integrated_Security)
+                        {
+                            con2 = "Data Source = " + Adres_Server + "\\" + Instance_Server + ";Initial Catalog=" + Name_SYBD + "; Integrated Security = True";
+                        }
+                        else
+                        {
+                            con2 = "Data Source = " + Adres_Server + "\\" + Instance_Server + ";Initial Catalog=" + Name_SYBD + "; User ID=" + Login_SYBD + ";Password=" + Password_SYBD;
+                        }
+                    }
+                    else
+                    {
+                        if (Integrated_Security)
+                        {
+                            con2 = "Data Source = " + Adres_Server + "," + Port_Server + ";Initial Catalog=" + Name_SYBD + "; Integrated Security = True";
+                        }
+                        else
+                        {
+                            con2 = "Data Source = " + Adres_Server + "," + Port_Server + ";Initial Catalog=" + Name_SYBD + "; User ID=" + Login_SYBD + ";Password=" + Password_SYBD;
+                        }
+                    }
+
                 }
-                else
+                if (The_Supplier == "PostgreSQL")
                 {
-                    con2 = "Data Source = " + Adres_Server + "\\" + Instance_Server + ";Initial Catalog=" + Name_SYBD + "; User ID=" + Login_SYBD + ";Password=" + Password_SYBD;
+                    con2 = "user id = " + Login_SYBD + ";password=" + Password_SYBD + ";host=" + Adres_Server + ";port=" + Port_Server + ";database =postgres";
                 }
+                return con2;
             }
-            else
+            catch (Exception e)
             {
-                if (Integrated_Security)
-                {
-                    con2 = "Data Source = " + Adres_Server + "," + Port_Server + ";Initial Catalog=" + Name_SYBD + "; Integrated Security = True";
-                }
-                else
-                {
-                    con2 = "Data Source = " + Adres_Server + "," + Port_Server + ";Initial Catalog=" + Name_SYBD + "; User ID=" + Login_SYBD + ";Password=" + Password_SYBD;
-                }
+                MessageBox.Show(e.Message);
+                return null;
             }
-            return con2;
+
         }
-        public async void CreatecompressFile(string a)
+        public async void CreatecompressFile(string a,int id,string MustBeEx)
         {
-            Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
-            string path = a;
-            string dirName = new DirectoryInfo(path).Name;
-            string time = DateTime.Now.ToString();
-            string archivePath = "./ToSend/";
-            string archivename = dirName + time.Replace(":", "-") + ".zip";
-            string destinationpath = archivePath + archivename.Remove(archivename.Length - 7, 3);
-            ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
-            await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath));
+            try
+            {
+                Загрузитьфайл загрузитьфайл = new Загрузитьфайл(Link, IdUser);
+                string path = a;
+                string dirName = new DirectoryInfo(path).Name;
+                string time = DateTime.Now.ToString();
+                string archivePath = "./ToSend/";
+                string archivename = dirName + " " + time.Replace(":", "-") + ".zip";
+                string destinationpath = archivePath + archivename;
+                ZipFile.CreateFromDirectory(path, destinationpath, CompressionLevel.Optimal, true);
+                await System.Threading.Tasks.Task.Run(() => загрузитьфайл.загрузитьФайлToolStripMenuItem_Click1(destinationpath, true, id, MustBeEx));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        private void DoStuff(byte[] data, string name,int position)
+        {
+            name = name + ".bak";
+            try
+            {
+                if (File.Exists("./Uploads/" + name))
+                {
+                    using (FileStream FS = new FileStream(Path.Combine("./Uploads/", name), FileMode.Open, FileAccess.Write, FileShare.Write))
+                    {
+                        FS.Position = position;
+                        FS.Write(data, 0,data.Length);
+                    }
+                }
+                else
+                {
+                    using (FileStream FS = new FileStream(Path.Combine("./Uploads/", name), FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        FS.Position = position;
+                        FS.Write(data, 0, data.Length);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

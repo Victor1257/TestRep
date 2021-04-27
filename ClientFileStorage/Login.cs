@@ -5,9 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -16,9 +19,14 @@ namespace ClientFileStorage
     
     public partial class Login : Form
     {
-        public static HubConnection _connection;
         public string IDUSER;
         public string LINK;
+        public HttpClient client;
+        public CookieContainer cookieContainer;
+        public HttpClientHandler HttpClientHandler;
+        private Uri baseAddress;
+        private HttpClientHandler handler;
+
         class Config
         {
             public string Link { get; set; }
@@ -27,6 +35,14 @@ namespace ClientFileStorage
         public Login()
         {
             InitializeComponent();
+                Opacity = 0;
+            Timer timer = new Timer();
+            timer.Tick += new EventHandler((sender, e) =>
+            {
+                if ((Opacity += 0.3d) == 1) timer.Stop();
+            });
+            timer.Interval = 100;
+            timer.Start();
             UpdateState(connected: false);
         }
 
@@ -45,35 +61,26 @@ namespace ClientFileStorage
             UpdateState(connected: false);
             try
             {
-                _connection = new HubConnectionBuilder()
-                    .WithUrl(addressTextBox.Text)
-                    .Build();
-                _connection.ServerTimeout = TimeSpan.FromMinutes(60);
+                baseAddress = new Uri(addressTextBox.Text);
+                CookieContainer cookieContainer = new CookieContainer();
+                handler = new HttpClientHandler();
+                handler.CookieContainer = cookieContainer;
+                client = new HttpClient(handler);
+                client.BaseAddress = baseAddress;
+                HttpResponseMessage response = await client.GetAsync(addressTextBox.Text);
+                response.EnsureSuccessStatusCode();
                 LINK = addressTextBox.Text;
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                Log(Color.Red, ex.ToString());
-                return;
+                Console.WriteLine(ex.Message);
             }
-            _connection.On<string,string,string>("broadcastMessage", (s1, s2,s3) => OnSend(s1, s2,s3));
-
-            Log(Color.Gray, "Starting connection...");
-            try
+            finally
             {
-                await _connection.StartAsync();
+                Log(Color.Gray, "Connection established.");
+                UpdateState(connected: true);
+                textBox1.Focus();
             }
-            catch (Exception ex)
-            {
-                Log(Color.Red, ex.ToString());
-                return;
-            }
-
-            Log(Color.Gray, "Connection established.");
-
-            UpdateState(connected: true);
-
-            textBox1.Focus();
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
@@ -81,7 +88,7 @@ namespace ClientFileStorage
             Log(Color.Gray, "Stopping connection...");
             try
             {
-                await _connection.StopAsync();
+                client = null;
             }
             catch (Exception ex)
             {
@@ -102,9 +109,25 @@ namespace ClientFileStorage
         {
             try
             {
-                await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text,textBox2.Text);
+               HttpResponseMessage responseMessage =await client.GetAsync("api/login/send?Email=" + textBox1.Text+ "&Password=" + textBox2.Text);
+                responseMessage.EnsureSuccessStatusCode();
+                var emp = await responseMessage.Content.ReadAsStringAsync();
+                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+                string[] Param = (string[])json_serializer.Deserialize(emp, typeof(string[]));
+                if (Param[0]=="true")
+                {
+                    IDUSER = Param[2];
+                    FileStorage newForm = new FileStorage(this.LINK, this.IDUSER);
+                    this.Hide();
+                    newForm.Show();
+                }
+                else
+                {
+                    textBox3.Text = "Неверный логин или пароль";
+                }
+                
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 Log(Color.Red, ex.ToString());
             }
@@ -119,30 +142,6 @@ namespace ClientFileStorage
             textBox1.Enabled = connected;
             textBox2.Enabled = connected;
             sendButton.Enabled = connected;
-        }
-
-        private async void OnSend(string name, string message,string UserId)
-        {
-            Log(Color.Black, message);
-            if (message=="true")
-            {
-                IDUSER = UserId;
-                FileStorage newForm = new FileStorage(this.LINK,this.IDUSER);
-                /*MessageBox.Show( Application.StartupPath );
-                MessageBox.Show( Path.GetDirectoryName(Application.StartupPath) );
-                MessageBox.Show( Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) );*/
-                //using (FileStream fs = new FileStream("C:/Users/meschaninov/Desktop/TestRep - копия/WindowsService1/config.json", FileMode.OpenOrCreate))
-                using (FileStream fs = new FileStream(Path.GetDirectoryName (Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath))) + "/WindowsService1/config.json", FileMode.OpenOrCreate))
-                {
-                    Config tom = new Config() { Link = LINK, IdUser = IDUSER };
-                    await JsonSerializer.SerializeAsync<Config>(fs, tom);
-                    Console.WriteLine("Data has been saved to file");
-                }
-
-                this.Hide();
-                newForm.Show();
- 
-            }    
         }
 
         private void Log(Color color, string message)
@@ -179,7 +178,22 @@ namespace ClientFileStorage
             {
                 try
                 {
-                    await _connection.InvokeAsync("Send", "WinFormsApp", textBox1.Text, textBox2.Text);
+                    HttpResponseMessage responseMessage = await client.GetAsync("api/user?Email=" + textBox1.Text + "&Password=" + textBox2.Text);
+                    responseMessage.EnsureSuccessStatusCode();
+                    var emp = await responseMessage.Content.ReadAsStringAsync();
+                    JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+                    string[] Param = (string[])json_serializer.Deserialize(emp, typeof(string[]));
+                    if (Param[0] == "true")
+                    {
+                        IDUSER = Param[2];
+                        FileStorage newForm = new FileStorage(this.LINK, this.IDUSER);
+                        this.Hide();
+                        newForm.Show();
+                    }
+                    else
+                    {
+                        textBox3.Text = "Неверный логин или пароль";
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -195,5 +209,9 @@ namespace ClientFileStorage
             else textBox2.UseSystemPasswordChar = true;
         }
 
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            client = null;
+        }
     }
 }

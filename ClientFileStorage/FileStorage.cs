@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
+using System.Drawing;
 
 namespace ClientFileStorage
 {
@@ -28,6 +29,29 @@ namespace ClientFileStorage
         public FileStorage(string LINK, string IDUser)
         {
             InitializeComponent();
+            try
+            {
+                //_connection = new HubConnectionBuilder()
+                //    .WithUrl(LINK)
+                //    .AddMessagePackProtocol()
+                //    .WithAutomaticReconnect()
+                //    .Build();
+                //_connection.KeepAliveInterval = TimeSpan.FromSeconds(1);
+                //_connection.ServerTimeout = TimeSpan.FromMinutes(10);
+            }
+            catch (Exception ex)
+            {
+                textBox1.Text = ex.Message;
+                return;
+            }
+            Opacity = 0;
+            Timer timer = new Timer();
+            timer.Tick += new EventHandler((sender, e) =>
+            {
+                if ((Opacity += 0.3d) == 1) timer.Stop();
+            });
+            timer.Interval = 100;
+            timer.Start();
             this.textBox1.Text = LINK;
             Link = LINK;
             IdUser = IDUser;
@@ -52,16 +76,37 @@ namespace ClientFileStorage
         public List<Movie> Movies { get; set; }
         private void OnSend(string movie1)
         {
-            listView1.Items.Clear();
-            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-            List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
-            foreach (Movie mo in movies)
+            try
             {
-                listView = new ListViewItem(mo.IDUser);
-                listView.SubItems.Add(mo.Title);
-                listView.SubItems.Add(mo.ReleaseDate.ToString());
-                listView.SubItems.Add(mo.Name);
-                listView1.Items.Add(listView);
+                listView1.Items.Clear();
+                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+                List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+                ImageList imageList = new ImageList();
+                Image imageData = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/DataBase.jpg");
+                Image imageFile = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/File.png");
+                imageList.Images.Add(imageData);
+                imageList.Images.Add(imageFile);
+                listView1.SmallImageList = imageList;
+                int i = 0;
+                foreach (Movie mo in movies)
+                {
+                    listView = new ListViewItem(mo.IDUser);
+                    listView.SubItems.Add(mo.Title);
+                    listView.SubItems.Add(mo.ReleaseDate.ToString());
+                    listView.SubItems.Add(mo.Name);
+                    listView1.Items.Add(listView);
+                    if (Path.GetExtension(mo.Name.ToString()) == ".gz")
+                    {
+                        listView1.Items[i].ImageIndex = 0;
+                    }
+                    else
+                        listView1.Items[i].ImageIndex = 1;
+                    i++;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
 
         }
@@ -71,6 +116,13 @@ namespace ClientFileStorage
             listView1.Items.Clear();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
             List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+            ImageList imageList = new ImageList();
+            Image imageData = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/DataBase.jpg");
+            Image imageFile = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/File.png");
+            imageList.Images.Add(imageData);
+            imageList.Images.Add(imageFile);
+            listView1.SmallImageList = imageList;
+            int i = 0;
             foreach (Movie mo in movies)
             {
                 listView = new ListViewItem(mo.IDUser);
@@ -78,6 +130,13 @@ namespace ClientFileStorage
                 listView.SubItems.Add(mo.ReleaseDate.ToString());
                 listView.SubItems.Add(mo.Name);
                 listView1.Items.Add(listView);
+                if (Path.GetExtension(mo.Name.ToString()) == ".gz")
+                {
+                    listView1.Items[i].ImageIndex = 0;
+                }
+                else
+                    listView1.Items[i].ImageIndex = 1;
+                i++;
             }
 
         }
@@ -117,7 +176,9 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                    DataGridViewLinkCell linkCell1 = new DataGridViewLinkCell();
                     dataGridView1[19, i] = linkCell;
+                    dataGridView1[0, i] = linkCell1;
                 }
             }
             catch (Exception ex)
@@ -128,27 +189,14 @@ namespace ClientFileStorage
 
         private async void Form2_Load(object sender, EventArgs e)
         {
-            this.taskTableAdapter.Fill(this.modelDataSet.Task);
 
-            sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
-            //    sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+           // this.taskTableAdapter.Fill(this.modelDataSet.Task);
+           // sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
+           // sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
             sqlConnection.Open();
             listView1.View = View.Details;
             Console.WriteLine("State: {0}", sqlConnection.State);
-            try
-            {
-                _connection = new HubConnectionBuilder()
-                    .WithUrl(Link)
-                    .AddMessagePackProtocol()
-                    .WithAutomaticReconnect()
-                    .Build();
-                _connection.ServerTimeout = TimeSpan.FromMinutes(10);
-            }
-            catch (Exception ex)
-            {
-                textBox1.Text = ex.Message;
-                return;
-            }
             _connection.On<string>("Receive", (s1) => OnSend(s1));
             _connection.On<byte[], string, long, long, long>("doStuff", (s1, s2, s3, s4, s5) => DoStuff(s1, s2, s3, s4, s5));
             _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
@@ -194,7 +242,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -265,7 +313,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -336,7 +384,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -407,7 +455,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -478,7 +526,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -549,7 +597,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -620,7 +668,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -682,6 +730,7 @@ namespace ClientFileStorage
                     }
                 }
             }
+            sqlDataAdapter.Update(dataSet, "Task");
         }
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -715,7 +764,7 @@ namespace ClientFileStorage
             this.listView1.Sort();
         }
 
-
+       
 
         private void DoStuff(byte[] data, string name, long Position, long Lenght, long READBUFFER_SIZE)
         {
@@ -738,16 +787,17 @@ namespace ClientFileStorage
                         FS.Write(data, 0, (int)READBUFFER_SIZE);
                     }
                 }
-                progressBar1.Minimum = 0;
-                progressBar1.Maximum = (int)Lenght;
-                progressBar1.Value = (int)Position;
-                if (progressBar1.Value >= (int)Lenght - 1048576)
-                {
-                    progressBar1.Value = 0;
-                    MessageBox.Show("Файл загружен!");
-                }
+                //progressBar1.Minimum = 0;
+                //progressBar1.Maximum = (int)Lenght;
+                //progressBar1.Value = (int)Position;
+                //if (progressBar1.Value >= (int)Lenght - 1048576)
+                //{
+                //    progressBar1.Value = 0;
+                //    MessageBox.Show("Файл загружен!");
+                //}
 
             }
+            
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -935,7 +985,52 @@ namespace ClientFileStorage
                         }
                     }
                 }
+                if (e.ColumnIndex == 0)
+                {
+                    List<string> list = new List<string>();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    SqlDataReader sqlReader = null;
+                    string b="";
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[e.RowIndex]["IsFile"]) == true)
+                    {
+                        string sql = "SELECT * FROM [File] " + "WHERE Idfile = @IdFile";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdFile", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b = Convert.ToString(sqlReader["FileName"]);
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b, "Файл", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        string sql = "SELECT * FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdSYBD", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b="Поставщик СУБД: "+ Convert.ToString(sqlReader["The_Supplier"])+ "\r\n";
+                            b =b+ "Адрес сервера: " + Convert.ToString(sqlReader["Adres_Server"])+ "\r\n";
+                            b =b + "Порт сервера: " + Convert.ToString(sqlReader["Port_Server"])+ "\r\n";
+                            b = b + "Экземпляр сервера: " + Convert.ToString(sqlReader["Instance_Server"])+ "\r\n";
+                            b = b + "Логин СУБД: " + Convert.ToString(sqlReader["Login_SYBD"])+ "\r\n";
+                            b = b + "Пароль СУБД: " + Convert.ToString(sqlReader["Password_SYBD"])+ "\r\n";
+                            b = b + "Путь копирования: " + Convert.ToString(sqlReader["Way"])+ "\r\n";
+                            b = b + "Имя СУБД: " + Convert.ToString(sqlReader["Name_SYBD"])+ "\r\n";
+                            b = b + "Integrated_Security: " + Convert.ToString(sqlReader["Integrated_Security"])+ "\r\n";
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b,"СУБД",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -977,6 +1072,10 @@ namespace ClientFileStorage
         public async System.Threading.Tasks.Task WriteFileToServer(string[] Data)
         {
             await _connection.InvokeAsync("WriteFileToDataBase", Data, IdUser);
+        }
+        public async System.Threading.Tasks.Task WriteSYBDToServer(string[] Data)
+        {
+            await _connection.InvokeAsync("WriteSYBDToDataBase", Data, IdUser);
         }
 
         private void FileStorage_FormClosed(object sender, FormClosedEventArgs e)

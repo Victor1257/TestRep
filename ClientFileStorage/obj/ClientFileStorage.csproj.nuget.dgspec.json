@@ -1,22 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {}
+    "C:\\Users\\petrov-vn\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj": {}
   },
   "projects": {
-    "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj": {
+    "C:\\Users\\petrov-vn\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
+        "projectUniqueName": "C:\\Users\\petrov-vn\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
         "projectName": "ClientFileStorage",
-        "projectPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\ClientFileStorage.csproj",
-        "packagesPath": "C:\\Users\\viper\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\viper\\Desktop\\TestRep\\ClientFileStorage\\obj\\",
+        "projectPath": "C:\\Users\\petrov-vn\\Desktop\\3\\ClientFileStorage\\ClientFileStorage.csproj",
+        "packagesPath": "C:\\Users\\petrov-vn\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\petrov-vn\\Desktop\\3\\ClientFileStorage\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "C:\\Users\\viper\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\petrov-vn\\Desktop\\NuGet.Config",
+          "C:\\Users\\petrov-vn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"
@@ -37,6 +42,14 @@
             "Carbon.Json": {
               "target": "Package",
               "version": "[2.5.0, )"
+            },
+            "Devart.Data": {
+              "target": "Package",
+              "version": "[5.0.2652, )"
+            },
+            "Devart.Data.PostgreSql": {
+              "target": "Package",
+              "version": "[7.20.1860, )"
             },
             "MediaBrowser.Common": {
               "target": "Package",
@@ -129,6 +142,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[5.0.4, )"
             },
             "System.Buffers": {
               "target": "Package",

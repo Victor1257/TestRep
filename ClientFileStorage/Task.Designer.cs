@@ -30,10 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.taskBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.modelDataSet = new ClientFileStorage.ModelDataSet();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.taskTableAdapter = new ClientFileStorage.ModelDataSetTableAdapters.TaskTableAdapter();
-            this.tableAdapterManager = new ClientFileStorage.ModelDataSetTableAdapters.TableAdapterManager();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -86,8 +83,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.radioButton10 = new System.Windows.Forms.RadioButton();
             this.radioButton9 = new System.Windows.Forms.RadioButton();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
@@ -109,7 +106,6 @@
             this.radioButton7 = new System.Windows.Forms.RadioButton();
             this.radioButton8 = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.taskBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modelDataSet)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -134,28 +130,10 @@
             // taskBindingSource
             // 
             this.taskBindingSource.DataMember = "Task";
-            this.taskBindingSource.DataSource = this.modelDataSet;
-            // 
-            // modelDataSet
-            // 
-            this.modelDataSet.DataSetName = "ModelDataSet";
-            this.modelDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // taskTableAdapter
-            // 
-            this.taskTableAdapter.ClearBeforeFill = true;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.FileTableAdapter = null;
-            this.tableAdapterManager.SYBDTableAdapter = null;
-            this.tableAdapterManager.TaskTableAdapter = this.taskTableAdapter;
-            this.tableAdapterManager.UpdateOrder = ClientFileStorage.ModelDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
             // listBox1
             // 
@@ -225,8 +203,7 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "ежедневная",
-            "еженедельная",
-            "ежемесячная"});
+            "еженедельная"});
             this.comboBox1.Location = new System.Drawing.Point(151, 13);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(161, 21);
@@ -686,6 +663,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button4);
             this.tabPage2.Controls.Add(this.groupBox13);
             this.tabPage2.Controls.Add(this.groupBox12);
             this.tabPage2.Controls.Add(this.groupBox11);
@@ -702,27 +680,26 @@
             this.tabPage2.Text = "Параметры подключения";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // groupBox13
-            // 
-            this.groupBox13.Controls.Add(this.button4);
-            this.groupBox13.Controls.Add(this.radioButton10);
-            this.groupBox13.Controls.Add(this.radioButton9);
-            this.groupBox13.Location = new System.Drawing.Point(13, 342);
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(784, 60);
-            this.groupBox13.TabIndex = 58;
-            this.groupBox13.TabStop = false;
-            this.groupBox13.Text = "Integrated Security";
-            // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(398, 24);
+            this.button4.Location = new System.Drawing.Point(551, 366);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(109, 23);
             this.button4.TabIndex = 56;
             this.button4.Text = "Подключиться";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.radioButton10);
+            this.groupBox13.Controls.Add(this.radioButton9);
+            this.groupBox13.Location = new System.Drawing.Point(13, 342);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(396, 60);
+            this.groupBox13.TabIndex = 58;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Integrated Security";
             // 
             // radioButton10
             // 
@@ -763,7 +740,6 @@
             this.comboBox8.Name = "comboBox8";
             this.comboBox8.Size = new System.Drawing.Size(770, 21);
             this.comboBox8.TabIndex = 1;
-            this.comboBox8.TextChanged += new System.EventHandler(this.comboBox8_TextChanged);
             // 
             // groupBox11
             // 
@@ -894,6 +870,7 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(770, 21);
             this.comboBox2.TabIndex = 0;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // radioButton7
             // 
@@ -935,7 +912,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.taskBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modelDataSet)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
