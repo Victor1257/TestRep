@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using Npgsql;
 
 namespace ClientFileStorage
 {
@@ -27,6 +28,14 @@ namespace ClientFileStorage
         public Task(string Link, string IdUser)
         {
             InitializeComponent();
+            Opacity = 0;
+            Timer timer = new Timer();
+            timer.Tick += new EventHandler((sender, e) =>
+            {
+                if ((Opacity += 0.3d) == 1) timer.Stop();
+            });
+            timer.Interval = 100;
+            timer.Start();
             IDUSER = IdUser;
             //dateTimePicker1.CustomFormat = "dd/MM/yyyy";
             dateTimePicker2.Format = DateTimePickerFormat.Time;
@@ -58,8 +67,13 @@ namespace ClientFileStorage
             else
             {
                 //  sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=False");
-                //   sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\meschaninov\Desktop\TestRep - копия\ClientFileStorage\Database1.mdf; Integrated Security = True");
+<<<<<<< HEAD
+              //  sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
                 sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + System.IO.Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
+=======
+                sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
+                //sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + System.IO.Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
+>>>>>>> 0059e1e51aec3b06275ed2f338eab13cd0b8bd6c
                 await sqlConnection.OpenAsync();
             }
 
@@ -82,7 +96,7 @@ namespace ClientFileStorage
             {
                 sqlConnection.Close();
             }
-         //   _cp.ReloadData();
+            _cp.ReloadData();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -306,9 +320,8 @@ namespace ClientFileStorage
                     stringTask[16] = Convert.ToString(sqlReader["TimeNoPeriodic"]);
                     stringTask[17] = Convert.ToString(sqlReader["MustBeExecuted"]);
                     stringTask[18] = Convert.ToString(sqlReader["GUID"]);
-
-                    await _cp.WriteTaskToServer(stringTask);
                 }
+                await _cp.WriteTaskToServer(stringTask);
             }
            
             catch (Exception ex)
@@ -338,7 +351,45 @@ namespace ClientFileStorage
                         stringTask2[0] = Convert.ToString(sqlReader2["IdFile"]);
                         stringTask2[1] = Convert.ToString(sqlReader2["FileName"]);
                     }
-                    await _cp.WriteFileToServer(stringTask2);
+                   await _cp.WriteFileToServer(stringTask2);
+                }
+                else
+                {
+                    string[] stringTask2 = new string[10];
+                    sqlReader2 = await command1.ExecuteReaderAsync();
+                    while (await sqlReader2.ReadAsync())
+                    {
+                        stringTask2[0] = Convert.ToString(sqlReader2["IdSYBD"]);
+                        stringTask2[1] = Convert.ToString(sqlReader2["The_Supplier"]);
+                        stringTask2[2] = Convert.ToString(sqlReader2["Adres_Server"]);
+                        stringTask2[3] = Convert.ToString(sqlReader2["Port_Server"]);
+                        stringTask2[4] = Convert.ToString(sqlReader2["Instance_Server"]);
+                        stringTask2[5] = Convert.ToString(sqlReader2["Login_SYBD"]);
+                        stringTask2[6] = Convert.ToString(sqlReader2["Password_SYBD"]);
+                        stringTask2[7] = Convert.ToString(sqlReader2["Way"]);
+                        stringTask2[8] = Convert.ToString(sqlReader2["Name_SYBD"]);
+                        stringTask2[9] = Convert.ToString(sqlReader2["Integrated_Security"]);
+                    }
+                    await _cp.WriteSYBDToServer(stringTask2);
+                }
+                else
+                {
+                    string[] stringTask2 = new string[10];
+                    sqlReader2 = await command1.ExecuteReaderAsync();
+                    while (await sqlReader2.ReadAsync())
+                    {
+                        stringTask2[0] = Convert.ToString(sqlReader2["IdSYBD"]);
+                        stringTask2[1] = Convert.ToString(sqlReader2["The_Supplier"]);
+                        stringTask2[2] = Convert.ToString(sqlReader2["Adres_Server"]);
+                        stringTask2[3] = Convert.ToString(sqlReader2["Port_Server"]);
+                        stringTask2[4] = Convert.ToString(sqlReader2["Instance_Server"]);
+                        stringTask2[5] = Convert.ToString(sqlReader2["Login_SYBD"]);
+                        stringTask2[6] = Convert.ToString(sqlReader2["Password_SYBD"]);
+                        stringTask2[7] = Convert.ToString(sqlReader2["Way"]);
+                        stringTask2[8] = Convert.ToString(sqlReader2["Name_SYBD"]);
+                        stringTask2[9] = Convert.ToString(sqlReader2["Integrated_Security"]);
+                    }
+                    await _cp.WriteSYBDToServer(stringTask2);
                 }
             }
             catch (Exception ex)
@@ -616,71 +667,92 @@ namespace ClientFileStorage
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string con1;
-            if (comboBox4.Text == "")
+            if (comboBox2.Text == "Microsoft")
             {
-                if (radioButton9.Checked)
-                {
-                    con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; Integrated Security = True";
-                }
-                else
-                {
-                    con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
-                }
-            }
-            else
-            {
-                if (radioButton9.Checked)
-                {
-                    con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; Integrated Security = True";
-                }
-                else
-                {
-                    con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
-                }
-            }
-            SqlConnection sqlConnection1 = new SqlConnection(@con1);
-            sqlConnection1.Open();
-            Console.WriteLine(sqlConnection1.State.ToString());
-            if (sqlConnection1.State.ToString() == "Open")
-            {
+                string con1;
                 if (comboBox4.Text == "")
                 {
-                    comboBox3.Items.Add(comboBox3.Text);
-                    comboBox5.Items.Add(comboBox5.Text);
+                    if (radioButton9.Checked)
+                    {
+                        con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; Integrated Security = True";
+                    }
+                    else
+                    {
+                        con1 = "Data Source = " + comboBox3.Text + "\\" + comboBox5.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
+                    }
                 }
                 else
-                    comboBox3.Items.Add(comboBox3.Text);
-                comboBox4.Items.Add(comboBox4.Text);
+                {
+                    if (radioButton9.Checked)
+                    {
+                        con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; Integrated Security = True";
+                    }
+                    else
+                    {
+                        con1 = "Data Source = " + comboBox3.Text + "," + comboBox4.Text + "; User ID=" + comboBox6.Text + ";Password=" + textBox2.Text;
+                    }
+                }
+                SqlConnection sqlConnection1 = new SqlConnection(@con1);
+                sqlConnection1.Open();
+                Console.WriteLine(sqlConnection1.State.ToString());
+                if (sqlConnection1.State.ToString() == "Open")
+                {
+                    if (comboBox4.Text == "")
+                    {
+                        comboBox3.Items.Add(comboBox3.Text);
+                        comboBox5.Items.Add(comboBox5.Text);
+                    }
+                    else
+                        comboBox3.Items.Add(comboBox3.Text);
+                    comboBox4.Items.Add(comboBox4.Text);
+                }
+                SqlCommand command2 = new SqlCommand("SELECT name  FROM sys.databases", sqlConnection1);
+                SqlDataReader reader = command2.ExecuteReader();
+                bool temp = false;  // первый элемент необходимо пропустить, так как он не является именем бд
+                while (reader.Read())
+                {
+                    comboBox8.Items.Add(reader[0]);
+                    if (temp)
+                        dblist.Add(reader[0].ToString());
+                    temp = true;
+                }
             }
-            SqlCommand command2 = new SqlCommand("SELECT name  FROM sys.databases", sqlConnection1);
-            SqlDataReader reader = command2.ExecuteReader();
-            bool temp = false;  // первый элемент необходимо пропустить, так как он не является именем бд
-            while (reader.Read())
+            if (comboBox2.Text == "PostgreSQL")
             {
-                comboBox8.Items.Add(reader[0]);
-                if (temp)
-                    dblist.Add(reader[0].ToString());
-                temp = true;
+                string con1;
+                con1 = "user id = " + comboBox6.Text + ";password=" + textBox2.Text + ";host=" + comboBox3.Text + ";port=" + comboBox4.Text + ";database =postgres";
+                NpgsqlConnection conn = new NpgsqlConnection(con1);
+                conn.Open();
+                NpgsqlCommand command2 = new NpgsqlCommand("SELECT datname FROM pg_database", conn);
+                NpgsqlDataReader reader = command2.ExecuteReader();
+                bool temp = false;
+                while (reader.Read())
+                {
+                    comboBox8.Items.Add(reader[0]);
+                    if (temp)
+                        dblist.Add(reader[0].ToString());
+                    temp = true;
+                }
+
             }
 
         }
 
         List<string> dblist = new List<string>();
-        private void comboBox8_TextChanged(object sender, EventArgs e)
+        
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox8.Items.Clear();
-            comboBox8.Focus();
-            comboBox8.SelectionStart = comboBox8.Text.Length;
-            for (int i = 0; i < dblist.Count; i++)
+            if (comboBox2.SelectedItem.ToString() == "PostgreSQL")
             {
-                string tempstring = dblist.ElementAt(i).ToString();
-                if (tempstring.Contains(comboBox8.Text))
-                {
-                    comboBox8.Items.Add(tempstring);
-                }
+                groupBox13.Enabled = false;
+                groupBox9.Enabled = true;
+                groupBox10.Enabled = true;
             }
-            //comboBox8.DroppedDown = true;
+            if (comboBox2.SelectedItem.ToString() == "Microsoft")
+            {
+                groupBox13.Enabled = true;
+            }
         }
     }
 }

@@ -9,6 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO.Compression;
+using System.Drawing;
+<<<<<<< HEAD
+using System.Net.Http;
+using System.Text.Json;
+using System.Text;
+=======
+>>>>>>> 0059e1e51aec3b06275ed2f338eab13cd0b8bd6c
 
 namespace ClientFileStorage
 {
@@ -16,7 +23,6 @@ namespace ClientFileStorage
     {
         public string Link;
         public string IdUser;
-        public HubConnection _connection;
         private ListViewColumnSorter lvwColumnSorter;
         public ListViewItem listView;
         public string price;
@@ -24,10 +30,37 @@ namespace ClientFileStorage
         private SqlCommandBuilder sqlBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
         private DataSet dataSet = null;
-
-        public FileStorage(string LINK, string IDUser)
+        public HttpClient client;
+        public FileStorage(string LINK, string IDUser, HttpClient httpClient)
         {
             InitializeComponent();
+<<<<<<< HEAD
+            client = httpClient;
+=======
+            try
+            {
+                //_connection = new HubConnectionBuilder()
+                //    .WithUrl(LINK)
+                //    .AddMessagePackProtocol()
+                //    .WithAutomaticReconnect()
+                //    .Build();
+                //_connection.KeepAliveInterval = TimeSpan.FromSeconds(1);
+                //_connection.ServerTimeout = TimeSpan.FromMinutes(10);
+            }
+            catch (Exception ex)
+            {
+                textBox1.Text = ex.Message;
+                return;
+            }
+>>>>>>> 0059e1e51aec3b06275ed2f338eab13cd0b8bd6c
+            Opacity = 0;
+            Timer timer = new Timer();
+            timer.Tick += new EventHandler((sender, e) =>
+            {
+                if ((Opacity += 0.3d) == 1) timer.Stop();
+            });
+            timer.Interval = 100;
+            timer.Start();
             this.textBox1.Text = LINK;
             Link = LINK;
             IdUser = IDUser;
@@ -52,16 +85,37 @@ namespace ClientFileStorage
         public List<Movie> Movies { get; set; }
         private void OnSend(string movie1)
         {
-            listView1.Items.Clear();
-            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-            List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
-            foreach (Movie mo in movies)
+            try
             {
-                listView = new ListViewItem(mo.IDUser);
-                listView.SubItems.Add(mo.Title);
-                listView.SubItems.Add(mo.ReleaseDate.ToString());
-                listView.SubItems.Add(mo.Name);
-                listView1.Items.Add(listView);
+                listView1.Items.Clear();
+                JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+                List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+                ImageList imageList = new ImageList();
+                Image imageData = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/DataBase.jpg");
+                Image imageFile = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/File.png");
+                imageList.Images.Add(imageData);
+                imageList.Images.Add(imageFile);
+                listView1.SmallImageList = imageList;
+                int i = 0;
+                foreach (Movie mo in movies)
+                {
+                    listView = new ListViewItem(mo.IDUser);
+                    listView.SubItems.Add(mo.Title);
+                    listView.SubItems.Add(mo.ReleaseDate.ToString());
+                    listView.SubItems.Add(mo.Name);
+                    listView1.Items.Add(listView);
+                    if (Path.GetExtension(mo.Name.ToString()) == ".gz")
+                    {
+                        listView1.Items[i].ImageIndex = 0;
+                    }
+                    else
+                        listView1.Items[i].ImageIndex = 1;
+                    i++;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
 
         }
@@ -71,6 +125,13 @@ namespace ClientFileStorage
             listView1.Items.Clear();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
             List<Movie> movies = (List<Movie>)json_serializer.Deserialize(movie1, typeof(List<Movie>));
+            ImageList imageList = new ImageList();
+            Image imageData = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/DataBase.jpg");
+            Image imageFile = Image.FromFile("C:/Users/meschaninov/Desktop/3/ClientFileStorage/Image/File.png");
+            imageList.Images.Add(imageData);
+            imageList.Images.Add(imageFile);
+            listView1.SmallImageList = imageList;
+            int i = 0;
             foreach (Movie mo in movies)
             {
                 listView = new ListViewItem(mo.IDUser);
@@ -78,6 +139,13 @@ namespace ClientFileStorage
                 listView.SubItems.Add(mo.ReleaseDate.ToString());
                 listView.SubItems.Add(mo.Name);
                 listView1.Items.Add(listView);
+                if (Path.GetExtension(mo.Name.ToString()) == ".gz")
+                {
+                    listView1.Items[i].ImageIndex = 0;
+                }
+                else
+                    listView1.Items[i].ImageIndex = 1;
+                i++;
             }
 
         }
@@ -98,7 +166,7 @@ namespace ClientFileStorage
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
                     dataGridView1[19, i] = linkCell;
                 }
-                Check();
+                //Check();
             }
             catch (Exception ex)
             {
@@ -117,7 +185,9 @@ namespace ClientFileStorage
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                    DataGridViewLinkCell linkCell1 = new DataGridViewLinkCell();
                     dataGridView1[19, i] = linkCell;
+                    dataGridView1[0, i] = linkCell1;
                 }
             }
             catch (Exception ex)
@@ -126,37 +196,33 @@ namespace ClientFileStorage
             }
         }
 
-        private async void Form2_Load(object sender, EventArgs e)
+        private  void Form2_Load(object sender, EventArgs e)
         {
-            this.taskTableAdapter.Fill(this.modelDataSet.Task);
 
+           // this.taskTableAdapter.Fill(this.modelDataSet.Task);
+<<<<<<< HEAD
             sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
-            //    sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+           // sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+          //  sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
             sqlConnection.Open();
             listView1.View = View.Details;
             Console.WriteLine("State: {0}", sqlConnection.State);
-            try
-            {
-                _connection = new HubConnectionBuilder()
-                    .WithUrl(Link)
-                    .AddMessagePackProtocol()
-                    .WithAutomaticReconnect()
-                    .Build();
-                _connection.ServerTimeout = TimeSpan.FromMinutes(10);
-            }
-            catch (Exception ex)
-            {
-                textBox1.Text = ex.Message;
-                return;
-            }
+          
+=======
+           // sqlConnection = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + Path.GetDirectoryName(Path.GetDirectoryName(Application.StartupPath)) + "\\Database1.mdf; Integrated Security = True");
+           // sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Path.GetFullPath("Database1.mdf") + ";Integrated Security=True");
+            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\meschaninov\Desktop\3\ClientFileStorage\Database1.mdf;Integrated Security=True");
+            sqlConnection.Open();
+            listView1.View = View.Details;
+            Console.WriteLine("State: {0}", sqlConnection.State);
             _connection.On<string>("Receive", (s1) => OnSend(s1));
             _connection.On<byte[], string, long, long, long>("doStuff", (s1, s2, s3, s4, s5) => DoStuff(s1, s2, s3, s4, s5));
             _connection.On<string>("FileDelete", (s1) => DeleteFile(s1));
             _connection.On<string>("ReceiveAll", (s1) => OnSendAll(s1));
+>>>>>>> 0059e1e51aec3b06275ed2f338eab13cd0b8bd6c
 
             try
             {
-                await _connection.StartAsync();
                 LoadData();
             }
             catch (Exception ex)
@@ -170,8 +236,10 @@ namespace ClientFileStorage
         {
             try
             {
-                await _connection.InvokeAsync("SendMovie", IdUser);
-
+                HttpResponseMessage responseMessage = await client.GetAsync("api/user/getlist");
+                responseMessage.EnsureSuccessStatusCode();
+                var emp = await responseMessage.Content.ReadAsStringAsync();
+                OnSend(emp);
             }
             catch (Exception ex)
             {
@@ -179,6 +247,513 @@ namespace ClientFileStorage
             }
         }
 
+<<<<<<< HEAD
+        //private async void Check()
+        //{
+        //    for (int i = 0; i < dataSet.Tables["Task"].Rows.Count; i++)
+        //    {
+        //        DateTime Time = DateTime.Now;
+        //        if (Time.DayOfWeek == DayOfWeek.Monday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Понедельник;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Понедельник;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Tuesday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Вторник;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Вторник;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Wednesday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Среда;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Среда;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Thursday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Четверг;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Четверг;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Friday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Пятница;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Пятница;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Saturday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Суббота;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Суббота;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (Time.DayOfWeek == DayOfWeek.Sunday)
+        //        {
+        //            if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["IsPeriodic"]))
+        //            {
+        //                if (!Convert.ToBoolean(dataSet.Tables["Task"].Rows[i]["AOneTimeJob"]))
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Воскресенье;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+        //                            {
+        //                                if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
+        //                                {
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString("dd.MM.yyyy"), Time.Date.ToString("dd.MM.yyyy"));
+        //                                    dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                    {
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                        dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay.ToString());
+        //                                        while (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay <= Time.TimeOfDay)
+        //                                        {
+        //                                            dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).AddMinutes(Convert.ToInt32(dataSet.Tables["Task"].Rows[i][9]) * 60);
+        //                                            sqlDataAdapter.Update(dataSet, "Task");
+        //                                            string[] stringTask = new string[19];
+        //                                            for (int j = 0; j < 19; j++)
+        //                                            {
+        //                                                stringTask[j] = dataSet.Tables["Task"].Rows[i][j].ToString();
+        //                                            }
+        //                                            await _connection.InvokeAsync("WriteTaskToDataBase", stringTask, IdUser);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (Convert.ToString(dataSet.Tables["Task"].Rows[i]["DayOfTheWeek"]).Contains("Воскресенье;"))
+        //                    {
+        //                        if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
+        //                        {
+        //                            if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay > Time.TimeOfDay)
+        //                            {
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date.ToString(), Time.Date.ToString());
+        //                                dataSet.Tables["Task"].Rows[i]["MustBeExecuted"] = Convert.ToString(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Replace(Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).TimeOfDay.ToString(), Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["AOneTimeJobValue"]).TimeOfDay.ToString());
+        //                                sqlDataAdapter.Update(dataSet, "Task");
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    sqlDataAdapter.Update(dataSet, "Task");
+        //}
+=======
         private async void Check()
         {
             for (int i = 0; i < dataSet.Tables["Task"].Rows.Count; i++)
@@ -194,7 +769,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -265,7 +840,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -336,7 +911,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -407,7 +982,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -478,7 +1053,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -549,7 +1124,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -620,7 +1195,7 @@ namespace ClientFileStorage
                             {
                                 if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartDate"]).Date <= Time.Date)
                                 {
-                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay <= Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
+                                    if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["StartsAt"]).TimeOfDay != Time.TimeOfDay && Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["EndsIn"]).TimeOfDay >= Time.TimeOfDay)
                                     {
                                         if (Convert.ToDateTime(dataSet.Tables["Task"].Rows[i]["MustBeExecuted"]).Date != Time.Date)
                                         {
@@ -682,7 +1257,9 @@ namespace ClientFileStorage
                     }
                 }
             }
+            sqlDataAdapter.Update(dataSet, "Task");
         }
+>>>>>>> 0059e1e51aec3b06275ed2f338eab13cd0b8bd6c
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -715,7 +1292,7 @@ namespace ClientFileStorage
             this.listView1.Sort();
         }
 
-
+       
 
         private void DoStuff(byte[] data, string name, long Position, long Lenght, long READBUFFER_SIZE)
         {
@@ -738,16 +1315,17 @@ namespace ClientFileStorage
                         FS.Write(data, 0, (int)READBUFFER_SIZE);
                     }
                 }
-                progressBar1.Minimum = 0;
-                progressBar1.Maximum = (int)Lenght;
-                progressBar1.Value = (int)Position;
-                if (progressBar1.Value >= (int)Lenght - 1048576)
-                {
-                    progressBar1.Value = 0;
-                    MessageBox.Show("Файл загружен!");
-                }
+                //progressBar1.Minimum = 0;
+                //progressBar1.Maximum = (int)Lenght;
+                //progressBar1.Value = (int)Position;
+                //if (progressBar1.Value >= (int)Lenght - 1048576)
+                //{
+                //    progressBar1.Value = 0;
+                //    MessageBox.Show("Файл загружен!");
+                //}
 
             }
+            
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -788,8 +1366,21 @@ namespace ClientFileStorage
             textBox1.Text = price;
             try
             {
-                await _connection.InvokeAsync("GetMovie", price, IdUser);
+                byte[] READBUFFER_SIZE = new byte[1024];
+                using (var httpResponseMessage = await client.GetStreamAsync("api/user7/Download"))
+                {
+
+                    httpResponseMessage.Read(READBUFFER_SIZE, 0, 1024);
+                    File.WriteAllBytes("./Uploads/5345.txt", READBUFFER_SIZE);
+                    using (FileStream FS = new FileStream("./Uploads/5345.txt", FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        long n = FS.Length;
+                        httpResponseMessage.CopyTo(FS);
+                        FS.Write(READBUFFER_SIZE, 0, 1024);
+                    }
+                }
             }
+            
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -810,7 +1401,8 @@ namespace ClientFileStorage
                 if (MessageBox.Show("Удалить файл?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                            == DialogResult.Yes)
                 {
-                    await _connection.InvokeAsync("DeleteFile", price, IdUser);
+                    HttpResponseMessage responseMessage = await client.DeleteAsync("api/user/" + price);
+                    responseMessage.EnsureSuccessStatusCode();
                     получитьИлиОбновитьСписокФайловToolStripMenuItem_Click(sender, e);
                 }
             }
@@ -824,8 +1416,10 @@ namespace ClientFileStorage
         {
             try
             {
-                await _connection.InvokeAsync("SendAllMovie", IdUser);
-
+                HttpResponseMessage responseMessage = await client.GetAsync("api/user1/GetAllList");
+                responseMessage.EnsureSuccessStatusCode();
+                var emp = await responseMessage.Content.ReadAsStringAsync();
+                OnSendAll(emp);
             }
             catch (Exception ex)
             {
@@ -840,45 +1434,45 @@ namespace ClientFileStorage
             Form2_Load(sender, e);
         }
 
-        private async void загрузитьФайлToolStripMenuItem_Click1(string FileNamePath)
-        {
-            var fileName = new DirectoryInfo(FileNamePath).Name;
-            long READBUFFER_SIZE = 1048576;
-            int offset = 0;
-            long Pos = 0;
-            try
-            {
-                using (FileStream FS = new FileStream(FileNamePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    long n = FS.Length;
-                    while (FS.Position < FS.Length)
-                    {
-                        if (n <= READBUFFER_SIZE)
-                        {
-                            byte[] FSBuffer = new byte[n];
-                            FS.Read(FSBuffer, offset, (int)n);
-                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n, IdUser);
-                        }
-                        else
-                        {
-                            byte[] FSBuffer = new byte[READBUFFER_SIZE];
-                            FS.Read(FSBuffer, offset, (int)READBUFFER_SIZE);
-                            await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE, IdUser);
-                            n -= READBUFFER_SIZE;
-                        }
-                        Pos = FS.Position;
-                        GC.Collect();
-                    }
-                    await _connection.InvokeAsync("WriteToDataBase", fileName.Remove(fileName.Length - 7, 3), IdUser);
+        //private async void загрузитьФайлToolStripMenuItem_Click1(string FileNamePath)
+        //{
+        //    var fileName = new DirectoryInfo(FileNamePath).Name;
+        //    long READBUFFER_SIZE = 1048576;
+        //    int offset = 0;
+        //    long Pos = 0;
+        //    try
+        //    {
+        //        using (FileStream FS = new FileStream(FileNamePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        //        {
+        //            long n = FS.Length;
+        //            while (FS.Position < FS.Length)
+        //            {
+        //                if (n <= READBUFFER_SIZE)
+        //                {
+        //                    byte[] FSBuffer = new byte[n];
+        //                    FS.Read(FSBuffer, offset, (int)n);
+        //                    await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, n, IdUser);
+        //                }
+        //                else
+        //                {
+        //                    byte[] FSBuffer = new byte[READBUFFER_SIZE];
+        //                    FS.Read(FSBuffer, offset, (int)READBUFFER_SIZE);
+        //                    await _connection.InvokeAsync("UploadFile", FSBuffer, fileName, Pos, FS.Length, READBUFFER_SIZE, IdUser);
+        //                    n -= READBUFFER_SIZE;
+        //                }
+        //                Pos = FS.Position;
+        //                GC.Collect();
+        //            }
+        //            await _connection.InvokeAsync("WriteToDataBase", fileName.Remove(fileName.Length - 7, 3), IdUser);
 
-                }
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+        //        }
+        //    }
+        //    catch (FileNotFoundException ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
 
-        }
+        //}
 
 
         private void создатьЗадачуToolStripMenuItem_Click(object sender, EventArgs e)
@@ -910,7 +1504,8 @@ namespace ClientFileStorage
                             {
                                 stringTask[i] = dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString();
                             }
-                            await _connection.InvokeAsync("DeleteTaskFromDataBase", stringTask, IdUser);
+                            HttpResponseMessage responseMessage = await client.DeleteAsync("api/user2/DeleteTaskFromDataBase?id="+stringTask[0]+"&IsFile="+stringTask[2]);
+                            responseMessage.EnsureSuccessStatusCode();
                             int rowIndex = e.RowIndex;
                             int id1 = (int)dataSet.Tables["Task"].Rows[rowIndex]["Id"];
                             if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[rowIndex]["IsFile"]) == true)
@@ -930,12 +1525,99 @@ namespace ClientFileStorage
                             dataGridView1.Rows.RemoveAt(rowIndex);
                             dataSet.Tables["Task"].Rows[rowIndex].Delete();
                             sqlDataAdapter.Update(dataSet, "Task");
-
-
                         }
                     }
                 }
+                if (e.ColumnIndex == 0)
+                {
+                    List<string> list = new List<string>();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    SqlDataReader sqlReader = null;
+                    string b = "";
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[e.RowIndex]["IsFile"]) == true)
+                    {
+                        string sql = "SELECT * FROM [File] " + "WHERE Idfile = @IdFile";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdFile", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b = Convert.ToString(sqlReader["FileName"]);
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b, "Файл", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        string sql = "SELECT * FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdSYBD", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b = "Поставщик СУБД: " + Convert.ToString(sqlReader["The_Supplier"]) + "\r\n";
+                            b = b + "Адрес сервера: " + Convert.ToString(sqlReader["Adres_Server"]) + "\r\n";
+                            b = b + "Порт сервера: " + Convert.ToString(sqlReader["Port_Server"]) + "\r\n";
+                            b = b + "Экземпляр сервера: " + Convert.ToString(sqlReader["Instance_Server"]) + "\r\n";
+                            b = b + "Логин СУБД: " + Convert.ToString(sqlReader["Login_SYBD"]) + "\r\n";
+                            b = b + "Пароль СУБД: " + Convert.ToString(sqlReader["Password_SYBD"]) + "\r\n";
+                            b = b + "Путь копирования: " + Convert.ToString(sqlReader["Way"]) + "\r\n";
+                            b = b + "Имя СУБД: " + Convert.ToString(sqlReader["Name_SYBD"]) + "\r\n";
+                            b = b + "Integrated_Security: " + Convert.ToString(sqlReader["Integrated_Security"]) + "\r\n";
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b, "СУБД", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                if (e.ColumnIndex == 0)
+                {
+                    List<string> list = new List<string>();
+                    string task = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    SqlDataReader sqlReader = null;
+                    string b="";
+                    if (Convert.ToBoolean(dataSet.Tables["Task"].Rows[e.RowIndex]["IsFile"]) == true)
+                    {
+                        string sql = "SELECT * FROM [File] " + "WHERE Idfile = @IdFile";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdFile", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b = Convert.ToString(sqlReader["FileName"]);
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b, "Файл", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        string sql = "SELECT * FROM [SYBD] " + "WHERE IdSYBD = @IdSYBD";
+                        SqlCommand command1 = new SqlCommand(sql, sqlConnection);
+                        command1.Parameters.AddWithValue("@IdSYBD", Convert.ToInt32(task));
+                        sqlReader = await command1.ExecuteReaderAsync();
+                        while (await sqlReader.ReadAsync())
+                        {
+                            b="Поставщик СУБД: "+ Convert.ToString(sqlReader["The_Supplier"])+ "\r\n";
+                            b =b+ "Адрес сервера: " + Convert.ToString(sqlReader["Adres_Server"])+ "\r\n";
+                            b =b + "Порт сервера: " + Convert.ToString(sqlReader["Port_Server"])+ "\r\n";
+                            b = b + "Экземпляр сервера: " + Convert.ToString(sqlReader["Instance_Server"])+ "\r\n";
+                            b = b + "Логин СУБД: " + Convert.ToString(sqlReader["Login_SYBD"])+ "\r\n";
+                            b = b + "Пароль СУБД: " + Convert.ToString(sqlReader["Password_SYBD"])+ "\r\n";
+                            b = b + "Путь копирования: " + Convert.ToString(sqlReader["Way"])+ "\r\n";
+                            b = b + "Имя СУБД: " + Convert.ToString(sqlReader["Name_SYBD"])+ "\r\n";
+                            b = b + "Integrated_Security: " + Convert.ToString(sqlReader["Integrated_Security"])+ "\r\n";
+                        }
+                        sqlReader.Close();
+
+                        MessageBox.Show(b,"СУБД",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -945,7 +1627,7 @@ namespace ClientFileStorage
         private async void timer1_Tick(object sender, EventArgs e)
         {
             sqlDataAdapter.Update(dataSet, "Task");
-            MakeTasks makeTasks = new MakeTasks(Link, IdUser);
+            MakeTasks makeTasks = new MakeTasks(Link, IdUser,client);
             await System.Threading.Tasks.Task.Run(() => makeTasks.MakeTask());
             ReloadData();
         }
@@ -961,22 +1643,32 @@ namespace ClientFileStorage
 
         }
 
-        private void Zip(string directoryPath)
-        {
-            // путь к архиву
-            string archivePath = "./ToSend/";
 
-            // вызов метода, который заархивирует указанную папку
-            ZipFile.CreateFromDirectory(directoryPath, archivePath + directoryPath.FirstOrDefault());
-        }
 
         public async System.Threading.Tasks.Task WriteTaskToServer(string[] Data)
         {
-            await _connection.InvokeAsync("WriteTaskToDataBase", Data, IdUser);
+            var js = JsonSerializer.Serialize(Data);
+            HttpContent c = new StringContent(js, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = await client.PostAsync("api/user3/WriteTaskToDataBase", c);
+            responseMessage.EnsureSuccessStatusCode();
         }
         public async System.Threading.Tasks.Task WriteFileToServer(string[] Data)
         {
-            await _connection.InvokeAsync("WriteFileToDataBase", Data, IdUser);
+            var js = JsonSerializer.Serialize(Data);
+            HttpContent c = new StringContent(js, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = await client.PostAsync("api/user5/WriteFileToDataBase", c);
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        public async System.Threading.Tasks.Task WriteSYBDToServer(string[] Data)
+        {
+            var js = JsonSerializer.Serialize(Data);
+            HttpContent c = new StringContent(js, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = await client.PostAsync("api/user4/WriteSYBDToDataBase", c);
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        public async System.Threading.Tasks.Task WriteSYBDToServer(string[] Data)
+        {
+            await _connection.InvokeAsync("WriteSYBDToDataBase", Data, IdUser);
         }
 
         private void FileStorage_FormClosed(object sender, FormClosedEventArgs e)
@@ -987,27 +1679,6 @@ namespace ClientFileStorage
 
 
 
-        //private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        //{
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["IdUser"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["IdUser"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["FileName"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["FileName"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["IsPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["IsPeriodic"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["Frequency_InProgress"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Frequency_InProgress"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["Frequency_RepeatedEvery"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["Frequency_RepeatedEvery"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["DayOfTheWeek"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["DayOfTheWeek"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["AOneTimeJob"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["AOneTimeJob"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["AOneTimeJobValue"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["AOneTimeJobValue"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["RunsEvery"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["RunsEvery"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["StartsAt"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["StartsAt"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndsIn"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndsIn"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["StartDate"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["StartDate"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndDate"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndDate"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["EndDateValue"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["EndDateValue"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["DateNoPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["DateNoPeriodic"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["TimeNoPeriodic"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["TimeNoPeriodic"].Value);
-        //    dataSet.Tables["Task"].Rows[e.RowIndex]["MustBeExecuted"] = Convert.ToString(dataGridView1.Rows[e.RowIndex].Cells["MustBeExecuted"].Value);
-        //    sqlDataAdapter.Update(dataSet, "Task");
-        //}
     }
 }
 

@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
 namespace ClientFileStorage
 {
@@ -11,11 +12,13 @@ namespace ClientFileStorage
         public string Link;
         public string IdUser;
         HubConnection _connection;
+        public HttpClient client;
 
-        public Загрузитьфайл(string Link1, string IdUser1)
+        public Загрузитьфайл(string Link1, string IdUser1, HttpClient httpClient)
         {
             Link = Link1;
             IdUser = IdUser1;
+            client = httpClient;
         }
 
         public async void SetCon()
@@ -44,10 +47,11 @@ namespace ClientFileStorage
             }
         }
 
-        public async void загрузитьФайлToolStripMenuItem_Click1(string FileNamePath)
+        public async void загрузитьФайлToolStripMenuItem_Click1(string FileNamePath,bool IsFile,int id,string MustBeEx)
         {
             SetCon();
             var fileName = new DirectoryInfo(FileNamePath).Name;
+            long Size = new System.IO.FileInfo(FileNamePath).Length;
             //fileName = fileName.Remove(fileName.Length - 7, 3);
             long READBUFFER_SIZE = 1048576;
             int offset = 0;
@@ -75,17 +79,22 @@ namespace ClientFileStorage
                         Pos = FS.Position;
                         GC.Collect();
                     }
-                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser);
-
+                    await _connection.InvokeAsync("WriteToDataBase", fileName, IdUser,IsFile,Size);
+                    await _connection.InvokeAsync("Executed", true, IdUser, id,MustBeEx);
                 }
-                await _connection.StopAsync();
+                
             }
             catch (FileNotFoundException ex)
             {
                 MessageBox.Show(ex.Message);
+                await _connection.InvokeAsync("Executed", false, IdUser, id);
+            }
+            finally
+            {
+                File.Delete(FileNamePath); 
+                await _connection.StopAsync();
             }
         }
-
     }
 }
 
